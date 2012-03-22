@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{Section.0.Introduction.1}{Introduction}{}
+\BOOKMARK [1][-]{Section.1.Statistical models.1}{Statistical models}{}
+\BOOKMARK [1][-]{Section.2.The class gpData.1}{The class gpData}{}
+\BOOKMARK [2][-]{Subsection.3.0.Phenotypic data.2}{Phenotypic data}{Section.2.The class gpData.1}
+\BOOKMARK [2][-]{Subsection.3.1.Genotypic data.2}{Genotypic data}{Section.2.The class gpData.1}
+\BOOKMARK [2][-]{Subsection.3.2.Pedigree.2}{Pedigree}{Section.2.The class gpData.1}
+\BOOKMARK [2][-]{Subsection.3.3.Covariate information.2}{Covariate information}{Section.2.The class gpData.1}
+\BOOKMARK [2][-]{Subsection.3.4.Marker map.2}{Marker map}{Section.2.The class gpData.1}
+\BOOKMARK [2][-]{Subsection.3.5.Info.2}{Info}{Section.2.The class gpData.1}
+\BOOKMARK [1][-]{Section.3.Summary of functions.1}{Summary of functions}{}
+\BOOKMARK [2][-]{Subsection.4.0.Data processing.2}{Data processing}{Section.3.Summary of functions.1}
+\BOOKMARK [3][-]{Subsubsection.4.1.0.Step 2: Recode marker genotypes.3}{Step 2: Recode marker genotypes}{Subsection.4.0.Data processing.2}
+\BOOKMARK [3][-]{Subsubsection.4.1.1.Step 3: Imputing of missing marker genotypes.3}{Step 3: Imputing of missing marker genotypes}{Subsection.4.0.Data processing.2}
+\BOOKMARK [2][-]{Subsection.4.1.Data analysis.2}{Data analysis}{Section.3.Summary of functions.1}
+\BOOKMARK [3][-]{Subsubsection.4.2.0.Linkage disequilibrium.3}{Linkage disequilibrium}{Subsection.4.1.Data analysis.2}
+\BOOKMARK [3][-]{Subsubsection.4.2.1.Estimation of relatedness.3}{Estimation of relatedness}{Subsection.4.1.Data analysis.2}
+\BOOKMARK [3][-]{Subsubsection.4.2.2.Statistical models.3}{Statistical models}{Subsection.4.1.Data analysis.2}
+\BOOKMARK [3][-]{Subsubsection.4.2.3.Cross-validation.3}{Cross-validation}{Subsection.4.1.Data analysis.2}
+\BOOKMARK [2][-]{Subsection.4.2.Data summary and visualization.2}{Data summary and visualization}{Section.3.Summary of functions.1}
+\BOOKMARK [1][-]{Section.4.Examples.1}{Examples}{}
+\BOOKMARK [2][-]{Subsection.5.0.Data sets.2}{Data sets}{Section.4.Examples.1}
+\BOOKMARK [3][-]{Subsubsection.5.1.0.Simulated maize data.3}{Simulated maize data}{Subsection.5.0.Data sets.2}
+\BOOKMARK [3][-]{Subsubsection.5.1.1.Mice data.3}{Mice data}{Subsection.5.0.Data sets.2}
+\BOOKMARK [3][-]{Subsubsection.5.1.2.Dairy cattle data.3}{Dairy cattle data}{Subsection.5.0.Data sets.2}
+\BOOKMARK [2][-]{Subsection.5.1.Data processing and visualization.2}{Data processing and visualization}{Section.4.Examples.1}
+\BOOKMARK [2][-]{Subsection.5.2.Data analysis.2}{Data analysis}{Section.4.Examples.1}
+\BOOKMARK [2][-]{Subsection.5.3.Statistical models.2}{Statistical models}{Section.4.Examples.1}
+\BOOKMARK [2][-]{Subsection.5.4.Computation times.2}{Computation times}{Section.4.Examples.1}
+\BOOKMARK [1][-]{Section.5.Conclusions and future work.1}{Conclusions and future work}{}

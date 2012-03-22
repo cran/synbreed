@@ -1,0 +1,30 @@
+Package: synbreed
+Type: Package
+Title: Framework for the analysis of genomic prediction data using R
+Version: 0.9-2
+Date: 2012-03-22
+Author: Valentin Wimmer, Theresa Albrecht, Hans-Juergen Auinger,
+        Chris-Carolin Schoen with contributions by Larry Schaeffer,
+        Malena Erbe, Ulrike Ober and Christian Reimer
+Depends: R (>= 2.10), lattice, igraph, MASS, LDheatmap, qtl, doBy, BLR,
+        regress (>= 1.3-8), abind, synbreedData
+Maintainer: Valentin Wimmer <Valentin.Wimmer@wzw.tum.de>
+Description: The package was developed within the Synbreed project for
+        synergistic plant and animal breeding (www.synbreed.tum.de). It
+        contains a collection of functions required for genomic
+        prediction in both plant and animal breeding. This covers data
+        processing, data visualization and analysis. All functions are
+        embedded within the framework of a single, unified data object.
+        The implementation is flexible with respect to a wide range of
+        data formats. This research was funded by the German Federal
+        Ministry of Education and Research (BMBF) within the
+        AgroClustEr Synbreed - Synergistic plant and animal breeding
+        (FKZ 0315528A).
+URL: http://synbreed.r-forge.r-project.org/
+License: GPL-2
+LazyLoad: yes
+LazyData: no
+ZipData: no
+Packaged: 2012-03-22 12:53:32 UTC; Valentin
+Repository: CRAN
+Date/Publication: 2012-03-22 14:19:33
