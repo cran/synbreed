@@ -1,0 +1,226 @@
+\begin{thebibliography}{33}
+\newcommand{\enquote}[1]{``#1''}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem[{Adler \emph{et~al.}(2010)Adler, Gl\"aser, Nenadic, Oehlschl\"agel,
+  and Zucchini}]{Adler2010}
+Adler D, Gl\"aser C, Nenadic O, Oehlschl\"agel J, Zucchini W (2010).
+\newblock \emph{\pkg{ff}: Memory-efficient Storage of Large Data on Disk and
+  Fast Access functions}.
+\newblock \proglang{R} package version 2.2-1,
+  \urlprefix\url{http://CRAN.R-project.org/package=ff}.
+
+\bibitem[{Albrecht \emph{et~al.}(2011)Albrecht, Wimmer, Auinger, Erbe, Knaak,
+  Ouzunova, Simianer, and Sch\"on}]{Albrecht2011}
+Albrecht T, Wimmer V, Auinger HJ, Erbe M, Knaak C, Ouzunova M, Simianer H,
+  Sch\"on CC (2011).
+\newblock \enquote{Genome-based Prediction of Testcross Values in Maize.}
+\newblock \emph{Theoretical and Applied Genetics}, \textbf{123}(2), 339 -- 350.
+
+\bibitem[{Aulchenko and Struchalin(2010)}]{Aulchenko2007}
+Aulchenko Y, Struchalin M (2010).
+\newblock \emph{\pkg{GenABEL}: Genome-wide SNP Association Analysis}.
+\newblock \proglang{R} package version 1.6-4,
+  \urlprefix\url{http://CRAN.R-project.org/package=GenABEL}.
+
+\bibitem[{Bernardo(2002)}]{Bernardo2002}
+Bernardo R (2002).
+\newblock \emph{Breeding for Quantitative Traits in Plants}.
+\newblock Stemma Press.
+
+\bibitem[{Broman \emph{et~al.}(2003)Broman, Wu, Sen, and
+  Churchill}]{Broman2003}
+Broman KW, Wu H, Sen S, Churchill GA (2003).
+\newblock \enquote{\proglang{R}/\pkg{qtl}: QTL Mapping in Experimental
+  Crosses.}
+\newblock \emph{Bioinformatics}, \textbf{7}(19), 889--890.
+
+\bibitem[{Browning and Browning(2009)}]{Browning2009}
+Browning BL, Browning SR (2009).
+\newblock \enquote{A Unified Approach to Genotype Imputation and
+  Haplotype-Phase Inference for Large Data Sets of Trios and Unrelated
+  Individuals.}
+\newblock \emph{The American Journal of Human Genetics}, \textbf{846},
+  210--223.
+
+\bibitem[{Clifford and McCullagh(2009)}]{Clifford2009}
+Clifford D, McCullagh P (2009).
+\newblock \emph{\pkg{regress}: Gaussian Linear Models with Linear Covariance
+  Structure}.
+\newblock \proglang{R} package version 1.1-2,
+  \urlprefix\url{http://www.csiro.au}.
+
+\bibitem[{de~los Campos \emph{et~al.}(2009)de~los Campos, Naya, Gianola,
+  Jos\'e~Crossa, Manfredi, and Cotes}]{Campos2009}
+de~los Campos G, Naya H, Gianola D, Jos\'e~Crossa AL, Manfredi E, Cotes JM
+  (2009).
+\newblock \enquote{Predicting Quantitative Traits with Regression Models for
+  Dense Molecular Markers and Pedigree.}
+\newblock \emph{Genetics}, \textbf{182}, 375--385.
+
+\bibitem[{Falconer and Mackay(1996)}]{Falconer1996}
+Falconer D, Mackay T (1996).
+\newblock \emph{Introduction to Quantitative Genetics}.
+\newblock Longman Technical.
+
+\bibitem[{Foulkes(2009)}]{Foulkes2009}
+Foulkes AS (2009).
+\newblock \emph{Applied Statistical Genetics with \proglang{R}}.
+\newblock Springer-Verlag.
+
+\bibitem[{Gilmour \emph{et~al.}(2009)Gilmour, Gogel, Cullis, and
+  Thompson}]{Gilmour2000}
+Gilmour A, Gogel B, Cullis B, Thompson R (2009).
+\newblock \emph{\proglang{ASREML} User Guide Release 3.0}.
+\newblock {VSN} International Ltd, Hemel Hempstead, {UK}.
+
+\bibitem[{Goddard \emph{et~al.}(2009)Goddard, Wray, Verbyla, and
+  Visscher}]{Goddard2009a}
+Goddard ME, Wray NR, Verbyla K, Visscher PM (2009).
+\newblock \enquote{Estimating Effects and Making Predictions from Genome-Wide
+  Marker Data.}
+\newblock \emph{Statistical Science}, \textbf{24}(4), 517--529.
+
+\bibitem[{Habier \emph{et~al.}(2007)Habier, Fernando, and Dekkers}]{Habier2007}
+Habier D, Fernando R, Dekkers J (2007).
+\newblock \enquote{The Impact of Genetic Relationship Information on
+  {Genome-Assisted} Breeding Values.}
+\newblock \emph{Genetics}, \textbf{177}, 2389 -- 2397.
+
+\bibitem[{Hayes and Goddard(2008)}]{Hayes2008}
+Hayes BJ, Goddard ME (2008).
+\newblock \enquote{Technical Note: Prediction of Breeding Values Using
+  Marker-Derived Relationship Matrices.}
+\newblock \emph{Journal of Animal Science}, \textbf{86}(9), 2089--2092.
+
+\bibitem[{Heffner \emph{et~al.}(2009)Heffner, Sorrells, and
+  Jannink}]{Heffner2009}
+Heffner EL, Sorrells ME, Jannink JL (2009).
+\newblock \enquote{Genomic Selection for Crop Improvement.}
+\newblock \emph{Crop Science}, \textbf{49}, 1--12.
+
+\bibitem[{Henderson(1984)}]{Henderson1984}
+Henderson CR (1984).
+\newblock \emph{Applications of Linear Models in Animal Breeding}.
+\newblock University of Guelph.
+
+\bibitem[{Hill and Weir(1988)}]{Hill1988}
+Hill W, Weir B (1988).
+\newblock \enquote{Variances and Covariances of Squared Linkage Disequilibria
+  in Finite Populations.}
+\newblock \emph{Theoretical Population Biology}, \textbf{33}, 54 -- 78.
+
+\bibitem[{Hill and Robertson(1968)}]{Hill1968}
+Hill WG, Robertson A (1968).
+\newblock \enquote{Linkage Disequilibrium in Finite Populations.}
+\newblock \emph{Theoretical and Applied Genetics}, \textbf{6}(38), 226--231.
+
+\bibitem[{Lee \emph{et~al.}(2010)Lee, Goddard, Visscher, and van~der
+  Werf}]{Lee2010}
+Lee S, Goddard M, Visscher P, van~der Werf J (2010).
+\newblock \enquote{Using the Realized Relationship Matrix to Disentangle
+  Confounding Factors for the Estimation of Genetic Variance Components of
+  Complex Traits.}
+\newblock \emph{Genetics Selection Evolution}, \textbf{42}(1), 22.
+
+\bibitem[{Legarra \emph{et~al.}(2008)Legarra, {Robert-Granie}, Manfredi, and
+  Elsen}]{Legarra2008}
+Legarra A, {Robert-Granie} C, Manfredi E, Elsen J (2008).
+\newblock \enquote{Performance of Genomic Selection in Mice.}
+\newblock \emph{Genetics}, \textbf{180}, 611--618.
+
+\bibitem[{Leisch(2002)}]{Leisch2002}
+Leisch F (2002).
+\newblock \enquote{Sweave, Part {I}: Mixing \proglang{R} and {\LaTeX}.}
+\newblock \emph{R News}, \textbf{2}(3), 28--31.
+\newblock \urlprefix\url{http://CRAN.R-project.org/doc/Rnews/}.
+
+\bibitem[{Luan \emph{et~al.}(2009)Luan, Woolliams, Lien, Kent, Svendsen, and
+  Meuwissen}]{Luan2009}
+Luan T, Woolliams JA, Lien S, Kent M, Svendsen M, Meuwissen THE (2009).
+\newblock \enquote{The Accuracy of Genomic Selection in Norwegian Red Cattle
+  Assessed by Cross-Validation.}
+\newblock \emph{Genetics}, \textbf{183}, 1119 -- 1126.
+
+\bibitem[{Lynch and Walsh(1998)}]{LynchWalsh1998}
+Lynch M, Walsh B (1998).
+\newblock \emph{Genetics and Analysis of Quantitative Traits}.
+\newblock Sinauer.
+
+\bibitem[{Meuwissen \emph{et~al.}(2001)Meuwissen, Hayes, and
+  Goddard}]{Meuwissen2001}
+Meuwissen THE, Hayes BJ, Goddard ME (2001).
+\newblock \enquote{Prediction of Total Genetic Value Using {Genome-Wide} Dense
+  Marker Maps.}
+\newblock \emph{Genetics}, \textbf{157}, 1819--1829.
+
+\bibitem[{Meyer(2007)}]{Meyer2006}
+Meyer K (2007).
+\newblock \enquote{\proglang{WOMBAT} - A Tool for Mixed Model Analyses in
+  Quantitative Genetics by REML.}
+\newblock \emph{Journal of Zhejiang University Science}, \textbf{8}(11),
+  815--821.
+
+\bibitem[{Park and Casella(2008)}]{Park2008}
+Park T, Casella G (2008).
+\newblock \enquote{The Bayesian Lasso.}
+\newblock \emph{Journal of the American Statistical Association},
+  \textbf{103}(482), 681 -- 686.
+
+\bibitem[{P\'erez \emph{et~al.}(2010)P\'erez, de~los Campos, Cross, and
+  Gianola}]{Perez2010}
+P\'erez P, de~los Campos G, Cross J, Gianola D (2010).
+\newblock \enquote{Genomic-enabled Prediction Based on Molecular Markers and
+  Pedigree Using the \pkg{BLR} package in \proglang{R}.}
+\newblock \emph{The Plant Genome}, \textbf{3}, 106 -- 116.
+
+\bibitem[{{R Development Core Team}(2011)}]{R}
+{R Development Core Team} (2011).
+\newblock \emph{\proglang{R}: A Language and Environment for Statistical
+  Computing}.
+\newblock R Foundation for Statistical Computing, Vienna, Austria.
+\newblock \urlprefix\url{http://www.r-project.org}.
+
+\bibitem[{Schaeffer \emph{et~al.}(1989)Schaeffer, Kennedy, and
+  Gibson}]{Schaeffer1989}
+Schaeffer LR, Kennedy BW, Gibson J (1989).
+\newblock \enquote{The Inverse of the Gametic Relationship Matrix.}
+\newblock \emph{Journal of Dairy Science}, \textbf{72}, 1266--1272.
+
+\bibitem[{Schmidberger \emph{et~al.}(2009)Schmidberger, Morgan, Eddelbuettel,
+  Yu, Tierney, and Mansmann}]{Schmidberger2009}
+Schmidberger M, Morgan M, Eddelbuettel D, Yu H, Tierney L, Mansmann U (2009).
+\newblock \enquote{State of the Art in Parallel Computing with \proglang{R}.}
+\newblock \emph{Journal of Statistical Software}, \textbf{31}(1), 1--27.
+
+\bibitem[{Shin \emph{et~al.}(2006)Shin, Blay, McNeney, and Graham}]{Shin2006}
+Shin JH, Blay S, McNeney B, Graham J (2006).
+\newblock \enquote{\pkg{LDheatmap}: An \proglang{R} Function for Graphical
+  Display of Pairwise Linkage Disequilibria Between Single Nucleotide
+  Polymorphisms.}
+\newblock \emph{Journal of Statistical Software}, \textbf{16}, {Code Snippet
+  3}.
+\newblock
+  \urlprefix\url{http://stat-db.stat.sfu.ca:8080/statgen/research/LDheatmap/}.
+
+\bibitem[{Valdar \emph{et~al.}(2006)Valdar, Solberg, Gauguier, Cookson,
+  Rawlins, Mott, and Flint}]{Valdar2006}
+Valdar W, Solberg L, Gauguier D, Cookson W, Rawlins J, Mott R, Flint J (2006).
+\newblock \enquote{Genetic and Environmental Effects on Complex Traits in
+  Mice.}
+\newblock \emph{Genetics}, \textbf{174}, 959--984.
+
+\bibitem[{Warnes \emph{et~al.}(2008)Warnes, Gorjanc, Leisch, and
+  Man}]{Warnes2003}
+Warnes G, Gorjanc G, Leisch F, Man M (2008).
+\newblock \emph{\pkg{genetics}: Population Genetics}.
+\newblock \proglang{R} package version 1.3.6.
+
+\end{thebibliography}
