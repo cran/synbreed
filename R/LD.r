@@ -1,4 +1,4 @@
-pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=FALSE,ld.threshold=0,rm.unmapped=TRUE){
+pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=FALSE,ld.threshold=0,ld.window=99999,rm.unmapped=TRUE){
 
     # catch errors
     if(is.null(gpData$geno)) stop("no genotypic data available")
@@ -35,6 +35,7 @@ pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=F
     if(!is.null(chr)){ 
         lg <- chr
         if(any(chr=="all")) stop("option chr='all' not yet possible") #linkageGroup <- rep("all",length(linkageGroup))
+        # NOTE: positions must be ordered consequtively within chromosomes
     }                                                
   
     # initialize return LD value data.frame list
@@ -51,7 +52,7 @@ pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=F
         sel <- rownames(gpData$map[gpData$map$chr!= lg[i],])
         gpTEMP <- discard.markers(gpData,which=sel)
         pre <- paste("chr",lg[i],sep="")
-        write.plink(gpTEMP,type=type,ld.threshold=ld.threshold,prefix=pre) 
+        write.plink(gpTEMP,type=type,ld.threshold=ld.threshold,ld.window=ld.window,prefix=pre)
         system(paste("plink --script ",pre,"plinkScript.txt",sep="")) 
        
         # distances between markers

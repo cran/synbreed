@@ -150,7 +150,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         for (i in 1:p){  # loop for standardizing columns by sd
 	    Z[,i]<-Z[,i]/sqrt(pq2[i])
         }
-        U <- (Z %*% t(Z))/(2*p)
+        U <- (Z %*% t(Z))/(p)
         kmat <- U
     }
 

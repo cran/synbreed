@@ -18,17 +18,17 @@ predict.gpMod <- function(object,newdata=NULL,...){
      if(class(newdata)!="gpData") stop("object 'newdata' must be of class 'gpData'")
      X <- newdata$geno
      m <- object$m
-     mu <- object$fit$beta
+     mu <- c(object$fit$beta)
      prediction <- mu + X %*% m
   }
-  if(model == "BLUP"){
+  if(model == "BLUP" & is.null(object$m)){
 #      prediction <- gpData$geno %*% t(gpData$geno[rownames(kin), ]) %*% ginv(kin) %*% genVal[rownames(kin)]
 #      prediction <- prediction[!names(prediction) %in% names(genVal)] / mean(prediction[names(genVal)]/genVal)
-
-      G <- object$kin[c(names(object$y),newdata),c(names(object$y),newdata)]
+      if (any(newdata %in%  names(object$y))) warning("Some individuals in newdata have been used also for model training")
+      G <- object$kin[c(names(object$y),setdiff(y=names(object$y),x=newdata)),c(names(object$y),setdiff(y=names(object$y),x=newdata))]
       y <- object$y
       n <- length(y) # size of the training set
-      Z <- cbind(diag(n),matrix(data=0,nrow=n,ncol=length(newdata)))
+      Z <- cbind(diag(n),matrix(data=0,nrow=n,ncol=length(setdiff(y=names(object$y),x=newdata))))
       X <- matrix(1,nrow=n)
       sigma2g <- object$fit$sigma[1]
       sigma2  <- object$fit$sigma[2]
@@ -37,7 +37,7 @@ predict.gpMod <- function(object,newdata=NULL,...){
       RI <- diag(n)
       sol <- MME(X, Z, GI, RI, y)
       prediction <- sol$b + sol$u[-(1:n)]
-      names(prediction) <- newdata
+      names(prediction) <- setdiff(y=names(object$y),x=newdata)
   }
 
   }

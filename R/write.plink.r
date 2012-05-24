@@ -1,4 +1,4 @@
-write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshold=0,type=c("data.frame","matrix")){
+write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshold=0,type=c("data.frame","matrix"),ld.window=99999){
 
        # information from arguments
        geno <- gp$geno
@@ -13,8 +13,13 @@ write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshol
        # prepare .ped file
        # family ID, individual ID, paternal ID, maternal ID, sex, phenotype, genotypedata
        # we omit cols 3-6
+       if(is.null(family)){
+                warning("missing family information in gpData$covar")
+                gp$covar$family <- 1
+       }
+
        family <- gp$covar$family[gp$covar$genotyped]  # only for individuals with genotypes
-       if(is.null(family)) stop("missing family information in gpData$covar")
+
        id <- gp$covar$id[gp$covar$genotyped]  # only for individuals with genotypes
        # combine in one file
        ped <- data.frame(family,id,geno)
@@ -56,7 +61,7 @@ write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshol
        #sink()
        #unlink(file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
        
-       cat("--ped ",prefix,".ped \n","--map ",prefix,".map \n","--compound-genotypes \n","--out ",prefix,"\n","--no-parents \n","--no-sex \n","--no-pheno \n","--allow-no-sex \n",ifelse(type=="matrix","--matrix \n",paste("--ld-window 99999\n","--ld-window-r2 ",ld.threshold,"\n",sep="")),"--r2 \n",sep="",file=file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
+       cat("--ped ",prefix,".ped \n","--map ",prefix,".map \n","--compound-genotypes \n","--out ",prefix,"\n","--no-parents \n","--no-sex \n","--no-pheno \n","--allow-no-sex \n",ifelse(type=="matrix","--matrix \n",paste("--ld-window-kb ",ld.window,"\n","--ld-window-r2 ",ld.threshold,"\n",sep="")),"--r2 \n",sep="",file=file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
 
 
 

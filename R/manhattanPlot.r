@@ -14,10 +14,10 @@ manhattanPlot <- function(b,gpData=NULL,colored=FALSE,add=FALSE,pch=19,ylab=NULL
     chr <- as.numeric(chrs[gpData$map$chr]) + as.numeric(gpData$map$pos)+ as.numeric(as.factor(gpData$map$chr))*0.01
     if(!add){
       plot(chr,b,col=cols[(as.numeric(gpData$map$chr)-1)%%6+1],type="p",axes=FALSE,pch=pch,ylab=ylab,cex.axis=.9,...)
-      axis(side=1,at=c(chr[!duplicated(gpData$map$chr)],max(chr,na.rm=TRUE)),labels=NA, cex=.9, lwd.ticks=2)
+      axis(side=1,at=c(chr[!duplicated(gpData$map$chr)],max(chr,na.rm=TRUE)),labels=NA, cex=.9, lwd.ticks=2,...)
       axis(side=1,at=chr[!duplicated(gpData$map$chr)]+diff(c(chr[!duplicated(gpData$map$chr)],max(chr,na.rm=TRUE)))/2,
-           tick=FALSE,labels=unique(gpData$map$chr),hadj=0, padj=0, cex=.9)
-      axis(side=2, cex=.9) 
+           tick=FALSE,labels=unique(gpData$map$chr),hadj=0, padj=0, cex=.9,...)
+      axis(side=2, cex=.9,...)
       box()
       } else points(chr, b, col=cols[(as.numeric(gpData$map$chr)-1)%%6+1], pch=pch,...)
   }
