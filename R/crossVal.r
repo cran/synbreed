@@ -57,6 +57,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     if (is.null(cov.matrix) ){
         y.sampGeno <- gpData2data.frame(gpData=gpData, trait=trait, onlyPheno=FALSE, phenoCovars=FALSE)
         Z <- as.matrix(y.sampGeno[, (ncol(y.sampGeno)-ncol(gpData$geno)+1):ncol(y.sampGeno)])
+        if(nrow(Z) != length(y$ID)) stop("Dimensions of geno and pheno do not match. Please remove observations with missing phenotypes.") 
         rownames(Z) <- y$ID
         if (VC.est %in% c("commit","ASReml")) cov.matrix <- list(kin=diag(ncol(Z)))
         RR <- TRUE
@@ -71,7 +72,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     if(VC.est=="commit" & length(varComp)<2) stop("Variance components should be at least two, one for the random effect and one residual variance")
     if(!sampling %in% c("random","commit") & is.null(popStruc) & is.null(gpData$covar$family)) stop("no popStruc was given")
     if(!sampling %in% c("random","commit") & is.null(popStruc)){
-    popStruc <- gpData$covar$family[gpData$covar$genotyped & gpData$covar$phenotyped]
+    popStruc <- gpData$covar$family[gpData$covar$id %in% dataSet]
     }
     if(sampling!="random" & !is.null(popStruc)){
       if(length(popStruc)!=n) stop("population structure must have equal length as obsersvations in data")
@@ -93,7 +94,10 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
 	   covM <- as.matrix(cov.matrix[[i]])
 	   covM.I <- try(solve(covM),TRUE)
 	   # adding constant to diagonal, if covM is singular
-	   if(class(covM.I)=="try-error") covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+	   if(class(covM.I)=="try-error"){
+		 warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
+		 covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+	   }
            m <- covM.I * (varComp[length(varComp)]/varComp[i])
 	   rm(covM.I,covM)
              if(i==1) rmat <- m
@@ -116,7 +120,10 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
            covM <- as.matrix(cov.matrix[[i]])
 	   covM.I <- try(solve(covM),TRUE)
 	   # adding constant to diagonal, if covM is singular
-	   if(class(covM.I)=="try-error") covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+	   if(class(covM.I)=="try-error"){
+		 warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
+		 covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+	   }
            write.relationshipMatrix(covM.I,file=paste("ID",i,".giv",sep=""),type="none",sorting="ASReml",digits=10)
 	   rm(covM.I,covM)
         }
@@ -396,6 +403,10 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       Z2 <- Z[(rownames(Z) %in% samp.ts[,1]),]
       X2 <- X[(rownames(X) %in% samp.ts[,1]),]
       XZ2 <- cbind(X2,Z2)
+      if(length(Z2)==ncol(Z)){ 
+	XZ2 <- matrix(c(X2,Z2),ncol=(ncol(X)+ncol(Z)))
+	rownames(XZ2) <- samp.ts[,1]
+      }
       #print(dim(XZ2))
       #print(dim(XZ2))
       y2 <- y[(y$ID %in% samp.ts[,1]),"TRAIT"]
@@ -422,7 +433,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       # Mean squared error
       mse[ii,i] <- mean((y2-as.numeric(y.dach))^2) 
       # save IDs of TS
-      id.TS[[ii]] <- unique(rownames(Z2))
+      id.TS[[ii]] <- as.character(unique(samp.ts[,1]))
       names(id.TS)[[ii]] <- paste("fold",ii,sep="")
       
     }  # end loop for k-folds

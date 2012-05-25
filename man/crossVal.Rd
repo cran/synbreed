@@ -108,11 +108,7 @@ http://CRAN.R-project.org/package=BLR
 \dontrun{
 data(maize)
 maize2 <- codeGeno(maize)
-<<<<<<< .mine
-rad <- kin(maize2,ret="realized")
-=======
 U <- kin(maize2,ret="realized")
->>>>>>> .r361
 # cross validation
 cv.maize  <- crossVal(maize2,cov.matrix=list(U),k=5,Rep=1,
             Seed=123,sampling="random",varComp=c(26.5282,48.5785),VC.est="commit")

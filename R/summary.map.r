@@ -4,6 +4,7 @@ summaryGenMap <- function(map){
 
      # information from arguments
      if(class(map)=="gpData") map <- map$map
+     if(is.null(map)) stop("No map available")
      chr <- map$chr
      pos <- map$pos
 

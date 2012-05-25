@@ -21,10 +21,10 @@ object of class \code{gpData}
 \code{character}. Type of genomic prediction model. \code{"BLUP"} indicates best linear unbiased prediction (BLUP) using REML for both pedigree-based (P-BLUP) and marker-based (G-BLUP) model. \code{"BL"} and \code{"BRR"} indicate Bayesian Lasso and Bayesian Ridge Regression, respectively.
 }
   \item{kin}{
-object of class \code{relationshipMatrix}. Kinship structure to be used in the BLUP model or as additional polygenic effect \eqn{u} in the Bayesian regression models (see \code{BLR} package).
+object of class \code{relationshipMatrix} (only required for \code{model = "BLUP"}). Use a pedigree-based kinship to evaluate P-BLUP or a marker-based kinship to evaluate G-BLUP. For \code{"BL"} and \code{"BRR"}, also a kinship structure may be used as additional polygenic effect \eqn{u} in the Bayesian regression models (see \code{BLR} package).
 }
   \item{predict}{
-\code{logical}. If \code{TRUE}, genetic values will be predicted for genotyped but not phenotyped individuals. Default is \code{FALSE}.
+\code{logical}. If \code{TRUE}, genetic values will be predicted for genotyped but not phenotyped individuals. Default is \code{FALSE}. Note that this option is only meaningful for marker-based models. For pedigree-based model, please use function \code{predict.gpMod}.
 }
   \item{trait}{
 \code{numeric} or \code{character}. A vector with names or numbers of the traits to fit the model
@@ -34,7 +34,7 @@ object of class \code{relationshipMatrix}. Kinship structure to be used in the B
 }
   \item{markerEffects}{
   \code{logical}. 
- Should marker effects be estimated for a G-BLUP model, i.e. RR-BLUP?
+ Should marker effects be estimated for a G-BLUP model, i.e. RR-BLUP? Plose note, that in this case also the variance components pertaining to model G-BLUP are reported instead of those from the G-BLUP model (see vignette). If the variance components are committed to \code{crossVal}, it must be guaranteed that there also the RR-BLUP model is used, e.g. no \code{cov.matrix} object should be specified.
 }
   \item{fixed}{
   A formula for fixed effects. The details of model specification are the same as for \code{lm} (only right hand side required). Only for \code{model="BLUP"}.
@@ -47,7 +47,7 @@ further arguments to be used by the genomic prediction models, i.e. prior values
 }
 }
 \details{
-By default, an overall mean is added to the model. For BLUP, further fixed and random effects can be added through the arguments \code{fixed} and \code{random}.
+By default, an overall mean is added to the model. If no \code{kin} is specified and  \code{model = "BLUP"}, a G-BLUP model will be fitted. For BLUP, further fixed and random effects can be added through the arguments \code{fixed} and \code{random}.
 
 Only a subset of the individuals - the training set - is used to fit the model. This contains all individuals with phenotypes and genotypes. If \code{kin} does not match the dimension of the training set (if, e.g. ancestors are included), the respective rows and columns from the trainings set are choosen. Marker effects for \code{model=BLUP} are extracted from the corresponding G-BLUP model using their functional relationship. In this case, \code{fit} reports the G-BLUP model.
 }

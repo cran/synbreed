@@ -122,7 +122,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
       }
     }
     if(model=="BRR"){
-      if(dim(gpData$pheno)[3] > 1) stop("This method is not developed for a one-stage analysis yet. \nA phenotypic analysis have to be done fist.")
+      if(dim(gpData$pheno)[3] > 1) stop("This method is not developed for a one-stage analysis yet. \nA phenotypic analysis has to be done fist.")
       X <-  gpData$geno[rownames(gpData$geno) %in% df.trait$ID,]
       y <- df.trait[df.trait$ID %in% rownames(gpData$geno), yName]
       capture.output(res <- BLR(y=y,XR=X,...),file="BLRout.txt")
@@ -139,7 +139,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
 
     y <- df.trait[,yName]
     names(y) <- df.trait[,"ID"]
-    ret <- list(fit=res,model=model,y=y,g=genVal,predicton=prediction, m=m,kin=kin)
+    ret <- list(fit=res,model=model,y=y,g=genVal,prediction=prediction, m=m,kin=kin)
     class(ret) = "gpMod"
     ans[[i]] <- ret
     names(ans)[length(ans)] <- yName

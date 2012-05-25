@@ -188,8 +188,9 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   obj$info$attrPhenoCovars <- attrModCovars
 
   # set class of sub-object pedigree
-  if(!is.null(obj$pedigree)) class(obj$pedigree) <- c("pedigree","data.frame")
-
+  if(!is.null(obj$pedigree)){
+    if(!any(class(obj$pedigree)=="pedigree")) warning("object pedigree should be of class 'pedigree'")
+  }
   # return object of class 'gpData'
   class(obj) <- "gpData"
   return(obj)

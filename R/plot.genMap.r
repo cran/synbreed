@@ -47,12 +47,14 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, ..
     if (dense) {
 
         par(mar = c(5, 1, 4, 3.8) + 0.1)
-        image(seq(-0.3, 0.3, length = 20), seq(from = 0, to =  maxDens,
-            length = 6), matrix(rep(seq(from = 0, to = maxDens, length = 6),
+        shift <- (seq(from = 0, to = maxDens, length = 7)[2]-seq(from = 0, to = maxDens, length = 7)[1])/2
+        image(seq(-0.3, 0.3, length = 20), seq(from = shift, to =  maxDens,
+            length = 6), matrix(rep(seq(from = shift, to = maxDens, length = 6),
             20), nrow = 20, byrow = TRUE), col = cols, breaks=round(seq(0,maxDens,length=7)), axes = FALSE,
-            xlab = "",main=paste("Nr. of SNPs \n within",bw,map.unit),xlim=c(-0.6,0.6))
-        axis(side = 4, at = round(seq(from = 0, to = maxDens, length = 6))
-            , labels=round(seq(from = 0, to = maxDens, length = 6)),las = 1)
+            xlab = "",main=paste("Nr. of SNPs \n within",bw,map.unit),xlim=c(-0.3,0.3))
+        box()
+        axis(side = 4, at = round(seq(from = 0, to = maxDens, length = 7))+seq(0,shift,length=7)
+            ,labels=round(seq(from = 0, to = maxDens, length = 7)),las = 1)
         par(mar = c(5, 4, 4, 1) + 0.1)
     }
 

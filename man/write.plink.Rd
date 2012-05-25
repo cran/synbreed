@@ -9,7 +9,8 @@ Create input files and corresponding script for PLINK (Purcell et al. 2007) to e
 }
 \usage{
 write.plink(gp, wdir = getwd(), prefix = paste(substitute(gp)),
-            ld.threshold = 0, type = c("data.frame", "matrix"))
+            ld.threshold = 0, type = c("data.frame", "matrix"),
+            ld.window=99999)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +28,9 @@ write.plink(gp, wdir = getwd(), prefix = paste(substitute(gp)),
 }
   \item{type}{
 \code{character}. Specifies the type of return value for PLINK.
+}
+  \item{ld.window}{
+\code{numeric}. Window size for pairwise differences which will be reported by PLINK (only for \code{use.plink=TRUE}) to thin the output dimensions. Only SNP pairs with a distance < \code{ld.window} are reported (default = 99999).
 }
 }
 \value{
