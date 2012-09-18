@@ -21,7 +21,7 @@ further graphical arguments passed to function \code{levelplot} in package \code
 }
 
 \author{
-Valentin Wimmer
+Valentin Wimmer and Hans-Juergen Auinger
 }
 
 \examples{

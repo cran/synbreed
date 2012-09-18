@@ -1,3 +1,27 @@
+0.9-4
+======================
+
+* changes on R-Forge since 2012 - 08 - 31
+
+* Bug fix in create.gpData() to get full compatibility
+  with write.plink() and other functions
+
+* In plot functions and LDDist and LDMap the format
+  "png" is now available for graphic files. For fileType = "pdf"
+  the option oneFile is added.
+
+* new class 'GenMap' for marker maps
+
+* generic plot functions for classes LDdf and LDmat. Decision 
+  can be made between "dist" and "map" respectively and for both 
+  "neighbour"
+
+* search for duplicated IDs in create.gpData()
+
+* fixed bug in print.report feature of codeGeno
+  when non-numeric coded genotypes were used
+
+
 0.9-3
 ======================
 
@@ -7,18 +31,18 @@
   avoid an error when running write.plink without
   family information, replaced error by a warning
   (on R-Forge since 2012 - 03 - 28)
-  
-* Included addtional 'print.report' argument for 
-  function codeGeno to generate (optionally) a report 
-  to decode original coding scheme, and count number 
+
+* Included addtional 'print.report' argument for
+  function codeGeno to generate (optionally) a report
+  to decode original coding scheme, and count number
   of missing values per SNP
 
 * Bug fix in codeGeno using family imputing, polymorphic
-  families were identified partly incorrect 
-  
-* Bug fix in predict.gpMod, when using BLUP and marker 
+  families were identified partly incorrect
+
+* Bug fix in predict.gpMod, when using BLUP and marker
   effects (on R-Forge since  2012-05-04)
-  
+
 * Renamed return argument in gpMod: predicton -> prediction
 
 * Added argument 'ld.window' to function pairwiseLD
@@ -32,12 +56,12 @@
 
 * Report of mean values for the diagonal/off-diagonal in
   summary.relationshipMatrix
-      
-  
-  
+
+
+
 0.9-2
-======================   
- 
+======================
+
 * Uploaded on CRAN 2012 - 03 - 22
 
 * updated vignette, replace LDmaize.pdf by LDmaize.png
@@ -45,5 +69,4 @@
 * proof-reading of the manual
 
 * minor updates in the demos
-  
-  
+

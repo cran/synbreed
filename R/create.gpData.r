@@ -5,6 +5,8 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   # start with some checks on data
   # geno as matrix but not data.frame (storage) 
   if(!is.null(geno)){
+    if(any(duplicated(rownames(geno)))) 
+      stop(paste("In", substitute(geno), " are duplicated names of genotypes!"))
      if(class(geno) == "data.frame"){
         geno <- matrix(unlist(geno),nrow=nrow(geno),ncol=ncol(geno),dimnames=dimnames(geno))
         #if(any(duplicated(geno,MARGIN=1))) warning("individuals with dublicated genotypes")
@@ -137,17 +139,18 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
 
   # sort markers by chromosome and position within chromosome
   if(!is.null(map)){
-    if(any(colnames(map) != c("chr","pos"))) stop("colnames of 'map' must be 'chr' and 'pos'")
+    if(any(colnames(map) != c("chr","pos"))) stop("colnames of", substitute(map),"must be 'chr' and 'pos'")
     if (reorderMap){
-     # first order in alphabetical oder (important for SNPs with the same position)
-     map$sor <- substr(map$chr, nchar(as.character(map$chr)), nchar(as.character(map$chr)))
-     if(!all(!unique(map$sor)[!is.na(unique(map$sor))] %in% 0:9)) map$sor <- 1
-     map <- map[order(as.character(rownames(map))),]
-     map <- orderBy(~sor+chr+pos,data=map)
-     map$sor <- NULL
+      # first order in alphabetical oder (important for SNPs with the same position)
+      map$sor <- substr(map$chr, nchar(as.character(map$chr)), nchar(as.character(map$chr)))
+      if(!all(!unique(map$sor)[!is.na(unique(map$sor))] %in% 0:9)) map$sor <- 1
+      map <- map[order(as.character(rownames(map))),]
+      map <- orderBy(~sor+chr+pos,data=map)
+      map$sor <- NULL
       # sortcolumns in geno, too
-     geno <- geno[,rownames(map)]
+      geno <- geno[,rownames(map)]
     }
+    class(map) <- c("GenMap", "data.frame")
   }
 
   # return object
@@ -169,14 +172,14 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   # family information for genotyped indviduals  
   if(!is.null(family)){
     colnames(family)[1] <- "family"
-    obj$covar <- merge(obj$covar,family,by.x=1,by.y=0,all=TRUE)
-  }
+    obj$covar <- merge(obj$covar,family,by.x="id",by.y=0,all=TRUE)
+  } else obj$covar$family <- NA
   
   # add covar from arguments, if available 
   if(!is.null(covar)){
     if(is.null(rownames(covar))) stop("missing rownames in covar")    
     # do not use any existing columns named 'genotyped', 'phenotyped' or 'id'
-    covar <- covar[!colnames(covar) %in% c("genotyped","phenotyped","id")]
+    covar <- covar[!colnames(covar) %in% c("genotyped","phenotyped","id","family")]
     # merge with existing data
     if(!is.null(covar)) obj$covar <- merge(obj$covar,covar,by.x=1,by.y=0,all=TRUE)
     else  obj$covar <- obj$covar

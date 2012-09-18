@@ -8,7 +8,7 @@ Visualization of pedigree
 A function to visualize pedigree structure by a graph using the \code{igraph} package. Each genotype is represented as vertex and direct offsprings are linked by an edge. 
 }
 \usage{
-\method{plot}{pedigree}(x, effect = NULL, \dots)
+\method{plot}{pedigree}(x, effect = NULL,\dots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,7 +30,7 @@ A named graph visualizing the pedigree structure. Color is used to distinguish s
 }
 
 \author{
-Valentin Wimmer
+Valentin Wimmer and Hans-Juergen Auinger
 }
 \note{
 This function uses the plotting method for graphs in the library \code{igraph}

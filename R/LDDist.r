@@ -1,4 +1,4 @@
-LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,file=NULL,n=NULL,...){
+LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileFormat="pdf",onefile=TRUE,...){
 
 
     if(class(LDdf)!="LDdf") stop("'LDdf' must be of class 'LDdf'")
@@ -28,9 +28,31 @@ LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,file=NULL,n=NULL,...){
     # use LD from input arguement
     ret <- LDdf
 
-    if(!is.null(file)) pdf(file)
+    if(!is.null(file) & onefile & fileFormat == "pdf"){
+      if(substr(file, nchar(file)-nchar(fileFormat)+1, nchar(file)) != fileFormat | nchar(file) < 5)
+        file <- paste(file, ".", fileFormat, sep="")
+        pdf(file, onefile=onefile)
+    }
+
+    
     # compute distances within each linkage group
     for (i in lg){
+      if(!is.null(file)&(fileFormat != "pdf" | fileFormat == "pdf" & !onefile)){
+        if(substr(file, nchar(file)-nchar(fileFormat)+1, nchar(file)) != fileFormat | nchar(file) < 5){
+          if(length(lg) <2)  
+            fileName <- paste(file, ".", fileFormat, sep="") 
+          else 
+            fileName <- paste(file, "_chr", i, ".", fileFormat, sep="")
+        } else {
+          if(length(lg)>1)
+            fileName <- paste(substr(file, 1, nchar(file)-nchar(fileFormat)-1), "_chr", i, ".", fileFormat, sep="")
+          else 
+            fileName <- file
+        }
+        if(fileFormat == "pdf") pdf(fileName)
+        else if (fileFormat == "png") png(fileName)
+        else stop("not supported file format choosen!")
+      }
     
        # create plots
        # scatterplot
@@ -65,7 +87,11 @@ LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,file=NULL,n=NULL,...){
           barplot((tab.abs/colSum)[nrow(tab.abs):1,],col=grey(1:nrow(tab.abs)/nrow(tab.abs))[1:nrow(tab.abs)],space=c(.2),main=names(ret)[[i]],xlim=c(0,ncol(tab.abs)+2.8),ylab="Fraction of SNP pairs",...)
           legend(ncol(tab.abs)+1.2,0.95,fill=grey(1:nrow(tab.abs)/nrow(tab.abs))[nrow(tab.abs):1],legend=levels(cut.r2),title="LD (r2)",cex=1)
          }
-        }
+       if(!is.null(file)&(fileFormat != "pdf" | fileFormat == "pdf" & !onefile)){ 
+         dev.off() 
+       } else if(is.null(file) & length(lg)>1) readline()
+       }
      # close graphic device
-     if(!is.null(file)) dev.off()
+     if(!is.null(file) & onefile & fileFormat == "pdf") dev.off()
+
 }

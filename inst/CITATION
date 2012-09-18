@@ -3,29 +3,29 @@ if (!exists("meta") || is.null(meta)) meta <- packageDescription("synbreed")
 citHeader("To cite package", sQuote(meta$Package), "in publications use:")
 
 ### Default citation of R packages
- year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
- vers <- paste("R package version", meta$Version)
- title <- paste(meta$Package, ": ", meta$Title, sep = "")
- citEntry(
-     entry = "Manual",
-     title = title,
-     author = as.personList(meta$Author),
-     year = year,
-     note = vers,
-     url = meta$URL,
-     textVersion = paste(meta$Author, " (", year, "). ", title, ". ",
-                         vers, ". ", meta$URL, sep = "")
- )
+# year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+# vers <- paste("R package version", meta$Version)
+# title <- paste(meta$Package, ": ", meta$Title, sep = "")
+# citEntry(
+#     entry = "Manual",
+#     title = title,
+#     author = as.personList(meta$Author),
+#     year = year,
+#     note = vers,
+#     url = meta$URL,
+#     textVersion = paste(meta$Author, " (", year, "). ", title, ". ",
+#                         vers, ". ", meta$URL, sep = "")
+# )
 
-### Article for JSS
-#citEntry(
-#    entry = "Article",
-#    title = "synbreed: A Framework for the Analysis of Genomic Prediction Data Using R",
-#    author = "Valentin Wimmer and Theresa Albrecht and Hans-Juergen Auinger and Chris-Carolin Schoen",
-#    journal = "Journal of Statistical Software (submitted)",
-#    year = "2011",
-#    volume = "",
-#    number = "",
-#    pages = "",
-#    textVersion ="Wimmer V, Albrecht T, Auinger HJ and Schoen CC (2011) synbreed: A Framework for the Analysis of Genomic Prediction Data Using R. Journal of Statistical Software (submitted)"
-#)
+### Article for Bioinformatics
+citEntry(
+    entry = "Article",
+    title = "synbreed: a framework for the analysis of genomic prediction data using R",
+    author = "Valentin Wimmer and Theresa Albrecht and Hans-Juergen Auinger and Chris-Carolin Schoen",
+    journal = "Bioinformatics",
+    year = "2012",
+    volume = "28",
+    number = "15",
+    pages = "2086-2087",
+    textVersion ="Wimmer V, Albrecht T, Auinger HJ and Schoen CC (2012) synbreed: a framework for the analysis of genomic prediction data using R. Bioinformatics, 28: 2086-2087"
+)

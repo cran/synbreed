@@ -30,7 +30,7 @@ object of class \code{gpData} with elements \code{geno} and \code{map}
 \code{numeric}. Threshold for the LD to thin the output. Only pairwise LD>\code{ld.threshold} is reported when PLINK is used. This argument can only be used for \code{type="data.frame"}.
 }
   \item{ld.window}{
-\code{numeric}. Window size for pairwise differences which will be reported by PLINK (only for \code{use.plink=TRUE}) to thin the output dimensions. Only SNP pairs with a distance < \code{ld.window} are reported (default = 99999).
+\code{numeric}. Window size for pairwise differences which will be reported by PLINK (only for \code{use.plink=TRUE}; argument \code{--ld-window-kb} in PLINK) to thin the output dimensions. Only SNP pairs with a distance < \code{ld.window} are reported (default = 99999).
 }
   \item{rm.unmapped}{
 \code{logical}. Remove markers with unknown postion in \code{map} before using PLINK?
@@ -48,6 +48,7 @@ Default PLINK options used
 --no-sex 
 --no-pheno
 --allow-no-sex
+--ld-window p
 --ld-window-kb 99999
 
 }
