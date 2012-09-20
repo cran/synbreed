@@ -30,7 +30,7 @@ write.plink(gp, wdir = getwd(), prefix = paste(substitute(gp)),
 \code{character}. Specifies the type of return value for PLINK.
 }
   \item{ld.window}{
-\code{numeric}. Window size for pairwise differences which will be reported by PLINK (only for \code{use.plink=TRUE}) to thin the output dimensions. Only SNP pairs with a distance < \code{ld.window} are reported (default = 99999).
+\code{numeric}. Window size for pairwise differences which will be reported by PLINK (only for \code{use.plink=TRUE}; argument \code{--ld-window-kb} in PLINK) to thin the output dimensions. Only SNP pairs with a distance < \code{ld.window} are reported (default = 99999).
 }
 }
 \value{

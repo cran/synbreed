@@ -109,9 +109,14 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
     major.allele <- function(x) names(which.max(x[!names(x) %in% label.heter]))
     minor.allele <- function(x) names(which.min(x[!names(x) %in% label.heter]))
    
-    major <- unlist(apply(alleles,2,major.allele))
-    minor <- unlist(apply(alleles,2,minor.allele))
-    
+    if(class(alleles)=="matrix"){
+        major <- unlist(apply(alleles,2,major.allele))
+        minor <- unlist(apply(alleles,2,minor.allele))
+    }
+    else{
+        major <- unlist(sapply(alleles,major.allele))
+        minor <- unlist(sapply(alleles,minor.allele))
+    }
 
     names(major) <- names(minor) <- cnames
   }
@@ -530,7 +535,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   
   if(print.report){
     if (verbose) cat("  Writing report to file 'SNPreport.txt' \n")
-    report.list <- data.frame(SNPname=cnames,major=major[cnames],minor=minor[cnames],MAF=round(colMeans(res)/2,3),impute.fam=cnt1[cnames],impute.beagle=cnt2[cnames],impute.ran=cnt3[cnames])
+    report.list <- data.frame(SNPname=cnames,major=major[cnames],minor=minor[cnames],MAF=round(colMeans(res,na.rm=TRUE)/2,3),impute.fam=cnt1[cnames],impute.beagle=cnt2[cnames],impute.ran=cnt3[cnames])
     write.table(report.list,file="SNPreport.txt",quote=FALSE,row.names=FALSE)
    } 
 

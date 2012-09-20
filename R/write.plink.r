@@ -29,10 +29,10 @@ write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshol
        chr <- gp$map$chr
        if (length(chr)!=M) stop("PLINK does not allow different number of markers in 'map' and 'geno'")
        snpID <- rownames(gp$map)
-       if(gp$info$map.unit=="cM") gPos <- gp$map$pos 
-       else gPos <- rep(0,M)
-       if(gp$info$map.unit=="bp") bpPos <- gp$map$pos 
-       else bpPos <- rep(0,M) 
+       gPos <- bpPos <- gp$map$pos
+       #else gPos <- rep(0,M)
+       #if(gp$info$map.unit=="bp") bpPos <- gp$map$pos
+       #else bpPos <- rep(0,M)
        # combine in one file
        map <- data.frame(chr,snpID,gPos,bpPos)
        
@@ -61,7 +61,7 @@ write.plink <- function(gp,wdir=getwd(),prefix=paste(substitute(gp)),ld.threshol
        #sink()
        #unlink(file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
        
-       cat("--ped ",prefix,".ped \n","--map ",prefix,".map \n","--compound-genotypes \n","--out ",prefix,"\n","--no-parents \n","--no-sex \n","--no-pheno \n","--allow-no-sex \n",ifelse(type=="matrix","--matrix \n",paste("--ld-window-kb ",ld.window,"\n","--ld-window-r2 ",ld.threshold,"\n",sep="")),"--r2 \n",sep="",file=file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
+       cat("--ped ",prefix,".ped \n","--map ",prefix,".map \n","--compound-genotypes \n","--out ",prefix,"\n","--no-parents \n","--no-sex \n","--no-pheno \n","--allow-no-sex \n",ifelse(type=="matrix","--matrix \n",paste("--ld-window ",nrow(map),"\n","--ld-window-kb ",ld.window,"\n","--ld-window-r2 ",ld.threshold,"\n",sep="")),"--r2 \n",sep="",file=file.path(wdir,paste(prefix,"plinkScript.txt",sep="")))
 
 
 

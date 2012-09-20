@@ -1,6 +1,7 @@
 # adding markers to gpData object
 
 add.markers <- function(gpData,geno,map=NULL){
+  class(gpData$map) <- "data.frame"
   # check if markers are allready in data
   if (any(colnames(geno) %in% colnames(gpData$geno)) | any(rownames(map) %in% colnames(gpData$geno))){
     stop("some of the markers of ", substitute(geno)," are allready in ", substitute(gpData))
@@ -43,6 +44,7 @@ add.markers <- function(gpData,geno,map=NULL){
   # sortcolumns in geno, too
   gpData$geno <- gpData$geno[,rownames(gpData$map)]
   # create new gpData object
+  class(gpData$map) <- "GenMap"
   return(gpData)
 }
 

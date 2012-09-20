@@ -1,9 +1,10 @@
 # Cross validation with different sampling and variance components estimation methods
-crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampling=c("random","within popStruc","across popStruc","commit"),TS=NULL,ES=NULL, varComp=NULL,popStruc=NULL, VC.est=c("commit","ASReml","BRR","BL"),verbose=FALSE,...) 
+crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampling=c("random","within popStruc","across popStruc","commit"),
+                      TS=NULL,ES=NULL,varComp=NULL,popStruc=NULL, VC.est=c("commit","ASReml","BRR","BL"),verbose=FALSE,...) 
 {
     VC.est <- match.arg(VC.est)
     sampling <- match.arg(sampling)
-    if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'crossVal'") 
+    if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'crossVal'")
 
     # individuals with genotypes and phenotypes
     dataSet <- as.character(gpData$covar$id[gpData$covar$genotyped & gpData$covar$phenotyped])
@@ -20,38 +21,43 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     n <- length(dataSet)
 
     if (ncol(y) <=2){
-    X <- matrix(rep(1,n,ncol=1))
-    rownames(X) <- unique(y$ID)
-    }else{
-    fixEff <- unique(y$repl)
-    X <- outer(y$repl,fixEff,"==")+0
-    colnames(X) <- fixEff
-        rownames(X) <- y$ID
+      X <- matrix(rep(1,n,ncol=1))
+      rownames(X) <- unique(y$ID)
+    } else {
+      fixEff <- unique(y$repl)
+      X <- outer(y$repl,fixEff,"==")+0
+      colnames(X) <- fixEff
+      rownames(X) <- y$ID
     #X <- cbind(X,rep(1,n))
     }
     if ("repl" %in% colnames(y)){
         ranEff <- unique(y$ID)
         Z <- outer(y$ID,ranEff,"==")+0
         rownames(Z) <- y$ID
-    }else{
+    }  else  {
         Z <- diag(n)
         rownames(Z) <- unique(y$ID)
     }
     colnames(Z) <- unique(y$ID)
-    if(length(cov.matrix)>1){
-    Z1 <- NULL
-    for (i in 1:length(cov.matrix)){
-         Z1 <- cbind(Z1,Z)
+    if(!is.list(cov.matrix)) {
+      if(class(cov.matrix) != "relationshipMatrix") stop(paste(substitute(cov.matrix), "has to be a list!"))
+      else cov.matrix <- list(cov.matrix)
+    } else {
+      if(length(cov.matrix)>1){
+        Z1 <- NULL
+        for (i in 1:length(cov.matrix)){
+          Z1 <- cbind(Z1,Z)
+        }
+        Z <- Z1
+      }   
     }
-    Z <- Z1
-    }   
     # checking if IDs are in cov.matrix
     if (!is.null(cov.matrix) ){
-       for( i in 1:length(cov.matrix)){
-         covM <- as.matrix(cov.matrix[[i]])
-         cov.matrix[[i]] <- covM[rownames(covM) %in% dataSet, colnames(covM) %in% dataSet ]
-       }
-    }
+        for( i in 1:length(cov.matrix)){
+          covM <- as.matrix(cov.matrix[[i]])
+          cov.matrix[[i]] <- covM[rownames(covM) %in% dataSet, colnames(covM) %in% dataSet ]
+        }
+      }
     # checking covariance matrices, if no covariance is given, Z matrix contains marker genotypes and covariance is an identity matrix
     RR <- FALSE
     if (is.null(cov.matrix) ){
@@ -91,15 +97,15 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
        # function for constructing GI
        rmat<-NULL
        for( i in 1:length(cov.matrix)){
-	   covM <- as.matrix(cov.matrix[[i]])
-	   covM.I <- try(solve(covM),TRUE)
-	   # adding constant to diagonal, if covM is singular
-	   if(class(covM.I)=="try-error"){
-		 warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
-		 covM.I <- solve(covM + diag(1e-5,ncol(covM)))
-	   }
+       covM <- as.matrix(cov.matrix[[i]])
+       covM.I <- try(solve(covM),TRUE)
+       # adding constant to diagonal, if covM is singular
+       if(class(covM.I)=="try-error"){
+         warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
+         covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+       }
            m <- covM.I * (varComp[length(varComp)]/varComp[i])
-	   rm(covM.I,covM)
+       rm(covM.I,covM)
              if(i==1) rmat <- m
              else
              {
@@ -118,14 +124,14 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
              if(!RR){   
         for ( i in 1:length(cov.matrix)){
            covM <- as.matrix(cov.matrix[[i]])
-	   covM.I <- try(solve(covM),TRUE)
-	   # adding constant to diagonal, if covM is singular
-	   if(class(covM.I)=="try-error"){
-		 warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
-		 covM.I <- solve(covM + diag(1e-5,ncol(covM)))
-	   }
+       covM.I <- try(solve(covM),TRUE)
+       # adding constant to diagonal, if covM is singular
+       if(class(covM.I)=="try-error"){
+         warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
+         covM.I <- solve(covM + diag(1e-5,ncol(covM)))
+       }
            write.relationshipMatrix(covM.I,file=paste("ID",i,".giv",sep=""),type="none",sorting="ASReml",digits=10)
-	   rm(covM.I,covM)
+       rm(covM.I,covM)
         }
         ID1 <- paste("ID",1:length(cov.matrix),".giv \n",sep="",collapse="")
         ID2 <- paste("giv(ID,",1:length(cov.matrix),") ",sep="",collapse="")
@@ -259,8 +265,8 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       #} 
     }
     samp.kf <- val.samp3[,2]==ii
-    samp.kf[is.na(samp.kf)] <- TRUE
-    y.samp[samp.kf,"TRAIT"] <- NA  # set values of TS to NA
+    samp.kf[is.na(samp.kf)] <- FALSE
+    y.samp[samp.kf==TRUE,"TRAIT"] <- NA  # set values of TS to NA
 
        # CV in R with committing variance components
        if (VC.est=="commit"){
@@ -404,8 +410,8 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       X2 <- X[(rownames(X) %in% samp.ts[,1]),]
       XZ2 <- cbind(X2,Z2)
       if(length(Z2)==ncol(Z)){ 
-	XZ2 <- matrix(c(X2,Z2),ncol=(ncol(X)+ncol(Z)))
-	rownames(XZ2) <- samp.ts[,1]
+    XZ2 <- matrix(c(X2,Z2),ncol=(ncol(X)+ncol(Z)))
+    rownames(XZ2) <- samp.ts[,1]
       }
       #print(dim(XZ2))
       #print(dim(XZ2))

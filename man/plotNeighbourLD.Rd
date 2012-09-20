@@ -7,14 +7,14 @@ Plot neighbour linkage disequilibrium
 A function to visualize Linkage Disequilibrium estimates between adjacent markers.
 }
 \usage{
-plotNeighbourLD(LD, map, dense=FALSE, nMarker = TRUE, centr=NULL, ...)
+plotNeighbourLD(LD, gpData, dense=FALSE, nMarker = TRUE, centr=NULL, file=NULL, fileFormat="pdf", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{LD}{
 object of class \code{LDmat}, i.e the output of function \code{pairwiseLD} using argument \code{type="matrix"}.
 }
-  \item{map}{
+  \item{gpData}{
 object of class \code{gpData} with object \code{map} or a \code{data.frame} with columns 'chr' (specifying the chromosome of the marker) and 'pos' (position of the marker within chromosome measured with genetic or physical distances)
 } 
   \item{dense}{
@@ -25,6 +25,12 @@ object of class \code{gpData} with object \code{map} or a \code{data.frame} with
 }
   \item{centr}{
 \code{numeric} vector. Positions for the centromeres in the same order as chromosomes in \code{map}. If \code{"maize"}, centromere positions of maize in Mbp are used.
+}
+  \item{file}{
+Optionally a path to a file where the plot is saved to
+}
+  \item{fileFormat}{
+\code{character}. At the moment two file formats are supported: pdf and png. Default is \code{"pdf"}.
 }
   \item{\dots}{
 further graphical arguments for function \code{plot}
@@ -39,7 +45,7 @@ Plot of neighbour LD along each chromosome. One chromosome is displayed from the
 }
 
 \author{
-Theresa Albrecht
+Theresa Albrecht and Hans-Juergen Auinger
 }
 
 \seealso{

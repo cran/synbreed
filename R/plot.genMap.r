@@ -1,9 +1,23 @@
-plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, ...){
+plot.GenMap <- function (x, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, file = NULL, fileFormat = "pdf", ...){
+    plotGenMap(map=x, dense=dense, nMarker=nMarker, bw=bw, centr=centr, file=file, fileFormat=fileFormat, ...)
+}
+plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, file = NULL, fileFormat = "pdf", ...){
     oldPar <- par()
+        
+    # output in files
+    if(!is.null(file)){
+      if(substr(file, nchar(file)-nchar(fileFormat)+1, nchar(file)) != fileFormat | nchar(file) < 5)
+        file <- paste(file, ".", fileFormat, sep="")
+      if(fileFormat == "pdf") pdf(file)
+      else if (fileFormat == "png") png(file)
+      else stop("not supported file format choosen!")
+    }
+
     if (class(map) == "gpData"){
        map.unit <- map$info$map.unit
        map <- map$map
     } else map.unit <- "unit"
+    class(map) <- "data.frame"
     
     chr <- unique(map$chr)
     chr <- chr[!is.na(chr)]
@@ -24,6 +38,7 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, ..
     #cols <- c( "#FFFFBF","#FEE08B","#FDAE61","#F46D43","#D73027","#A50026")
     # display.brewer.pal(7, "Reds")
     cols <- c("#FCBBA1", "#FC9272", "#FB6A4A", "#EF3B2C", "#CB181D", "#99000D")
+
 
     # compute density for a grid of values
     # cpmpute in advanve to use maxDens for legend
@@ -46,7 +61,7 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, ..
     # add legend to the left margin of the plot
     if (dense) {
 
-        par(mar = c(5, 1, 4, 3.8) + 0.1)
+        par(mar = c(5, 2.8, 4, 3.8) + 0.1)
         shift <- (seq(from = 0, to = maxDens, length = 7)[2]-seq(from = 0, to = maxDens, length = 7)[1])/2
         image(seq(-0.3, 0.3, length = 20), seq(from = shift, to =  maxDens,
             length = 6), matrix(rep(seq(from = shift, to = maxDens, length = 6),
@@ -99,6 +114,9 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, ..
         if (nMarker)
             text(i, max(map$pos,na.rm=TRUE) * 1.05, sum(map$chr == chr[i],na.rm=TRUE))
     }
+  # close graphic device
+  if(!is.null(file)) dev.off()
+
   oldPar$cin <- oldPar$cra <- oldPar$csi <- oldPar$cxy <- oldPar$din <- NULL
   par(oldPar)
 }
