@@ -1,14 +1,20 @@
-LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileFormat="pdf",onefile=TRUE,...){
+LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileFormat="pdf",onefile=TRUE,
+                   colL=2,colD=1,...){
 
 
     if(class(LDdf)!="LDdf") stop("'LDdf' must be of class 'LDdf'")
     if(type=="nls" & is.null(n)) stop("number of obeservations must be specified using argument 'n'")
     if(is.null(chr)) lg <- (1:length(LDdf))[!as.logical(lapply(LDdf,is.null))]
     else lg <- chr
-  
-
+    
+    if(lg=="all"){
+       LDdfall <- list() 
+       LDdfall$all <- data.frame(matrix(unlist(LDdf),ncol=ncol(LDdf[[1]])))
+       colnames(LDdfall$all) <- colnames(LDdf[[1]]) 
+       LDdf <- LDdfall 
+    }
     # function for fit according to Hill and Weir (1988)
-    smooth.fit <- function(overallDist,overallr2,n){
+    smooth.fit <- function(overallDist,overallr2,n,colL){
       # nls estimate
       nonlinearoverall <- nls(overallr2 ~ ((10 + p*overallDist)) / ((2+p*overallDist) * (11 + p*overallDist) ) *
       ( 1 + ( (3+ p*overallDist) * (12 + 12 * p + p^2*overallDist^2)) / ( n*(2+p*overallDist) * (11 + p*overallDist))),
@@ -22,7 +28,7 @@ LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileForma
         ( 1 + ( (3+ p*x) * (12 + 12 * p + p^2*x^2)) / ( n*(2+p*x) * (11 + p*x)))
       }
       # fit curve to data
-      curve(fitcurve(x,p=p,n=n), from=min(overallDist), to = max(overallDist), add=TRUE,col=2,lwd=2,...)
+      curve(fitcurve(x,p=p,n=n), from=min(overallDist), to = max(overallDist), add=TRUE,col=colL,lwd=2,...)
     }
     
     # use LD from input arguement
@@ -56,12 +62,12 @@ LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileForma
     
        # create plots
        # scatterplot
-       if(type=="p") plot(r2~dist,data=ret[[i]],main=names(ret)[[i]],...)
+       if(type=="p") plot(r2~dist,data=ret[[i]],main=names(ret)[[i]],col=colD,...)
 
        # scatterplot with nls curve
        if(type=="nls"){
-               plot(r2~dist,data=ret[[i]],main=paste("Linkage Group",i),...) 
-               smooth.fit(ret[[i]][,4],ret[[i]][,3],n=n)
+               plot(r2~dist,data=ret[[i]],main=names(ret)[[i]],col=colD,...) 
+               smooth.fit(ret[[i]][,4],ret[[i]][,3],n=n,colL=colL)
        }
 
        # stacked histogramm
@@ -76,8 +82,8 @@ LDDist <- function(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileForma
              breaks.dist <- breaks$dist
              breaks.r2 <- breaks$r2
           }
-          cut.dist <- cut(ret[[i]]$dist,breaks=breaks.dist)
-          cut.r2 <- cut(ret[[i]]$r2,breaks=breaks.r2)
+          cut.dist <- cut(ret[[i]]$dist,breaks=breaks.dist,include.lowest=TRUE)
+          cut.r2 <- cut(ret[[i]]$r2,breaks=breaks.r2,include.lowest=TRUE)
           
           # create matrix with relative frequencies
           tab.abs <- table(cut.r2,cut.dist)

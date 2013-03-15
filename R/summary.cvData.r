@@ -80,7 +80,7 @@ print.summary.cvData <- function(x,...){
     cat(" Predictive ability: ",x$min.pa," \t ",x$mean.pa,"+-",x$se.pa," \t ",x$max.pa,"\n")
     if(!is.null(x$mean.rc)) cat(" Rank correlation:   ",x$min.rc," \t ",x$mean.rc,"+-",x$se.rc," \t ",x$max.rc,"\n")
     if(!is.null(x$mean.mse)) cat(" Mean squared error: ",x$min.mse," \t ",x$mean.mse,"+-",x$se.mse," \t ",x$max.mse,"\n")
-    cat(" Bias:               ",x$min.b," \t ",x$mean.b,"+-",x$se.b," \t ",x$max.b,"\n")
+    cat(" Bias (reg. slope)   ",x$min.b," \t ",x$mean.b,"+-",x$se.b," \t ",x$max.b,"\n")
     if(!is.null(x$mean.10)) cat(" 10% best predicted: ",x$min.10," \t ",x$mean.10,"+-",x$se.10," \t ",x$max.10,"\n")
     cat("\nSeed start: ",x$Seed,"\n")
     cat("Seed replications: \n")
