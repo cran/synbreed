@@ -39,7 +39,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         rownames(Z) <- unique(y$ID)
     }
     colnames(Z) <- unique(y$ID)
-    if(!is.list(cov.matrix)) {
+    if(!is.null(cov.matrix) & !is.list(cov.matrix)) {
       if(class(cov.matrix) != "relationshipMatrix") stop(paste(substitute(cov.matrix), "has to be a list!"))
       else cov.matrix <- list(cov.matrix)
     } else {
@@ -104,7 +104,9 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
          warning("Covariance matrix is computationally singular: constant 1e-5 is added to the diagonal elements of the covariance matrix")
          covM.I <- solve(covM + diag(1e-5,ncol(covM)))
        }
-           m <- covM.I * (varComp[length(varComp)]/varComp[i])
+       # print warning in case of numerical problems
+       if(any(covM.I>1e8)) warning("Large >1e8 entries in the inverse covariance matrix")
+       m <- covM.I * (varComp[length(varComp)]/varComp[i])
        rm(covM.I,covM)
              if(i==1) rmat <- m
              else

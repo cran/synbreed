@@ -5,7 +5,7 @@
 Pairwise LD between markers
 }
 \description{
-Estimate pairwise Linkage Disequilibrium (LD) between markers measured as \eqn{r^2}{r2} using an object of class \code{gpData}. For the general case, a gateway to the software PLINK (Purcell et al. 2007) is established to estimate the LD. A within-R solution is available for marker data with only 2 genotypes, i.e. homozgous inbred lines. Return value is an object of class \code{LDdf} which is a \code{data.frame} with one row per marker pair or an object of class \code{LDMat} which is a \code{matrix} with all marker pairs. Additionally, the euclidian distance between position of markers is computed and returned.
+Estimate pairwise Linkage Disequilibrium (LD) between markers measured as \eqn{r^2}{r2} using an object of class \code{gpData}. For the general case, a gateway to the software PLINK (Purcell et al. 2007) is established to estimate the LD. A within-R solution is only available for marker data with only 2 genotypes, i.e. homozgous inbred lines. Return value is an object of class \code{LDdf} which is a \code{data.frame} with one row per marker pair or an object of class \code{LDMat} which is a \code{matrix} with all marker pairs. Additionally, the euclidian distance between position of markers is computed and returned.
 }
 \usage{
 pairwiseLD(gpData, chr = NULL, type = c("data.frame", "matrix"),

@@ -34,7 +34,7 @@ object of class \code{relationshipMatrix} (only required for \code{model = "BLUP
 }
   \item{markerEffects}{
   \code{logical}. 
- Should marker effects be estimated for a G-BLUP model, i.e. RR-BLUP? Plose note, that in this case also the variance components pertaining to model G-BLUP are reported instead of those from the G-BLUP model (see vignette). If the variance components are committed to \code{crossVal}, it must be guaranteed that there also the RR-BLUP model is used, e.g. no \code{cov.matrix} object should be specified.
+ Should marker effects be estimated for a G-BLUP model, i.e. RR-BLUP? In this case, argument \code{kin} is ignored (see Details). Plose note, that in this case also the variance components pertaining to model G-BLUP are reported instead of those from the G-BLUP model (see vignette). If the variance components are committed to \code{crossVal}, it must be guaranteed that there also the RR-BLUP model is used, e.g. no \code{cov.matrix} object should be specified.
 }
   \item{fixed}{
   A formula for fixed effects. The details of model specification are the same as for \code{lm} (only right hand side required). Only for \code{model="BLUP"}.
@@ -49,7 +49,9 @@ further arguments to be used by the genomic prediction models, i.e. prior values
 \details{
 By default, an overall mean is added to the model. If no \code{kin} is specified and  \code{model = "BLUP"}, a G-BLUP model will be fitted. For BLUP, further fixed and random effects can be added through the arguments \code{fixed} and \code{random}.
 
-Only a subset of the individuals - the training set - is used to fit the model. This contains all individuals with phenotypes and genotypes. If \code{kin} does not match the dimension of the training set (if, e.g. ancestors are included), the respective rows and columns from the trainings set are choosen. Marker effects for \code{model=BLUP} are extracted from the corresponding G-BLUP model using their functional relationship. In this case, \code{fit} reports the G-BLUP model.
+The marker effects \eqn{\hat{m}}{hatm} in the RR-BLUP model (available with \code{markerEffects}) are calculated as \deqn{\hat{m}= X'G^{-1}\hat{g}}{m = X'*Ginv*ghat} with \eqn{X} being the marker matrix, \eqn{G=XX'} and \eqn{hat{g}}{ghat} the vector of predicted genetic values.
+
+Only a subset of the individuals - the training set - is used to fit the model. This contains all individuals with phenotypes and genotypes. If \code{kin} does not match the dimension of the training set (if, e.g. ancestors are included), the respective rows and columns from the trainings set are choosen.
 }
 \value{
 Object of class \code{gpMod} which is a list of

@@ -21,10 +21,7 @@ write.beagle <- function(gp,wdir=getwd(),prefix){
        write.table(input.bgl,file=file.path(wdir,paste(prefix,"input.bgl",sep="")),quote=FALSE,col.names=FALSE,row.names=FALSE)
 
        # write marker file
-       #alleles <- apply(gp$geno,2,unique)
-       # make all equal length
-       #alleles <- lapply(alleles,equal.length,max(unlist(lapply(alleles,length))))
-       #alleles <- matrix(unlist(alleles),byrow=TRUE,nrow=M)
-       write.table(cbind(rownames(gp$map),gp$map$pos,"A B"),file=file.path(wdir,paste(prefix,"marker.txt",sep="")),quote=FALSE,col.names=FALSE,row.names=FALSE)
+       getAlleles <- function(Genotype) paste(unique(unlist(strsplit(paste(as.character(Genotype[!is.na(Genotype)])),split=""))),collapse=" ")
+       write.table(cbind(rownames(gp$map),gp$map$pos,apply(geno,2,getAlleles)),file=file.path(wdir,paste(prefix,"marker.txt",sep="")),quote=FALSE,col.names=FALSE,row.names=FALSE)
 
 }

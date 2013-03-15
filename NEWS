@@ -1,7 +1,30 @@
+0.9-5
+======================
+
+* Uploaded on R-Forge 2013 - 03 - 15
+
+* Added warning in case of large entries in the
+  inverse covariance matrix of crossVal
+
+* Return original alleles in write.beagle, not
+  only "A" and "B" by default in the marker file
+  
+* Added summary method for LDmat and LDdf  
+
+* Fixed bugs in write.beagle and codeGeno (counting
+  number of missing values with Beagle)
+
+* Include lowest category for r2 and dist breaks
+  in LDDist and plot.LDdf
+  
+* changed function .path.package to path.package   
+
+
+
 0.9-4
 ======================
 
-* changes on R-Forge since 2012 - 08 - 31
+* Uploaded on CRAN 2012 - 09 - 20
 
 * Bug fix in create.gpData() to get full compatibility
   with write.plink() and other functions
@@ -21,11 +44,13 @@
 * fixed bug in print.report feature of codeGeno
   when non-numeric coded genotypes were used
 
+* Included citation file
+
 
 0.9-3
 ======================
 
-* Uploaded on R-Forge 2012 - 05 - 24
+* Uploaded on CRAN 2012 - 05 - 24
 
 * Included default value for gpData$covar$family to
   avoid an error when running write.plink without
