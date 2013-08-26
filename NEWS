@@ -1,3 +1,32 @@
+0.9-7
+======================
+
+* Uploaded on R-Forge 2013 - 09 - 19
+
+* updated dependency from igraph0 to igraph
+
+0.9-6
+======================
+
+* Uploaded on R-Forge 2013 - 03 - 18
+
+* Updated maize centromere positions according
+  to maizeGDB, version 2
+  
+* Fixed bug in add.individuals
+
+* Added option in codeGeno to code by a reference
+  allele for each marker 
+  
+* Option to supply user-specified values instead 
+  of the MAF to correct in function kin for 
+  ret="realized" and ret="realizedAB" (thanks to
+  Yvonne Badke for this suggestion)    
+  
+* Fixed bug in crossVal when committing a TS
+  
+
+
 0.9-5
 ======================
 

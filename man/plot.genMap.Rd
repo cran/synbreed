@@ -9,9 +9,11 @@ Plot marker map
 A function to visualize low and high-density marker maps.
 }
 \usage{
-\method{plot}{GenMap}(x, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, file=NULL, fileFormat="pdf",...)
+\method{plot}{GenMap}(x, dense = FALSE, nMarker = TRUE, bw=1, 
+                      centr=NULL, file=NULL, fileFormat="pdf",...)
 
-plotGenMap(map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, file=NULL, fileFormat="pdf",...)
+plotGenMap(map, dense = FALSE, nMarker = TRUE, bw=1, 
+           centr=NULL, file=NULL, fileFormat="pdf",...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,7 +33,7 @@ object of class \code{gpData} with object \code{map} or a \code{data.frame} with
 \code{numeric}. Bandwidth to use for  \code{dense=TRUE} to control the resolution (default = 1 [map unit]).
 }
   \item{centr}{
-\code{numeric} vector. Positions for the centromeres in the same order as chromosomes in \code{map}. If \code{"maize"}, centromere positions of maize in Mbp are used.
+\code{numeric} vector. Positions for the centromeres in the same order as chromosomes in \code{map}. If \code{"maize"}, centromere positions of maize in Mbp are used (according to maizeGDB, version 2).
 }
   \item{file}{
 Optionally a path to a file where the plot is saved to

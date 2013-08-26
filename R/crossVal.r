@@ -1,6 +1,6 @@
 # Cross validation with different sampling and variance components estimation methods
 crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampling=c("random","within popStruc","across popStruc","commit"),
-                      TS=NULL,ES=NULL,varComp=NULL,popStruc=NULL, VC.est=c("commit","ASReml","BRR","BL"),verbose=FALSE,...) 
+                      TS=NULL,ES=NULL,varComp=NULL,popStruc=NULL, VC.est=c("commit","ASReml","BRR","BL"),verbose=FALSE,...)
 {
     VC.est <- match.arg(VC.est)
     sampling <- match.arg(sampling)
@@ -8,7 +8,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
 
     # individuals with genotypes and phenotypes
     dataSet <- as.character(gpData$covar$id[gpData$covar$genotyped & gpData$covar$phenotyped])
-    
+
     # constructing design matrices
     y <- gpData2data.frame(gpData=gpData, trait=trait, onlyPheno=TRUE, phenoCovars=FALSE)
     colnames(y)[2] <- "TRAIT"
@@ -49,7 +49,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
           Z1 <- cbind(Z1,Z)
         }
         Z <- Z1
-      }   
+      }
     }
     # checking if IDs are in cov.matrix
     if (!is.null(cov.matrix) ){
@@ -63,7 +63,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     if (is.null(cov.matrix) ){
         y.sampGeno <- gpData2data.frame(gpData=gpData, trait=trait, onlyPheno=FALSE, phenoCovars=FALSE)
         Z <- as.matrix(y.sampGeno[, (ncol(y.sampGeno)-ncol(gpData$geno)+1):ncol(y.sampGeno)])
-        if(nrow(Z) != length(y$ID)) stop("Dimensions of geno and pheno do not match. Please remove observations with missing phenotypes.") 
+        if(nrow(Z) != length(y$ID)) stop("Dimensions of geno and pheno do not match. Please remove observations with missing phenotypes.")
         rownames(Z) <- y$ID
         if (VC.est %in% c("commit","ASReml")) cov.matrix <- list(kin=diag(ncol(Z)))
         RR <- TRUE
@@ -73,7 +73,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     if(is.null(colnames(X)) & !is.null(colnames(Z))) names.eff <- c(paste("X",1:ncol(X),sep=""),colnames(Z))
     if(is.null(colnames(X)) & is.null(colnames(Z))) names.eff <- c(paste("X",1:ncol(X),sep=""),paste("Z",1:ncol(Z),sep=""))
 
-    # catch errors  
+    # catch errors
     if(is.null(varComp) & VC.est=="commit") stop("Variance components have to be specified")
     if(VC.est=="commit" & length(varComp)<2) stop("Variance components should be at least two, one for the random effect and one residual variance")
     if(!sampling %in% c("random","commit") & is.null(popStruc) & is.null(gpData$covar$family)) stop("no popStruc was given")
@@ -121,9 +121,9 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
          GI <- rmat
          }
     # covariance matrices for ASReml
-    else { 
+    else {
        if(VC.est=="ASReml"){
-             if(!RR){   
+             if(!RR){
         for ( i in 1:length(cov.matrix)){
            covM <- as.matrix(cov.matrix[[i]])
        covM.I <- try(solve(covM),TRUE)
@@ -151,7 +151,10 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     }
     }
     # set seed for replications
-    if(sampling=="commit") Rep <- length(names(TS)) # if TS is committed
+    if(sampling=="commit"){
+     Rep <- length(names(TS)) # if TS is committed
+     k <- length(TS[[1]])
+    } 
     if(!is.null(Seed)) set.seed(Seed)
     seed2<-round(runif(Rep,1,100000),0)
 
@@ -173,14 +176,14 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     n.DS <- matrix(NA,nrow=k,ncol=Rep)
     colnames(n.DS) <- paste("rep",1:Rep,sep="")
     rownames(n.DS) <- paste("fold",1:k,sep="")
-    id.TS2 <- list()   
+    id.TS2 <- list()
     m10 <- matrix(NA,nrow=Rep,ncol=1)
     colnames(m10) <- "m10"
     rownames(m10) <- paste("rep",1:Rep,sep="")
     mse <- matrix(NA,nrow=k,ncol=Rep)
     colnames(mse) <- paste("rep",1:Rep,sep="")
     rownames(mse) <- paste("fold",1:k,sep="")
-    for (i in 1:Rep){ 
+    for (i in 1:Rep){
 
     # sampling of k sets
     # random sampling
@@ -204,7 +207,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         modu<-nrow(y2)%%k
         if(!modu==0) val.samp<-sample(c(rep(1:k,each=(nrow(y2)-modu)/k),sample(1:k,modu)),nrow(y2),replace=FALSE)
         if(modu==0) val.samp<-sample(rep(1:k,each=(nrow(y2))/k),nrow(y2),replace=FALSE)
-        val.samp2 <- data.frame(y2,val.samp)        
+        val.samp2 <- data.frame(y2,val.samp)
         val.samp3 <- as.data.frame(rbind(val.samp3,val.samp2))
        }
        val.samp3 <- val.samp3[order(as.character(val.samp3[,1])),]
@@ -213,6 +216,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     # across family sampling
     if(sampling=="across popStruc"){
       which.pop <- unique(popStruc)
+      if(length(which.pop)<k) stop("The parameter k can not be greater than the number of populations!")
       y.u <- unique(y$ID)
       y2 <- matrix(y.u[order(popStruc)],ncol=1)
       b <- table(popStruc)
@@ -224,13 +228,13 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       val.samp3 <-  as.data.frame(val.samp3[order(as.character(val.samp3[,1])),])
      #print(head(val.samp3))
      }
-    
+
     # sampling with committed TS
     if(sampling=="commit"){
       val.samp2 <- as.data.frame(y$ID)
       val.samp2$val.samp <- rep(NA,n)
       k <- length(names(TS[[i]]))
-      for (ii in 1:k){    
+      for (ii in 1:k){
         val.samp2[val.samp2[,1] %in% TS[[i]][[ii]],2] <- ii
       }
       val.samp3 <- val.samp2
@@ -245,9 +249,9 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
      for (ii in 1:k){
     if (verbose) cat("Replication: ",i,"\t Fold: ",ii," \n")
     # select ES, k-times
-    samp.es <- val.samp3[!(val.samp3[,2] %in% ii),] 
-    samp.ts <- val.samp3[!is.na(val.samp3[,2]),] 
-    samp.ts <- samp.ts[samp.ts[,2]==ii,] 
+    samp.es <- val.samp3[!(val.samp3[,2] %in% ii),]
+    samp.ts <- val.samp3[!is.na(val.samp3[,2]),]
+    samp.ts <- samp.ts[samp.ts[,2]==ii,]
     #cat("samp.ts",dim(samp.ts),"\n")
     namesDS <- c(samp.es[,1],samp.ts[,1])
     y.samp <- y
@@ -257,14 +261,14 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       namesDS <- c(ES[[i]][[ii]],as.vector(samp.ts[,1])) # new DS
       y.samp[ !( y.samp[,1] %in% namesDS),"TRAIT"] <- NA  # set values of not-DS to NA
       #cat("y.samp ",dim(y.samp), "\n")
-      #if (!RR & VC.est=="commit") {  
+      #if (!RR & VC.est=="commit") {
       # contruct new Z matrix
         #Z <- diag(length(namesDS))
         #rownames(Z) <- colnames(Z) <- namesDS
         #cat("Z",dim(Z),"\n")
       # cut out G-inverse
         #GI1 <- GI[rownames(GI) %in% namesDS, colnames(GI) %in% namesDS]
-      #} 
+      #}
     }
     samp.kf <- val.samp3[,2]==ii
     samp.kf[is.na(samp.kf)] <- FALSE
@@ -283,11 +287,11 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         ZZGI <-  crossprod(Z1)+ GI
         Xy <- crossprod(X1,y1)
         Zy <- crossprod(Z1,y1)
-        # Left hand side    
+        # Left hand side
         LHS <- rbind(cbind(XX, XZ),cbind(ZX,ZZGI))
         # Right hand side
         RHS <- rbind(Xy,Zy)
-        
+
         # solve MME
         bu <-  as.vector(ginv(LHS)%*%RHS)
         #print(length(bu))
@@ -318,7 +322,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
             system(paste('mv Model.sln ','ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''))
             system(paste('mv Model.vvp ','ASReml/Model_rep',i,'_fold',ii,'.vvp',sep=''))
             system(paste('mv Model.yht ','ASReml/Model_rep',i,'_fold',ii,'.vht',sep=''))
-            system(paste('mv Model.pvc ','ASReml/Model_rep',i,'_fold',ii,'.pvc',sep=''))                
+            system(paste('mv Model.pvc ','ASReml/Model_rep',i,'_fold',ii,'.pvc',sep=''))
         }
 
         # for windows
@@ -344,7 +348,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
             shell(paste('move Model.sln ','ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''),wait=TRUE,translate=TRUE)
             shell(paste('move Model.vvp ','ASReml/Model_rep',i,'_fold',ii,'.vvp',sep=''),wait=TRUE,translate=TRUE)
             shell(paste('move Model.yht ','ASReml/Model_rep',i,'_fold',ii,'.vht',sep=''),wait=TRUE,translate=TRUE)
-            shell(paste('move Model.pvc ','ASReml/Model_rep',i,'_fold',ii,'.pvc',sep=''),wait=TRUE,translate=TRUE)              
+            shell(paste('move Model.pvc ','ASReml/Model_rep',i,'_fold',ii,'.pvc',sep=''),wait=TRUE,translate=TRUE)
         }
 
         # read in ASReml solutions
@@ -411,7 +415,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       Z2 <- Z[(rownames(Z) %in% samp.ts[,1]),]
       X2 <- X[(rownames(X) %in% samp.ts[,1]),]
       XZ2 <- cbind(X2,Z2)
-      if(length(Z2)==ncol(Z)){ 
+      if(length(Z2)==ncol(Z)){
     XZ2 <- matrix(c(X2,Z2),ncol=(ncol(X)+ncol(Z)))
     rownames(XZ2) <- samp.ts[,1]
       }
@@ -439,11 +443,11 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
       #print(y.dach)
       lm.coeff[ii,i] <- lm1$coefficients[2]
       # Mean squared error
-      mse[ii,i] <- mean((y2-as.numeric(y.dach))^2) 
+      mse[ii,i] <- mean((y2-as.numeric(y.dach))^2)
       # save IDs of TS
       id.TS[[ii]] <- as.character(unique(samp.ts[,1]))
       names(id.TS)[[ii]] <- paste("fold",ii,sep="")
-      
+
     }  # end loop for k-folds
 
     y.TS <- y.TS[order(rownames(y.TS)),]
@@ -459,14 +463,14 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     TS10 <- y.TS[order(-y.TS)]
     n10 <- round(0.1 * length(y.TS))
     TS10sel <- TS10[1:n10 ]
-    if(ncol(y)>2){ 
+    if(ncol(y)>2){
     rownames(y) <- paste(rownames(Z),colnames(X),sep="_")
     m10[i,1] <- mean(y[rownames(y) %in% names(TS10sel), "TRAIT"])
     }else{
     m10[i,1] <- mean(y[y$ID %in% names(TS10sel), "TRAIT"])
     }
     }  # end loop for replication
-    
+
     # return object
     if(VC.est=="commit") est.method <- "committed" else est.method <- paste("reestimated with ",VC.est,sep="")
     obj <- list(n.SNP=ncol(gpData$geno), n.TS=n.TS,n.DS=n.DS,id.TS=id.TS2,bu=bu3,y.TS=y.TS2,PredAbi=COR2,rankCor=rCOR2,bias=lm.coeff,k=k, Rep=Rep, sampling=sampling,Seed=Seed, rep.seed=seed2,nr.ranEff = ncol(Z),VC.est.method=est.method,m10=m10,mse=mse)

@@ -7,7 +7,8 @@ Plot neighbour linkage disequilibrium
 A function to visualize Linkage Disequilibrium estimates between adjacent markers.
 }
 \usage{
-plotNeighbourLD(LD, gpData, dense=FALSE, nMarker = TRUE, centr=NULL, file=NULL, fileFormat="pdf", ...)
+plotNeighbourLD(LD, gpData, dense=FALSE, nMarker = TRUE, 
+                centr=NULL, file=NULL, fileFormat="pdf", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

@@ -1,17 +1,17 @@
-kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),DH=NULL){
+kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),DH=NULL, maf = NULL){
 
     ret <- match.arg(ret,choices=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),several.ok = FALSE)
 
     # (1) expected relatedness
-    
+
     if (ret %in% c("add","kin","dom","gam")){
 
     # check for 'gpData'
     if(any(class(gpData)=="gpData")){
       if (is.null(gpData$pedigree)) stop("no pedigree found")
-      else ped <- gpData$pedigree 
-    }  
-    
+      else ped <- gpData$pedigree
+    }
+
     # number of ids
     n <- nrow(ped)
     if(is.null(DH)) DH <- rep(0,n)
@@ -89,7 +89,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
       } # end of loop over individuals
 
       #diag(D) <- 1 - (diag(A)-1)
-      
+
     }  # end of if
 
     # set return matrices
@@ -97,17 +97,18 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
     if(ret == "dom") kmat <- D
     if(ret == "kin") kmat <- A/2
     if(ret == "gam") kmat <- G
-    
+
     }
-    
+
     # (2) realized relatedness
-    
+
     if (ret == "realized"){ # former method vanRaden
-    
+
         # extract information from arguments
           if(any(class(gpData)=="gpData")){
-             if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'") 
+             if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
              marker <- gpData$geno
+             if(!is.null(maf) & length(maf)!=ncol(gpData$geno))  stop("minor allele frequency not provided for all markers")
           }
            else stop("object is not of class 'gpData'")
 
@@ -115,25 +116,29 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
     M <- marker
     n <- nrow(M)
     p <- ncol(M)
-    
-    # 2* minor allele frequency as expectation
-    maf <- colMeans(M,na.rm=TRUE)
+
+    # use user-supplied values for maf
+    # or, otherwise 2* minor allele frequency as expectation
+    if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
+
     P <- matrix(rep(maf,each=n),ncol=p)
-    
+
     # compute realized relationship matrix G
     Z <- M - P
     Zq <- tcrossprod(Z)
     U <- Zq/(2*sum(maf/2*(1-maf/2)))
-    
+
     kmat <- U
+    attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
 
     if (ret == "realizedAB"){ # based an Astle & Balding (2009)
-    
+
         # extract information from arguments
           if(any(class(gpData)=="gpData")){
-             if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'") 
+             if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
              marker <- gpData$geno
+             if(!is.null(maf) & length(maf)!=ncol(gpData$geno))     stop("minor allele frequency not provided for all markers")
           }
            else stop("object is not of class 'gpData'")
 
@@ -141,9 +146,11 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         M <- marker
         n <- nrow(M)
         p <- ncol(M)
-    
-        # 2* minor allele frequency as expectation
-        maf <- colMeans(M,na.rm=TRUE)
+        
+        # use user-supplied values for maf
+        # or, otherwise 2* minor allele frequency as expectation
+        if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
+
         pq2 <- 2*maf/2*(1-maf/2)
         # compute realized relationship matrix U
         Z <- sweep(M,2,maf)
@@ -152,25 +159,26 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         }
         U <- (Z %*% t(Z))/(p)
         kmat <- U
+        attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
 
     if (ret %in% c("sm","sm-smin")){      # simple matchin coefficient (only for homozygous inbreed lines)
-              
+
           # extract information from arguments
           if(any(class(gpData)=="gpData")){
              if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
-             if(any(gpData$geno == 1)) stop("simple matching coefficient is only for homozygous inbred lines")  
+             if(any(gpData$geno == 1)) stop("simple matching coefficient is only for homozygous inbred lines")
              marker <- gpData$geno
           }
           else stop("object is not of class 'gpData'")
-            
+
           # code marker to -1/0/1 from 0,1,2
           marker <- marker - (max(marker,na.rm=TRUE)-1)
           m <- ncol(marker)
-          
+
           # rogers distance
           d <- 1- (tcrossprod(marker) + m)/(2*m)
-          
+
           #  simple matching coefficient
           if(ret=="sm-smin"){
             s <- 1-d
@@ -178,11 +186,12 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
             f <- (s-smin)/(1-smin)
           }
           else f <- 1-d
-          
+
           kmat <- 2*f
-          
+          attr(kmat, "SNPs") <- colnames(gpData$geno)
+
     }
-    
+
 
     class(kmat) <- "relationshipMatrix"
     return(kmat)

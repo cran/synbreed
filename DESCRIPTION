@@ -1,25 +1,13 @@
 Package: synbreed
 Type: Package
 Title: Framework for the analysis of genomic prediction data using R
-Version: 0.9-5
-Date: 2013-03-15
-Author: Valentin Wimmer, Theresa Albrecht, Hans-Juergen Auinger,
-        Chris-Carolin Schoen with contributions by Larry Schaeffer,
-        Malena Erbe, Ulrike Ober and Christian Reimer
-Depends: R (>= 2.14), lattice, igraph0, MASS, LDheatmap, qtl, doBy,
-        BLR, regress (>= 1.3-8), abind, synbreedData (>= 1.3)
+Version: 0.9-7
+Date: 2013-08-26
+Author: Valentin Wimmer, Theresa Albrecht, Hans-Juergen Auinger, Chris-Carolin Schoen with contributions by Larry Schaeffer, Malena Erbe, Ulrike Ober, Christian Reimer, Yvonne Badke and Peter VandeHaar
+Depends: R (>= 2.14), doBy, BLR, regress (>= 1.3-8), abind
+Imports: lattice, igraph, MASS, LDheatmap, qtl, synbreedData (>= 1.3)
 Maintainer: Valentin Wimmer <Valentin.Wimmer@tum.de>
-Description: The package was developed within the Synbreed project for
-        synergistic plant and animal breeding (www.synbreed.tum.de). It
-        contains a collection of functions required for genomic
-        prediction in both plant and animal breeding. This covers data
-        processing, data visualization and analysis. All functions are
-        embedded within the framework of a single, unified data object.
-        The implementation is flexible with respect to a wide range of
-        data formats. This research was funded by the German Federal
-        Ministry of Education and Research (BMBF) within the
-        AgroClustEr Synbreed - Synergistic plant and animal breeding
-        (FKZ 0315528A).
+Description: The package was developed within the Synbreed project for synergistic plant and animal breeding (www.synbreed.tum.de). It contains a collection of functions required for genomic prediction in both plant and animal breeding. This covers data processing, data visualization and analysis. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats. This research was funded by the German Federal Ministry of Education and Research (BMBF) within the AgroClustEr Synbreed - Synergistic plant and animal breeding (FKZ 0315528A).
 URL: http://synbreed.r-forge.r-project.org/
 License: GPL-2
 LazyLoad: yes
@@ -27,8 +15,8 @@ LazyData: no
 ZipData: no
 Repository: CRAN
 Repository/R-Forge/Project: synbreed
-Repository/R-Forge/Revision: 458
-Repository/R-Forge/DateTimeStamp: 2013-03-15 05:18:51
-Date/Publication: 2013-03-15 10:18:11
-Packaged: 2013-03-15 07:17:49 UTC; rforge
+Repository/R-Forge/Revision: 487
+Repository/R-Forge/DateTimeStamp: 2013-08-26 07:47:15
+Date/Publication: 2013-08-27 08:05:14
+Packaged: 2013-08-26 10:19:59 UTC; rforge
 NeedsCompilation: no

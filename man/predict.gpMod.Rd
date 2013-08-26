@@ -15,7 +15,7 @@ to predict the genetic performance for e.g. unphenotyped individuals using an ob
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{
-object of class \code{gpMod} which is the model used for the prediction.
+object of class \code{gpMod} which is the model used for the prediction. If the model includes a \code{relationshipMatrix}, this must include both the individuals in the training data used for fitting \code{gpMod} and those which sould be predicted in \code{newdata} (see example below).
 }
   \item{newdata}{
 for \code{model="BL"} and \code{"BRR"} an object of class \code{gpData} with the marker data of 
@@ -63,6 +63,7 @@ A <- kin(gp,ret="add")
 y <- c(132,147,156,172)
 names(y) <- paste(1:4)
 mod1 <- list(fit=list(sigma=c(1,1)),kin=A,model="BLUP",y=y,m=NULL)
+# matrix A included all individuals (including those which should be predicted)
 class(mod1) <- "gpMod"
 predict(mod1,c("5","6"))
 
