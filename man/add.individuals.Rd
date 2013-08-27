@@ -47,6 +47,7 @@ Valentin Wimmer
 }
 \examples{
 # add one new DH line to maize data
+library(synbreedData)
 data(maize)
 newDHpheno <- data.frame(Trait=1000,row.names="newDH")
 # simulating genotypic data

@@ -1,7 +1,7 @@
 # coding genotypic data
 
 codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle","beagleAfterFamily","fix"),replace.value=NULL,
-                     maf=NULL,nmiss=NULL,label.heter="AB",keep.identical=TRUE,verbose=FALSE,minFam=5,showBeagleOutput=FALSE,tester=NULL,print.report=FALSE){
+                     maf=NULL,nmiss=NULL,label.heter="AB",reference.allele="minor",keep.identical=TRUE,verbose=FALSE,minFam=5,showBeagleOutput=FALSE,tester=NULL,print.report=FALSE){
 
   #============================================================
   # read information from arguments
@@ -37,6 +37,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   #  catch errors
   if(class(res)!= "data.frame" & class(res) != "matrix") stop("wrong data format")
   if (any(colMeans(is.na(res))==1)) warning("markers with only missing values in data")
+  if(length(reference.allele)>1 & length(reference.allele)!=ncol(res)) stop("'reference allele' should be of length 1 or match the number of markers")
+  if(class(reference.allele) != "character") stop("'reference allele' should be of class character")
 
   # number of genotypes
   n <- nrow(res)
@@ -48,7 +50,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   # tester control
   if(!is.null(tester)){
     if(length(tester)>1) stop("Only one tester is allowed for this function\n")
-    if(!tester %in% rnames) stop("Tester has no genotype in your gpData-object\n")
+    if(!tester %in% rnames) stop("Tester has no genotype in the gpData-object\n")
   }
 
   # elements from control list
@@ -64,6 +66,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
     }
   }
 
+  # use same reference allele for all markers if not specified differently
+  if(reference.allele[1]!="minor" & length(reference.allele)==1)     reference.allele <- rep(reference.allele,ncol(res))
 
 
   #============================================================
@@ -74,6 +78,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
     if(nmiss<0 | nmiss>1) stop("'nmiss' must be in [0,1]")
     which.miss <- apply(is.na(res),2,mean,na.rm=TRUE)<=nmiss
     res <- res[,which.miss]
+    if(reference.allele!="minor")  reference.allele <- reference.allele[which.miss]
     if (verbose) cat("step 1  :",sum(!which.miss),"marker(s) removed with >",nmiss*100,"% missing values \n")
     cnames <- cnames[which.miss]
     # update map
@@ -88,6 +93,9 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   #============================================================
 
   if (verbose) cat("step 2  : Recoding alleles \n")
+  
+  if(reference.allele[1]=="minor"){
+  
     # identify heterozygous genotypes
     if(!is.null(label.heter)){
       if (is.character(label.heter)) {
@@ -124,9 +132,39 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
 
     major <- unlist(sapply(alleles,major.allele))
     minor <- unlist(sapply(alleles,minor.allele))
-
     names(major) <- names(minor) <- cnames
+   
   }
+  }
+  
+  
+  else{
+     count.ref.alleles <- function(x,ref){
+   	    sum(x==ref)		
+      }
+
+    recode.by.ref.alleles <- function(x){
+	     ref <- x[1]
+	     x <- x[-1]
+	     x2 <- ifelse(!is.na(x),strsplit(x,split=""),NA) # split genotype into both alleles
+	     nr.ref.alleles <- unlist(lapply(x2,count.ref.alleles,ref))
+	     return(nr.ref.alleles)
+    } 
+    res_ref <- rbind(reference.allele,res)
+    
+    get.nonref.allele <- function(x){ 
+      xx <- unlist(strsplit(x[-1],split=""))
+      unique(xx)[unique(xx) != x[1] & !is.na(unique(xx))]
+    }
+    res <- apply(res_ref,2,recode.by.ref.alleles)
+    
+    if(print.report){
+      major <- reference.allele
+      minor <-  apply(res_ref,2,get.nonref.allele)
+    }
+  }
+  
+ 
 
   #============================================================
   # step 2a  - Discarding markers for which the tester is not homozygous or values missing (optional, argument tester = "xxx")
@@ -145,6 +183,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
     if(!is.null(gpData$map)) gpData$map <- gpData$map[which.miss,]
   }
 
+
+  if(reference.allele[1]=="minor"){
   # function to recode alleles within one locus : 0 = major, 2 = minor
   codeNumeric <- function(x){
     # names of alleles ordered by allele frequency
@@ -162,6 +202,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   # set heterozygous genotypes as 1
   res[res %in% label.heter] <- 1
   res <- matrix(as.numeric(res),nrow=n)
+  }
 
   #============================================================
   # step 2b  - Discarding markers for which the tester has the minor allele

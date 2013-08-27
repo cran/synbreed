@@ -13,7 +13,7 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
       else stop("not supported file format choosen!")
     }
 
-    if (class(map) == "gpData"){
+    if (is(map, "gpData")){
        map.unit <- map$info$map.unit
        map <- map$map
     } else map.unit <- "unit"
@@ -21,11 +21,12 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
     
     chr <- unique(map$chr)
     chr <- chr[!is.na(chr)]
-    if(class(map$chr) == "factor") bord <- "transparent" else bord <- NULL
+    if(is(map$chr, "factor")) bord <- "transparent" else bord <- NULL
     map <- map[!is.na(map$chr), ]
+    if(is(map$chr, 'character')) map$chr <- as.factor(map$chr)
 
     # centromere positions of maize
-    if(!is.null(centr)) if(centr == "maize") centr <- c(133,90,95,104.6,105.5,50,55.3,46.5,68.8,59.9)
+    if(!is.null(centr)) if(centr == "maize") centr <- c(134.7,93.8,100.2,105.7,105.75,49.8,58.55,50.2,72.55,51.25)
 
     # norm pos
     if (!is.null(centr)) map$pos <- map$pos - centr[map$chr]

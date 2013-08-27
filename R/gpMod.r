@@ -14,7 +14,7 @@
 
 gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait=1,repl=NULL,markerEffects=FALSE,fixed=NULL,random=NULL,...){
 
-  ASReml <- "package:asreml" %in% search()
+  #ASReml <- "package:asreml" %in% search()
   ans <- list()
   model <- match.arg(model)
   m <- NULL
@@ -60,33 +60,33 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
     kinNew <- kin[unique(df.trait$ID), unique(df.trait$ID)]
     kinTS <- kin[df.trait$ID, df.trait$ID]# expand the matrix to what is needed
     if(model == "BLUP"){
-      if(!ASReml){
+      #if(!ASReml){
         res <- regress(as.formula(paste(yName, paste(fixed, collapse=" "))), Vformula=as.formula(paste(paste(random, collapse=" "), "kinTS")),data=df.trait, identity=TRUE, tol=1e-8,...)
         us <- BLUP(res)$Mean
         genVal <- us[grep("kinTS", names(us))]
         genVal <- genVal[!duplicated(names(genVal))]
         names(genVal) <-  unlist(strsplit(names(genVal), "kinTS."))[(1:length(genVal))*2]
-      } else {
-        kinTS <- kinNew[dimnames(gpData$pheno)[[1]], dimnames(gpData$pheno)[[1]]]
-        covM.I <- try(solve(kinTS),TRUE)
+      #} else {
+      #  kinTS <- kinNew[dimnames(gpData$pheno)[[1]], dimnames(gpData$pheno)[[1]]]
+      #  covM.I <- try(solve(kinTS),TRUE)
         # adding constant to diagonal, if covM is singular
-        if(class(covM.I)=="try-error"){
-          warning("Covariance matrix is computationally singular: constant 1e-6 is added to the diagonal elements of the covariance matrix")
-          covM.I <- solve(kinTS + diag(1e-6,ncol(kinTS)))
-        }
+      #  if(class(covM.I)=="try-error"){
+      #    warning("Covariance matrix is computationally singular: constant 1e-6 is added to the diagonal elements of the covariance matrix")
+      #    covM.I <- solve(kinTS + diag(1e-6,ncol(kinTS)))
+       # }
         # print warning in case of numerical problems
-        if(any(covM.I>1e8)) warning("Large >1e8 entries in the inverse covariance matrix")
-        kinGinv <- write.relationshipMatrix(covM.I,file=NULL,type="none",sorting="ASReml",digits=10)
-        attr(kinGinv, "rowNames") <- rownames(kinTS)
+       # if(any(covM.I>1e8)) warning("Large >1e8 entries in the inverse covariance matrix")
+       # kinGinv <- write.relationshipMatrix(covM.I,file=NULL,type="none",sorting="ASReml",digits=10)
+       # attr(kinGinv, "rowNames") <- rownames(kinTS)
 
-        if("ginverse" %in% names(list(...)))
-          asrObj <- asreml(as.formula(paste(yName, paste(fixed, collapse=""))), random=as.formula(paste(random, "giv(ID, var=TRUE)")), ginverse=c(list(ID=kinGinv), ginverse), data=df.trait)
-        else
-          asrObj <- asreml(as.formula(paste(yName, paste(fixed, collapse=""))), random=as.formula(paste(random, "giv(ID, var=TRUE)")), ginverse=list(ID=kinGinv), data=df.trait)
+       # if("ginverse" %in% names(list(...)))
+        #  asrObj <- asreml(as.formula(paste(yName, paste(fixed, collapse=""))), random=as.formula(paste(random, "giv(ID, var=TRUE)")), ginverse=c(list(ID=kinGinv), ginverse), data=df.trait)
+        #else
+        #  asrObj <- asreml(as.formula(paste(yName, paste(fixed, collapse=""))), random=as.formula(paste(random, "giv(ID, var=TRUE)")), ginverse=list(ID=kinGinv), data=df.trait)
 
-        genVal <-  asrObj$coefficients$random[substr(names(asrObj$coefficients$random), 1, 8) == "giv(ID)_"]
-        names(genVal) <- substr(names(genVal), 9, nchar(names(genVal)))
-      }
+        #genVal <-  asrObj$coefficients$random[substr(names(asrObj$coefficients$random), 1, 8) == "giv(ID)_"]
+        #names(genVal) <- substr(names(genVal), 9, nchar(names(genVal)))
+      #}
       # genVal <- NULL
       if(markerEffects){
         m <- as.numeric(t(gpData$geno[rownames(kinNew), ]) %*% ginv(kinNew) %*% genVal[rownames(kinNew)])
@@ -105,7 +105,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
     }
 
     if(model=="BL"){
-      if(random != "~ ") stop("In the method BL random terms are not supported!")
+      if(random != " ~ ") stop("Random terms are not supported in model 'BL'!")
       if(dim(gpData$pheno)[3] > 1) stop("This method is not developed for a one-stage analysis yet. \nA phenotypic analysis have to be done fist.")
       X <- gpData$geno[rownames(gpData$geno) %in% df.trait$ID,]
       y <- df.trait[df.trait$ID %in% rownames(gpData$geno), yName]
@@ -133,7 +133,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
       }
     }
     if(model=="BRR"){
-      if(random != "~ ") stop("In the method BL random terms are not supported!")
+      if(random != " ~ ") stop("Random terms are not supported in model 'BRR'!")
       if(dim(gpData$pheno)[3] > 1) stop("This method is not developed for a one-stage analysis yet. \nA phenotypic analysis has to be done fist.")
       X <-  gpData$geno[rownames(gpData$geno) %in% df.trait$ID,]
       y <- df.trait[df.trait$ID %in% rownames(gpData$geno), yName]

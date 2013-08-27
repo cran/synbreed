@@ -5,65 +5,59 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   # start with some checks on data
   # geno as matrix but not data.frame (storage) 
   if(!is.null(geno)){
-    if(any(duplicated(rownames(geno)))) 
-      stop(paste("In", substitute(geno), " are duplicated names of genotypes!"))
-     if(class(geno) == "data.frame"){
-        geno <- matrix(unlist(geno),nrow=nrow(geno),ncol=ncol(geno),dimnames=dimnames(geno))
-        #if(any(duplicated(geno,MARGIN=1))) warning("individuals with dublicated genotypes")
-     }
+    if(is.data.frame(geno)){
+      geno <- as.matrix(geno)
+      #if(any(duplicated(geno,MARGIN=1))) warning("individuals with duplicated genotypes")
+    }
+    if(!is.matrix(geno)) stop("geno must be a matrix or data.frame, not a ", class(geno))
+    if(anyDuplicated(rownames(geno)))
+      stop(paste("In", substitute(geno), " are duplicated names of genotypes in rownames!"))
+    if(is.null(rownames(geno)) && is.null(pheno)) stop('rownames(geno) cannot be NULL unless a pheno of the same length is supplied')
+    if(is.null(colnames(geno)) && is.null(map)) warning('colnames(geno) should not be NULL unless a map of the same length is supplied')
   }
-  # test if positions in map are numeric
-  if(!is.null(map$pos)) 
+
+  if(!is.null(map)){
+    if(!is.data.frame(map)) stop('map must be a data.frame, not a ', class(map))
+    # as a data.frame, map already has rownames
+    if(!all(c("chr","pos") %in% colnames(map))) stop("colnames(map) must include 'chr' and 'pos'")
+    # test if positions in map are numeric
     if(!is.numeric(map$pos)) stop("Position informations have to be numeric values!")
 
- # test if chr in map is numeric or character
-    if(!is.null(map$chr))    if(!(is.numeric(map$chr)|is.character(map$chr))) warning("Chromosome information should be numeric or character")
-
+    # test if chr in map is numeric or character
+    if(!(is.numeric(map$chr)|is.character(map$chr)))
+      warning(paste("Chromosome information (in map$chr) should be numeric or character, not",class(map$chr)))
+  }
 
   # match geno and map
   if(!is.null(geno) & !is.null(map)){
-    if(ncol(geno) != nrow(map)){  # different subsets of markers in geno and map
-       if(is.null(colnames(geno)) & is.null(rownames(map))) stop("no marker names found in 'map' or 'geno'")
-       else{ 
-        # fill in gaps in map
-        warning("not all markers in 'geno' mapped in 'map', gaps filled with 'NA' \n")
-        map <- data.frame(chr=map$chr[match(colnames(geno),rownames(map))],pos=map$pos[match(colnames(geno),rownames(map))],row.names=colnames(geno))
-       }
+    if(!all(colnames(geno) %in% rownames(map))) {
+      warning("not all markers in 'geno' mapped in 'map'. gaps filled with 'NA' \n")
     }
-    else{  # same subsets of markers in geno and map
-      # missing colnames in geno
-      if(is.null(colnames(geno))){  # no marker names in geno
-        if (is.null(map)) stop("missing rownames in 'geno'")
-        if(!is.null(rownames(map))){
-          colnames(geno) <- rownames(map)
-          warning("missing colnames in 'geno': assuming to be identical as rownames in 'map' \n")
-        }
-        else{ # default marker names
-          warning("no marker names provide in 'geno' or 'map', using default names M1, M2, ... \n")
-          colnames(geno) <- rownames(map) <- paste("M",1:ncol(geno),sep="")
-        }
-      }
-      else{  # marker names in geno
-      # missing rownames in map
-         if(is.null(rownames(map))){
-           rownames(map) <- colnames(geno)
-           warning("missing rownames in 'map': assuming to be identical as colnames in 'geno' \n")  
-         }
-        # if(is.null(rownames(map)) & is.null(colnames(geno))){
-        #  warning("missing marker names, setting default names M1, M2, ... ")
-        #  colnames(geno) <- rownames(map) <- paste("M",1:ncol(geno),sep="")
-        #} 
-      }
+    if(ncol(geno) == nrow(map) && is.null(colnames(geno))){
+      # assuming same markers in geno and map
+      warning("missing colnames in 'geno': assuming to be identical as rownames in 'map' because of identical length \n")
+      colnames(geno) <- rownames(map)
+    }else{
+      if(!identical(colnames(geno), rownames(map)))
+        # markers must be reordered
+        map <- data.frame(chr=map$chr[match(colnames(geno),rownames(map))],
+                          pos=map$pos[match(colnames(geno),rownames(map))],
+                          row.names=colnames(geno))
     }
   }
+
   phenoCovars <- NULL
   attrModCovars <- NULL
   if(!is.null(pheno)){
+    if(2!=length(dim(pheno))) stop('pheno must be 2-dimensional, not ', length(dim(pheno)), "-dimensional")
     classList <- unlist(lapply(pheno, class))
     if(!all((classList[!names(classList) %in% repeated & !names(classList) %in% modCovar])[-1] %in% c("numeric", "integer"))) stop("Trait values have to be numeric!")
     # repeated measures? Use rownames of pheno as identifier for genotypes
     if(is.null(repeated)){
+      if(is.null(rownames(pheno))) stop('rownames(pheno) cannot be null when not using repeated measures!')
+      if(anyDuplicated(rownames(pheno))) warning("rownames in pheno should be unique when not using repeated measures!")
       add <- 10^ceiling(log10(nrow(pheno)))
+      # if the rownames are numbers, then temporarily add a big number to allow alphabetical sorting.
       if(all(rownames(pheno) %in% 1:nrow(pheno))) rownames(pheno) <- add + as.numeric(rownames(pheno)) else add <- NULL
       if(dim(pheno)[2] ==1){# only a vector of traits
         phenoNames <- dimnames(pheno)
@@ -71,8 +65,9 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
         dimnames(arrPheno) <- list(phenoNames[[1]][order(phenoNames[[1]])], phenoNames[[2]], "1")
       } else {# more than one trait, still unreplicated
         pheno <- pheno[order(rownames(pheno)), ]
-        arrPheno <- array(as.matrix(pheno[, !(colnames(pheno) %in% modCovar)]), dim=c(dim(pheno[, !(colnames(pheno) %in% modCovar)]), 1))
-        dimnames(arrPheno) <- list(rownames(pheno), colnames(pheno)[!(colnames(pheno) %in% modCovar)], "1")
+        pheno.not.modCovar <- pheno[, !(colnames(pheno) %in% modCovar)]
+        arrPheno <- array(as.matrix(pheno.not.modCovar), dim=c(dim(pheno.not.modCovar), 1))
+        dimnames(arrPheno) <- list(rownames(pheno), colnames(pheno.not.modCovar), "1")
       }
       if(!is.null(add)) dimnames(arrPheno)[[1]] <- as.numeric(dimnames(arrPheno)[[1]]) - add
       if(!is.null(modCovar)){
@@ -81,7 +76,7 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
         for(i in colnames(pheno)[colnames(pheno) %in% modCovar])
           arrModCovars[, i, 1] <- pheno[, i]
       }
-    } else {# a vector with replication idetifier is applied. The fist column is the identifier for genotypes
+    } else {# a vector with replication identifier is applied. The first column is the identifier for genotypes
       dim3 <- data.frame(unique(pheno[, repeated]))
       colnames(dim3) <- repeated
       dim3 <- orderBy(as.formula(paste("~", paste(repeated, collapse = " + "))), data = dim3)
@@ -107,43 +102,40 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
       phenoCovars <- arrModCovars
       attrModCovars <- classList[dimnames(arrModCovars)[[2]]]
       for(i in names(attrModCovars)){
-        if(attrModCovars[i] == "numeric")
-          attrModCovars[ i] <- "numeric"
-        else
+        if(attrModCovars[i] != "numeric")
           attrModCovars[ i] <- "factor"
       }
     }
     pheno <- arrPheno
     rm(arrPheno)
   } 
-  # match geno and pheno gpWheat1$pheno[1:5,]
+
+  # match geno and pheno
   if(!is.null(geno) & !is.null(pheno)){
     if(is.null(dimnames(pheno)[[1]]) | is.null(rownames(geno))){
       if(dim(pheno)[1] == nrow(geno)){
-        warning("assuming identical order of genotypes in 'pheno' and 'geno' \nControll the Output! There is no warranty of correctness!\n")  
+        warning("assuming identical order of genotypes in 'pheno' and 'geno' because of identical length.\nControll the Output! There is no warranty of correctness!\n")  
         if(is.null(dimnames(pheno)[[1]])) dimnames(pheno)[[1]] <- rownames(geno)
         else rownames(geno) <- dimnames(pheno)[[1]]
-        if(is.null(dimnames(pheno)[[1]]) & is.null(rownames(geno))) dimnames(pheno)[[1]] <- rownames(geno) <- paste("ID",10^ceiling(log10(nrow(geno)))+1:nrow(geno),sep="")
+        if(is.null(dimnames(pheno)[[1]]) & is.null(rownames(geno))) dimnames(pheno)[[1]] <- rownames(geno) <- paste0("ID",10^ceiling(log10(nrow(geno)))+1:nrow(geno))
+      }else stop("missing rownames (animal IDs) for either 'pheno' or 'geno' and lengths do not agree.")
+      # now geno and pheno have rownames
     }
-    # now geno and pheno have rownames
-    else stop("missing rownames for 'pheno' and 'geno'")
-    }
-   } 
-    # sort geno and pheno by rownames (alphabetical order)
-    if(!is.null(geno)){
-      if(all(row.names(geno) %in% 1:nrow(geno))) 
-        geno <- geno[order(as.numeric(row.names(geno))), ]
-      else
-        geno <- geno[order(row.names(geno)),]
-    }
+  } 
+  # sort geno by rownames (alphabetical order)
+  if(!is.null(geno)){
+    if(all(row.names(geno) %in% 1:nrow(geno))) 
+      geno <- geno[order(as.numeric(row.names(geno))), ]
+    else
+      geno <- geno[order(row.names(geno)),]
+  }
 
   # sort markers by chromosome and position within chromosome
   if(!is.null(map)){
-    if(any(colnames(map) != c("chr","pos"))) stop("colnames of", substitute(map),"must be 'chr' and 'pos'")
     if (reorderMap){
-      # first order in alphabetical oder (important for SNPs with the same position)
       map$sor <- substr(map$chr, nchar(as.character(map$chr)), nchar(as.character(map$chr)))
-      if(!all(!unique(map$sor)[!is.na(unique(map$sor))] %in% 0:9)) map$sor <- 1
+      if(any(unique(map$sor)[!is.na(unique(map$sor))] %in% 0:9)) map$sor <- 1
+      # first order by rownames in alphabetical order (important for SNPs with the same position)
       map <- map[order(as.character(rownames(map))),]
       map <- orderBy(~sor+chr+pos,data=map)
       map$sor <- NULL
@@ -153,9 +145,11 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
     class(map) <- c("GenMap", "data.frame")
   }
 
+  if(!is.null(pedigree)){
+    if(!is(pedigree,"pedigree")) warning(paste("object pedigree should be of class 'pedigree', not class", paste(class(pedigree), collapse=' ')))
+  }
+
   # return object
-  # geno as matrix
-  if(!is.null(geno)) geno <- data.matrix(geno,TRUE)
   obj <- list(covar=NULL,pheno=pheno,geno=geno,map=map,pedigree=pedigree,phenoCovars=phenoCovars)
   
   # add information to element covar
@@ -163,26 +157,29 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   ids <- sort(unique(c(dimnames(obj$pheno)[[1]],rownames(obj$geno),as.character(obj$pedigree$ID)))) 
   if(all(ids %in% 1:length(ids))) ids <- sort(as.numeric(ids))
 
-  if(is.null(covar)) obj$covar <- data.frame(id=ids,stringsAsFactors=FALSE)
-  else obj$covar$id <- ids 
+  obj$covar <- data.frame(id=ids,
+                          phenotyped=ids %in% dimnames(obj$pheno)[[1]],
+                          genotyped=ids %in% rownames(obj$geno),
+                          stringsAsFactors=FALSE)
 
-  obj$covar$phenotyped <- obj$covar$id %in% dimnames(obj$pheno)[[1]]
-  obj$covar$genotyped <- obj$covar$id %in% rownames(obj$geno)
-  
   # family information for genotyped indviduals  
   if(!is.null(family)){
+    if(!is.data.frame(family) & !is.matrix(family)) stop('family must be either a data.frame or a matrix, not a ', class(family))
     colnames(family)[1] <- "family"
     obj$covar <- merge(obj$covar,family,by.x="id",by.y=0,all=TRUE)
-  } else obj$covar$family <- NA
+  } else obj$covar$family <- rep(NA, nrow(obj$covar))
   
   # add covar from arguments, if available 
   if(!is.null(covar)){
-    if(is.null(rownames(covar))) stop("missing rownames in covar")    
+    if(is.matrix(covar)){
+      if(is.null(rownames(covar))) warning("the supplied covar's rownames will default to 1:nrow(covar), which is likely not correct.  Inspect the resulting $covar.")
+      covar <- as.data.frame(covar)
+    }
+    if(!is.data.frame(covar)) stop('covar must be a data.frame, not a ',class(covar))
     # do not use any existing columns named 'genotyped', 'phenotyped' or 'id'
     covar <- covar[!colnames(covar) %in% c("genotyped","phenotyped","id","family")]
     # merge with existing data
-    if(!is.null(covar)) obj$covar <- merge(obj$covar,covar,by.x=1,by.y=0,all=TRUE)
-    else  obj$covar <- obj$covar
+    obj$covar <- merge(obj$covar,covar,by.x=1,by.y=0,all=TRUE)
   }
   
   # further information
@@ -190,10 +187,6 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   obj$info$codeGeno <- FALSE
   obj$info$attrPhenoCovars <- attrModCovars
 
-  # set class of sub-object pedigree
-  if(!is.null(obj$pedigree)){
-    if(!any(class(obj$pedigree)=="pedigree")) warning("object pedigree should be of class 'pedigree'")
-  }
   # return object of class 'gpData'
   class(obj) <- "gpData"
   return(obj)

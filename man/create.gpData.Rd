@@ -62,7 +62,7 @@ Object of class \code{gpData} which is a \code{list} with the following elements
 \item{info}{\code{list} with additional information on data (coding of data, unit in \code{map})}
 }
 \author{
-Valentin Wimmer and Hans-Juergen Auinger
+Valentin Wimmer and Hans-Juergen Auinger with contributions be Peter VandeHaar
 }
 \note{
 In case of missing row names or column names in one item, information is substituted from other elements (assuming the same order of individuals/markers) and a warning specifying the assumptions is returned. Please check them carefully.
