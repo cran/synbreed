@@ -21,7 +21,7 @@ Object of class \code{gpData} that was used in \code{pairwiseLD}
 }
   \item{chr}{
 \code{numeric}. Return value is a plot for each chromosome in \code{chr}.
-}  
+}
   \item{file}{
 Optionally a path to a file where the plot is saved to
 }
@@ -29,21 +29,21 @@ Optionally a path to a file where the plot is saved to
 \code{character}. At the moment two file formats are supported: pdf and png. Default is \code{"pdf"}.
 }
   \item{onefile}{
-\code{logical}. If \code{fileFormat = "pdf"} you can decide, if you like to have all graphics 
-in one file or in multiple files. } 
+\code{logical}. If \code{fileFormat = "pdf"} you can decide, if you like to have all graphics
+in one file or in multiple files. }
   \item{\dots}{
 Further arguments that could be passed to function \code{LDheatmap}
 }
 }
 
 \details{
-Note: If you have an \code{LDmat}-object with more than one chromosome and you like to 
-plot all chromosomes, you need to put an empty line for each chromosome in your script after 
-the LDMap function! } 
+Note: If you have an \code{LDmat}-object with more than one chromosome and you like to
+plot all chromosomes, you need to put an empty line for each chromosome in your script after
+the LDMap function! }
 
 \references{
 Shin JH, Blay S, McNeney B, Graham J (2006). LDheatmap: An R Function for Graphical
-Display of Pairwise Linkage Disequilibria Between Single Nucleotide Polymorphisms. 
+Display of Pairwise Linkage Disequilibria Between Single Nucleotide Polymorphisms.
 Journal of Statistical Software, 16, Code Snippet 3. URL http://stat-db.stat.sfu.ca:
 8080/statgen/research/LDheatmap/.
 }
@@ -55,6 +55,7 @@ Journal of Statistical Software, 16, Code Snippet 3. URL http://stat-db.stat.sfu
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 maizeC <- codeGeno(maize)
 

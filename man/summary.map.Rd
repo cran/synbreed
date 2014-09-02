@@ -35,6 +35,7 @@ Valentin Wimmer
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 summaryGenMap(maize)
 }

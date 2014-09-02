@@ -48,7 +48,9 @@ Valentin Wimmer
 \code{\link{pairwiseLD}}
 }
 \examples{
-\dontrun{write.plink(maize,type="data.frame")}
+\dontrun{
+library(synbreedData)
+write.plink(maize,type="data.frame")}
 }
 
 \keyword{manip}

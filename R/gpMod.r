@@ -163,7 +163,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
 
     y <- df.trait[,yName]
     names(y) <- df.trait[,"ID"]
-    ret <- list(fit=res,model=model,y=y,g=genVal,prediction=prediction, m=m,kin=kin)
+    ret <- list(fit=res,model=model,y=y,g=genVal,prediction=prediction, markerEffects=m,kin=kin)
     class(ret) = "gpMod"
     ans[[i]] <- ret
     names(ans)[length(ans)] <- yName

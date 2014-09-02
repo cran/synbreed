@@ -39,28 +39,28 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         rownames(Z) <- unique(y$ID)
     }
     colnames(Z) <- unique(y$ID)
-    if(!is.null(cov.matrix) & !is.list(cov.matrix)) {
-      if(class(cov.matrix) != "relationshipMatrix") stop(paste(substitute(cov.matrix), "has to be a list!"))
-      else cov.matrix <- list(cov.matrix)
-    } else {
-      if(length(cov.matrix)>1){
-        Z1 <- NULL
-        for (i in 1:length(cov.matrix)){
-          Z1 <- cbind(Z1,Z)
+    if(!is.null(cov.matrix)){
+      if(!is.list(cov.matrix)) {
+        if(class(cov.matrix) != "relationshipMatrix") stop(paste(substitute(cov.matrix), "has to be a list!"))
+        else cov.matrix <- list(cov.matrix)
+      } else {
+        if(length(cov.matrix)>1){
+          Z1 <- NULL
+          for (i in 1:length(cov.matrix)){
+            Z1 <- cbind(Z1,Z)
+          }
+          Z <- Z1
         }
-        Z <- Z1
+      }
+      # checking if IDs are in cov.matrix
+      for( i in 1:length(cov.matrix)){
+        covM <- as.matrix(cov.matrix[[i]])
+        cov.matrix[[i]] <- covM[rownames(covM) %in% dataSet, colnames(covM) %in% dataSet ]
       }
     }
-    # checking if IDs are in cov.matrix
-    if (!is.null(cov.matrix) ){
-        for( i in 1:length(cov.matrix)){
-          covM <- as.matrix(cov.matrix[[i]])
-          cov.matrix[[i]] <- covM[rownames(covM) %in% dataSet, colnames(covM) %in% dataSet ]
-        }
-      }
     # checking covariance matrices, if no covariance is given, Z matrix contains marker genotypes and covariance is an identity matrix
     RR <- FALSE
-    if (is.null(cov.matrix) ){
+    if (is.null(cov.matrix)){
         y.sampGeno <- gpData2data.frame(gpData=gpData, trait=trait, onlyPheno=FALSE, phenoCovars=FALSE)
         Z <- as.matrix(y.sampGeno[, (ncol(y.sampGeno)-ncol(gpData$geno)+1):ncol(y.sampGeno)])
         if(nrow(Z) != length(y$ID)) stop("Dimensions of geno and pheno do not match. Please remove observations with missing phenotypes.")
@@ -139,11 +139,11 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         ID2 <- paste("giv(ID,",1:length(cov.matrix),") ",sep="",collapse="")
          }
          if(!RR){
-        cat(paste("Model \n ID        !A \n TRAIT     !D* \n",ID1,"Pheno.txt !skip 1 !AISING !maxit 11\n!MVINCLUDE \n \nTRAIT  ~ mu !r ",ID2,sep=""),file="Model.as")
+        cat(paste("Model \n ID        !A \n TRAIT     !D* \n",ID1,"Pheno.txt !skip 1 !AISING !maxit 30 !EXTRA 5\n!MVINCLUDE \n \nTRAIT  ~ mu !r ",ID2,sep=""),file="Model.as")
         if (colnames(y)[2]=="repl") cat(paste("Model \n ID        !A \n FIX       !A\n TRAIT      !D* \n",ID1,"Pheno.txt !skip 1 !AISING !maxit 11\n!MVINCLUDE \n \nTRAIT  ~ FIX !r ",ID2,sep=""),file="Model.as")
          }
          else{
-        cat(paste("Model \n ID        !A \n TRAIT     !D* \n M          !G ",ncol(Z)," \nPheno.txt !skip 1 !AISING !maxit 11\n!MVINCLUDE \n \nTRAIT  ~ mu !r M",sep=""),file="Model.as")
+        cat(paste("Model \n ID        !A \n TRAIT     !D* \n M          !G ",ncol(Z)," \nPheno.txt !skip 1 !AISING !maxit 30 !EXTRA 5\n!MVINCLUDE \n \nTRAIT  ~ mu !r M",sep=""),file="Model.as")
         if (colnames(y)[2]=="repl") cat(paste("Model \n ID        !A \n FIX       !A\n TRAIT      !D* \n M          !G ",ncol(Z)," \nPheno.txt !skip 1 !AISING !maxit 11\n!MVINCLUDE \n \nTRAIT  ~ FIX !r M",sep=""),file="Model.as")
          }
          cat("",file="Model.pin")
@@ -154,7 +154,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
     if(sampling=="commit"){
      Rep <- length(names(TS)) # if TS is committed
      k <- length(TS[[1]])
-    } 
+    }
     if(!is.null(Seed)) set.seed(Seed)
     seed2<-round(runif(Rep,1,100000),0)
 
@@ -315,8 +315,8 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
             write.table(y.samp,'Pheno.txt',col.names=TRUE,row.names=FALSE,quote=FALSE,sep='\t')
 
             # ASReml function
-            asreml <- system(paste('asreml -ns10000 Model.as',sep=''),TRUE)
-            system(paste('asreml -p Model.pin',sep='')) # for variance components in an extra file
+            asreml <- system("asreml -ns1000 Model.as",TRUE)
+            system("asreml -p Model.pin") # for variance components in an extra file
 
             system(paste('mv Model.asr ','ASReml/Model_rep',i,'_fold',ii,'.asr',sep=''))
             system(paste('mv Model.sln ','ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''))
@@ -329,8 +329,8 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         if(.Platform$OS.type == "windows"){
 
             # checking directories for ASReml
-            ASTest <- shell(paste("dir /b"),intern=TRUE)
-            if (!any(ASTest %in% "ASReml")) shell(paste("md ASReml"))
+            ASTest <- list.dirs(recursive=FALSE)
+            if (!any(ASTest %in% "./ASReml")) shell(paste("md ASReml"))
 
             # data output for ASReml
             if(RR){
@@ -341,8 +341,8 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
             # data output for ASReml
             write.table(y.samp,'Pheno.txt',col.names=TRUE,row.names=FALSE,quote=FALSE,sep='\t')
             # ASReml function
-            system(paste('ASReml.exe -ns10000 Model.as',sep=''),wait=TRUE,show.output.on.console=FALSE)
-            system(paste('ASReml.exe -p Model.pin',sep=''),wait=TRUE,show.output.on.console=FALSE)
+            shell("ASReml -ns1000 Model.as", wait=TRUE,translate=TRUE)
+            shell("ASReml -p Model.pin", wait=TRUE,translate=TRUE)
 
             shell(paste('move Model.asr ','ASReml/Model_rep',i,'_fold',ii,'.asr',sep=''),wait=TRUE,translate=TRUE)
             shell(paste('move Model.sln ','ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''),wait=TRUE,translate=TRUE)
@@ -352,7 +352,7 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
         }
 
         # read in ASReml solutions
-        asreml.sln<-matrix(scan(paste('ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''),what='character'),ncol=4,byrow=TRUE)
+        asreml.sln <- matrix(scan(paste('ASReml/Model_rep',i,'_fold',ii,'.sln',sep=''),what='character'),ncol=4,byrow=TRUE)
         # solve MME
         bu <-  as.numeric(asreml.sln[,3])
        }

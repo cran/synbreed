@@ -16,10 +16,10 @@ pairwiseLD(gpData, chr = NULL, type = c("data.frame", "matrix"),
 \arguments{
   \item{gpData}{
 object of class \code{gpData} with elements \code{geno} and \code{map}
-}                                 
+}
   \item{chr}{
 \code{numeric} scalar or vector. Return value is a list with pairwise LD of all markers for each chromosome in \code{chr}.
-}                                      
+}
   \item{type}{
 \code{character}. Specifies the type of return value (see 'Value').
 }
@@ -40,12 +40,12 @@ object of class \code{gpData} with elements \code{geno} and \code{map}
 The function \code{write.plink} is called to prepare the input files and the script for PLINK. The executive PLINK file \code{plink.exe} must be available (e.g. in the working directory or through path variables). The function \code{pairwiseLD} calls PLINK and reads the results. The evaluation is performed separately for every chromosome. The measure for LD is \eqn{r^2}{r2}. This is defined as
 \deqn{D= p_{AB} - p_Ap_B }{D = p(AB) - p(A)*p(B)} and
 \deqn{r^2=\frac{D^2}{p_Ap_Bp_ap_b}}{r2=D2/p(A)p(B)p(a)p(b)}
-where \eqn{p_{AB}}{p(AB)} is defined as the observed frequency of haplotype \eqn{AB}, \eqn{p_A=1-p_a} and \eqn{p_B=1-p_b} the observed frequencies of alleles \eqn{A} and \eqn{B}. 
+where \eqn{p_{AB}}{p(AB)} is defined as the observed frequency of haplotype \eqn{AB}, \eqn{p_A=1-p_a} and \eqn{p_B=1-p_b} the observed frequencies of alleles \eqn{A} and \eqn{B}.
 If the number of markers is high, a threshold for the LD can be used to thin the output. In this case, only pairwise LD above the threshold is reported (argument \code{--ld-window-r2 in PLINK}).
 
 Default PLINK options used
 --no-parents
---no-sex 
+--no-sex
 --no-pheno
 --allow-no-sex
 --ld-window p
@@ -74,6 +74,7 @@ Valentin Wimmer
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 maizeC <- codeGeno(maize)
 maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")

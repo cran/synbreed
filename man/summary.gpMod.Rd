@@ -10,7 +10,7 @@ Summary for class gpMod
 \description{
 S3 \code{summary} method for objects of  class \code{gpMod} }
 \usage{
-\method{summary}{gpMod}(object,...) 
+\method{summary}{gpMod}(object,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -26,6 +26,7 @@ not used
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 maizeC <- codeGeno(maize)
 # marker-based (realized) relationship matrix

@@ -7,7 +7,7 @@ Plot neighbour linkage disequilibrium
 A function to visualize Linkage Disequilibrium estimates between adjacent markers.
 }
 \usage{
-plotNeighbourLD(LD, gpData, dense=FALSE, nMarker = TRUE, 
+plotNeighbourLD(LD, gpData, dense=FALSE, nMarker = TRUE,
                 centr=NULL, file=NULL, fileFormat="pdf", ...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -17,7 +17,7 @@ object of class \code{LDmat}, i.e the output of function \code{pairwiseLD} using
 }
   \item{gpData}{
 object of class \code{gpData} with object \code{map} or a \code{data.frame} with columns 'chr' (specifying the chromosome of the marker) and 'pos' (position of the marker within chromosome measured with genetic or physical distances)
-} 
+}
   \item{dense}{
 \code{logical}. Should density visualization for high-density genetic maps be used?
 }
@@ -39,7 +39,7 @@ further graphical arguments for function \code{plot}
 
 }
 \details{
-The plot is similar to \code{plotGenMap} with the option \code{dense=TRUE}, but here the LD between adjacent markers is plotted along the chromosomes. 
+The plot is similar to \code{plotGenMap} with the option \code{dense=TRUE}, but here the LD between adjacent markers is plotted along the chromosomes.
 }
 \value{
 Plot of neighbour LD along each chromosome. One chromosome is displayed from the first to the last marker.
@@ -54,6 +54,7 @@ Theresa Albrecht and Hans-Juergen Auinger
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 maize2 <-codeGeno(maize)
 LD <- pairwiseLD(maize2,chr=1:10,type="matrix")

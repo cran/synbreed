@@ -9,7 +9,7 @@ Summary for class gpData
 S3 \code{summary} method for objects of class \code{gpData}
 }
 \usage{
-\method{summary}{gpData}(object,...) 
+\method{summary}{gpData}(object,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,7 @@ Valentin Wimmer
 
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 summary(maize)
 }

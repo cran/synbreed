@@ -34,6 +34,7 @@ Valentin Wimmer
 }
 \examples{
   \dontrun{
+  library(synbreed)
   data(maize)
   maizeC <- codeGeno(maize)
   maizeLD <- pairwiseLD(maizeC,chr=1:10,type="data.frame")

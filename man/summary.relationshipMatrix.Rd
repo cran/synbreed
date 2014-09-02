@@ -9,7 +9,7 @@ Summary of relationship matrices
 \code{Summary} method for class ''relationshipMatrix''
 }
 \usage{
-\method{summary}{relationshipMatrix}(object,...) 
+\method{summary}{relationshipMatrix}(object,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +27,7 @@ Valentin Wimmer
 
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 U <- kin(codeGeno(maize),ret="realized")
 summary(U)

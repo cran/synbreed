@@ -5,10 +5,10 @@
 Heatmap for relationship Matrix
 }
 \description{
-Visualization for objects of class \code{relationshipMatrix} using a heatmap of pairwise relatedness coefficients.  
+Visualization for objects of class \code{relationshipMatrix} using a heatmap of pairwise relatedness coefficients.
 }
 \usage{
-\method{plot}{relationshipMatrix}(x, \ldots) 
+\method{plot}{relationshipMatrix}(x, \ldots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,7 +16,7 @@ Visualization for objects of class \code{relationshipMatrix} using a heatmap of 
 Object of class \code{relationshipMatrix}
 }
   \item{\dots}{
-further graphical arguments passed to function \code{levelplot} in package \code{lattice}. To create equal colorkeys for two heatmaps, use \code{at=seq(from,to,length=9)}. 
+further graphical arguments passed to function \code{levelplot} in package \code{lattice}. To create equal colorkeys for two heatmaps, use \code{at=seq(from,to,length=9)}.
 }
 }
 
@@ -33,6 +33,7 @@ plot(A)
 
 # big pedigree
 \dontrun{
+library(synbreedData)
 data(maize)
 K <- kin(maize,ret="kin")
 U <- kin(codeGeno(maize),ret="realized")/2

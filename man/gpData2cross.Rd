@@ -5,7 +5,7 @@
 Conversion between objects of class 'cross' and 'gpData'
 }
 \description{
-Function to convert an object of class \code{gpData} to an object of class \code{cross} (F2 intercross class in the package \code{qtl}) and vice versa. If not done before, function \code{codeGeno} is used for recoding in \code{gpData2cross}. 
+Function to convert an object of class \code{gpData} to an object of class \code{cross} (F2 intercross class in the package \code{qtl}) and vice versa. If not done before, function \code{codeGeno} is used for recoding in \code{gpData2cross}.
 }
 \usage{
 gpData2cross(gpData,...)
@@ -14,7 +14,7 @@ cross2gpData(cross)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{gpData}{
-object of class \code{gpData} with non-empty elements for \code{pheno}, \code{geno} and \code{map} 
+object of class \code{gpData} with non-empty elements for \code{pheno}, \code{geno} and \code{map}
 }
   \item{cross}{
 object of class \code{cross}
@@ -42,6 +42,7 @@ Valentin Wimmer and Hans-Juergen Auinger
 }
 \examples{
 \dontrun{
+library(synbreedData)
 # from gpData to cross
 data(maize)
 maizeC <- codeGeno(maize)
@@ -54,7 +55,7 @@ plot(maize.cross)
 maize.cross <- calc.genoprob(maize.cross, step=2.5)
 result <- scanone(maize.cross, pheno.col=1, method="em")
 # display of LOD curve along the chromosome
-plot(result) 
+plot(result)
 
 
 # from cross to gpData

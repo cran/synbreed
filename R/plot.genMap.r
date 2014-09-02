@@ -3,7 +3,7 @@ plot.GenMap <- function (x, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fil
 }
 plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, file = NULL, fileFormat = "pdf", ...){
     oldPar <- par()
-        
+
     # output in files
     if(!is.null(file)){
       if(substr(file, nchar(file)-nchar(fileFormat)+1, nchar(file)) != fileFormat | nchar(file) < 5)
@@ -13,17 +13,16 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
       else stop("not supported file format choosen!")
     }
 
-    if (is(map, "gpData")){
+    if (class(map) == "gpData"){
        map.unit <- map$info$map.unit
        map <- map$map
     } else map.unit <- "unit"
     class(map) <- "data.frame"
-    
     chr <- unique(map$chr)
     chr <- chr[!is.na(chr)]
-    if(is(map$chr, "factor")) bord <- "transparent" else bord <- NULL
+    if(class(map$chr) == "factor") bord <- "transparent" else bord <- NULL
     map <- map[!is.na(map$chr), ]
-    if(is(map$chr, 'character')) map$chr <- as.factor(map$chr)
+    if(class(map$chr) == 'character') map$chr <- as.factor(map$chr)
 
     # centromere positions of maize
     if(!is.null(centr)) if(centr == "maize") centr <- c(134.7,93.8,100.2,105.7,105.75,49.8,58.55,50.2,72.55,51.25)
@@ -74,15 +73,15 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
         par(mar = c(5, 4, 4, 1) + 0.1)
     }
 
-   # make an empty plot 
+   # make an empty plot
     if(!is.null(centr)) {
         plot(map, type = "n", xaxt = "n", xlim = c(0.5, length(chr) + 0.5), border = bord,
              ylim = c( max(map$pos,na.rm = TRUE) * 1.1, min(map$pos, na.rm = TRUE)),axes=FALSE, ...)
     } else{
         plot(map, type = "n", xaxt = "n", xlim = c(0.5, length(chr) + 0.5), border = bord,
              ylim = c( max(map$pos,na.rm = TRUE) * 1.1, min(map$pos, na.rm = TRUE)), ...)
-    }    
-   # x-axis     
+    }
+   # x-axis
     axis(side = 1, at = seq(along = chr), labels = chr)
    # y-axis
     if(!is.null(centr)){
@@ -118,6 +117,6 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
   # close graphic device
   if(!is.null(file)) dev.off()
 
-  oldPar$cin <- oldPar$cra <- oldPar$csi <- oldPar$cxy <- oldPar$din <- NULL
+  oldPar$cin <- oldPar$cra <- oldPar$csi <- oldPar$cxy <- oldPar$din <- oldPar$page <- NULL
   par(oldPar)
 }

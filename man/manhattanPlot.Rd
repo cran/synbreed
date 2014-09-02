@@ -42,6 +42,7 @@ Valentin Wimmer
 
 \examples{
 \dontrun{
+library(synbreedData)
 data(mice)
 # plot only random noise
 b <- rexp(ncol(mice$geno),3)

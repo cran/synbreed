@@ -33,7 +33,7 @@ object of class \code{relationshipMatrix} (only required for \code{model = "BLUP
 \code{numeric} or \code{character}. A vector with names or numbers of the repeated values of \code{gpData$pheno} to fit the model
 }
   \item{markerEffects}{
-  \code{logical}. 
+  \code{logical}.
  Should marker effects be estimated for a G-BLUP model, i.e. RR-BLUP? In this case, argument \code{kin} is ignored (see Details). Plose note, that in this case also the variance components pertaining to model G-BLUP are reported instead of those from the G-BLUP model (see vignette). If the variance components are committed to \code{crossVal}, it must be guaranteed that there also the RR-BLUP model is used, e.g. no \code{cov.matrix} object should be specified.
 }
   \item{fixed}{
@@ -82,6 +82,7 @@ Valentin Wimmer, Hans-Juergen Auinger and Theresa Albrecht
 }
 \examples{
 \dontrun{
+library(synbreedData)
 data(maize)
 maizeC <- codeGeno(maize)
 

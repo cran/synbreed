@@ -19,12 +19,12 @@ object of class \code{LDdf} which is the output of function \code{pairwiseLD} an
 }
   \item{chr}{
 \code{numeric} scalar or vector. Return value is a plot for each chromosome in \code{chr}. Note: Remember to add in a batch-script one empty line for each chromosome, if you use more than one chromosome!
-}  
+}
   \item{type}{
-Character string to specify the type of plot. Use \code{"p"} for a scatterplot, \code{"bars"} for stacked bars or \code{"nls"} for scatterplot together with nonlinear regression curve according to Hill and Weir (1988). 
+Character string to specify the type of plot. Use \code{"p"} for a scatterplot, \code{"bars"} for stacked bars or \code{"nls"} for scatterplot together with nonlinear regression curve according to Hill and Weir (1988).
 }
   \item{breaks}{
-\code{list} containing breaks for stacked bars (optional, only for \code{type="bars"}). Components are \code{dist} with breaks for distance on x-axis and \code{r2} for breaks on for r2 on y-axis. By default, 5 equal spaced categories for dist and r2 are used.  
+\code{list} containing breaks for stacked bars (optional, only for \code{type="bars"}). Components are \code{dist} with breaks for distance on x-axis and \code{r2} for breaks on for r2 on y-axis. By default, 5 equal spaced categories for dist and r2 are used.
 }
   \item{n}{
 \code{numeric}. Number of observations used to estimate LD. Only required for \code{type="nls"}.
@@ -60,13 +60,14 @@ Hill WG, Weir BS (1988) Variances and covariances of squared linkage disequilibr
 }
 \examples{
 \dontrun{
+library(synbreedData)
 # maize data example
 data(maize)
 maizeC <- codeGeno(maize)
 
 # LD for chr 1
 maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")
-# scatterplot 
+# scatterplot
 LDDist(maizeLD,type="p",pch=19,colD=hsv(alpha=0.1,v=0))
 
 # stacked bars  with default categories

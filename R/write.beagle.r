@@ -4,6 +4,10 @@ write.beagle <- function(gp,wdir=getwd(),prefix){
        geno <- gp$geno
        n <- nrow(geno)
        M <- ncol(geno)
+       if(is.null(n) | is.null(M)){
+         print(str(geno))
+         stop("Wrong genotypic information!")
+       }
 
        # prepare input file input.bgl
        if (any(grep(" ",rownames(geno)))) stop("no blanks allowed in rownames(geno) when running beagle")

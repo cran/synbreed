@@ -146,7 +146,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         M <- marker
         n <- nrow(M)
         p <- ncol(M)
-        
+
         # use user-supplied values for maf
         # or, otherwise 2* minor allele frequency as expectation
         if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
@@ -192,7 +192,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
 
     }
 
-
+    attr(kmat, "type") <- ret
     class(kmat) <- "relationshipMatrix"
     return(kmat)
 }

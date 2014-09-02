@@ -9,10 +9,10 @@ Plot marker map
 A function to visualize low and high-density marker maps.
 }
 \usage{
-\method{plot}{GenMap}(x, dense = FALSE, nMarker = TRUE, bw=1, 
+\method{plot}{GenMap}(x, dense = FALSE, nMarker = TRUE, bw=1,
                       centr=NULL, file=NULL, fileFormat="pdf",...)
 
-plotGenMap(map, dense = FALSE, nMarker = TRUE, bw=1, 
+plotGenMap(map, dense = FALSE, nMarker = TRUE, bw=1,
            centr=NULL, file=NULL, fileFormat="pdf",...)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -22,7 +22,7 @@ object of class \code{GenMap}, i. e. the \code{map} object in a \code{gpData}-ob
 }
   \item{map}{
 object of class \code{gpData} with object \code{map} or a \code{data.frame} with columns 'chr' (specifying the chromosome of the marker) and 'pos' (position of the marker within chromosome measured with genetic or physical distances)
-}                                                                                  
+}
   \item{dense}{
 \code{logical}. Should density visualization for high-density genetic maps be used?
 }
@@ -62,11 +62,12 @@ Valentin Wimmer and Hans-Juergen Auinger
 }
 \examples{
 \dontrun{
+library(synbreedData)
 # low density plot
 data(maize)
 plotGenMap(maize)
 
-# high density plot  
+# high density plot
 data(mice)
 plotGenMap(mice,dense=TRUE,nMarker=FALSE)
 }

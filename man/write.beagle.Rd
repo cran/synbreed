@@ -41,7 +41,7 @@ Valentin Wimmer
 \examples{
 map <- data.frame(chr=c(1,1,1,1,1,2,2,2,2),pos=1:9)
 geno <-  matrix(sample(c(0,1,2,NA),size=10*9,replace=TRUE),nrow=10,ncol=9)
-colnames(geno) <- rownames(map) <- paste("SNP",1:9,sep="") 
+colnames(geno) <- rownames(map) <- paste("SNP",1:9,sep="")
 rownames(geno) <- paste("ID",1:10+100,sep="")
 
 gp <- create.gpData(geno=geno,map=map)

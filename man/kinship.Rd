@@ -3,7 +3,7 @@
 \title{
 Relatedness based on pedigree or marker data
 }
-\description{     
+\description{
 This function implements different measures of relatedness between individuals in an object of class \code{gpData}: (1) Expected relatedness based on pedigree and (2) realized relatedness based on marker data. See 'Details'.  The function uses as first argument an object of class \code{gpData}. An argument \code{ret} controls the type of relatedness coefficient.
 }
 \usage{
@@ -36,8 +36,8 @@ The gametic relationship matrix can be used to construct other types of relation
 where \eqn{(A1,B1)} denotes the element [A1,B1] in the gametic relationship matrix. If \code{ret="kin"}, the kinship matrix is returned which is half of the additive relationship matrix.
 
 If \code{ret="dom"}, the dominance relationship matrix is returned. The dominance relationship matrix between individuals A (\eqn{A1,A2}) and B (\eqn{B1,B2}) in case of no inbreeding is given by
-\deqn{\left[(A1,B1) \cdot (A2,B2) + (A1,B2) \cdot (A2,B1)\right],}{[(A1,B1) * (A2,B2) + (A1,B2) * (A2,B1)],} 
-where \eqn{(A1,C1)} denotes the element [A1,C1] in the gametic relationship matrix. 
+\deqn{\left[(A1,B1) \cdot (A2,B2) + (A1,B2) \cdot (A2,B1)\right],}{[(A1,B1) * (A2,B2) + (A1,B2) * (A2,B1)],}
+where \eqn{(A1,C1)} denotes the element [A1,C1] in the gametic relationship matrix.
 
 \bold{Marker based relatedness (return arguments \code{"realized"},\code{"realizedAB"}, \code{"sm"}, and \code{"sm-smin"})}
 
@@ -78,9 +78,9 @@ VII, volume 7213. Univ. of Texas, Austin
 Hayes, B. J., and M. E. Goddard. 2008. Technical note: Prediction of breeding values using marker derived relationship matrices.
 J. Anim. Sci. 86
 
-}     
+}
 \seealso{
-\code{\link{plot.relationshipMatrix}} 
+\code{\link{plot.relationshipMatrix}}
 }
 \examples{
 
@@ -88,6 +88,7 @@ J. Anim. Sci. 86
 # (1) pedigree based relatedness
 #=========================
 \dontrun{
+library(synbreedData)
 data(maize)
 K <- kin(maize,ret="kin")
 plot(K)

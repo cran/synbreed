@@ -12,9 +12,9 @@ Imputation of missing values can be done by random sampling from allele distribu
 \usage{
 codeGeno(gpData,impute=FALSE,impute.type=c("random","family",
          "beagle", "beagleAfterFamily","fix"), replace.value=NULL, maf=NULL,
-         nmiss=NULL, label.heter="AB",reference.allele="minor", keep.identical=TRUE, 
+         nmiss=NULL, label.heter="AB",reference.allele="minor", keep.identical=TRUE,
          verbose=FALSE, minFam=5, showBeagleOutput=FALSE, tester=NULL,
-         print.report=FALSE)
+         print.report=FALSE, check=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,7 +40,7 @@ object of class \code{gpData} with arbitrary coding in element \code{geno}. Miss
 This is either a scalar or vector of characters to identify heterozygous genotypes or a function returning \code{TRUE} if an element of the marker matrix is the heterozygous genotype. Defining a function is useful, if number of unique heterozygous genotypes is large, i.e. if genotypes are coded by alleles. If the heterozygous genotype is coded like "A/T","G/C", ... then \code{label.heter="alleleCoding"} can be used. Note that heterozygous values must be identified unambiguously by \code{label.heter}. Use \code{label.heter=NULL} if there are only homozygous genotypes, i.e. in DH lines, to speed up computation and restrict imputation to values 0 and 2.
 }
   \item{reference.allele}{
-Define the reference allele which is used for the coding. Default is \code{"minor"}, i.e. data is coded by the number of copies of the minor allele. Alternatively, \code{reference.allele} can specify a single character defining the reference allele for all markers, or a vector defining marker-specific reference alleles (using the same order as of the markers in \code{gpData}).
+Define the reference allele which is used for the coding. Default is \code{"minor"}, i.e. data is coded by the number of copies of the minor allele. Alternatively, \code{reference.allele} can specify a single character defining the reference allele for all markers, or a vector defining marker-specific reference alleles (using the same order as of the markers in \code{gpData}). In case you have already a gpObject with \code{info$codeGeno == TRUE}, and like only to use higher maf or remove duplicated markers, you can use the option \code{"keep"}, than the coding of the original object is kept.
 }
   \item{keep.identical}{
 \code{logical}. Should duplicated markers be kept? NOTE: From a set of identical markers (with respect to the non-missing alleles) the one with the smallest number of missing values is kept. For those with an identical number of missing values, the first one is kept and all others are removed.
@@ -60,6 +60,9 @@ For \code{impute.type} \code{family} and \code{beagleAfterFamily}, each family s
   \item{print.report}{
  \code{logical}. Should a file \code{SNPreport.txt} be generated containing further information on SNPs. This includes SNP name, original coding of major and minor allele, MAF and number of imputed values.
  }
+\item{check}{
+ This option has as default \code{FALSE}. If something seems to be wrong with the coding, with the option \code{check=TRUE} the function tries to catch the error.
+ }
 }
 \details{
 Coding of genotypic data is done in the following order (depending on choice of arguments; not all steps are performed):
@@ -78,8 +81,13 @@ Imputing is done according to \code{impute.type}
 This option is only suitable for homozygous individuals (such as doubled-haploid lines) structured in families.
 Suppose an observation \eqn{i} is missing (NA) for a marker \eqn{j} in family \eqn{k}. If marker \eqn{j} is fixed in family \eqn{k}, the imputed value will be the fixed allele. If marker \eqn{j} is segregating for the population \eqn{k},
 the value is 0 with probability of 0.5 and 2 with probability of 0.5. To use this algorithm, family information has to be stored as variable \code{family} in list element \code{covar} of an object of class \code{gpData}. This column should contain a \code{character} or \code{numeric} to identify family of all genotyped individuals.}
-\item{"beagle"}{ Use Beagle Genetic Analysis Software Package (Browning and Browning 2007; 2009) to
-    infer missing genotypes. This software needs the program gzip. You have to install this program manually, and make the \code{gzip} command generally available, e.g through putting the command to a public directory or add the directory to the public search path. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking
+\item{"beagle"}{To use this option, you have to define the variable \code{beaglePath}, so that the function \code{codeGeno} can find the location of the executable beagle.jar. This has changed from version 0.9 to 0.10 due to the policy of R. In the older versions beagle.jar is included in the folder exec in the synbreed library, so that you can find this executable on CRAN. To make your life easier, you can include in the Rprofile.site file the code \code{beaglePath <- "Path/to/beagle"}.
+
+    With this option the Beagle Genetic Analysis Software Package (Browning and Browning 2007; 2009) to
+    infer missing genotypes is used. This software is a java program, so that you have to install java and make it available at your computer.
+    Further beagle needs the program gzip. You have to install this program manually, and make the \code{gzip} command generally available,
+    e.g through putting the command to a public directory or add the directory to the public search path or environment variable. If
+    you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking
     markers. The beagle executive file \code{beagle.jar} (version 3.3.1) is in the directory \code{exec} of the package.
     Function \code{codeGeno} will create a directory \code{beagle} for Beagle
     input and output files (if it does not exist) and run Beagle with default settings. The information on marker
@@ -150,6 +158,7 @@ gp$geno
 
 # example with heterogeneous stock mice
 \dontrun{
+library(synbreedData)
 data(mice)
 summary(mice)
 # heterozygous values must be labeled  (may run some seconds)

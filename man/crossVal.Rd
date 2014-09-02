@@ -3,13 +3,13 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{Cross validation of different prediction models
 }
-\description{Function for the application of the cross validation procedure on prediction 
-models with fixed and random effects. Covariance matrices must be committed to the function 
+\description{Function for the application of the cross validation procedure on prediction
+models with fixed and random effects. Covariance matrices must be committed to the function
 and variance components can be committed or reestimated with ASReml or the BLR function.
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-crossVal(gpData, trait=1, cov.matrix = NULL,  k = 2, Rep = 1, Seed = NULL, 
+crossVal(gpData, trait=1, cov.matrix = NULL,  k = 2, Rep = 1, Seed = NULL,
          sampling = c("random", "within popStruc", "across popStruc","commit"),
          TS=NULL,ES=NULL, varComp = NULL, popStruc = NULL, VC.est = c("commit",
          "ASReml","BRR","BL"),verbose=FALSE,...)
@@ -17,9 +17,9 @@ crossVal(gpData, trait=1, cov.matrix = NULL,  k = 2, Rep = 1, Seed = NULL,
 \arguments{
   \item{gpData}{Object of class \code{gpData}
 }
-  \item{trait}{\code{numeric} or \code{character}. The name or number of the trait in the \code{gpData} object to be used as trait. 
+  \item{trait}{\code{numeric} or \code{character}. The name or number of the trait in the \code{gpData} object to be used as trait.
 }
-  \item{cov.matrix}{\code{list} including covariance matrices for the random effects. Size and order of rows and columns should be equal to rownames of \code{y}. 
+  \item{cov.matrix}{\code{list} including covariance matrices for the random effects. Size and order of rows and columns should be equal to rownames of \code{y}.
 If no covariance is given, an identity matrix and marker genotypes are used for a marker regression. In general, a covariance matrix should be non-singular and positive definite to be invertible, if this is not the case, a constant of \code{1e-5} is added to the diagonal elements of the covariance matrix.
 }
   \item{k}{\code{numeric}. Number of folds for k-fold cross validation, thus \code{k} should be in [2,\code{nrow(y)}] (default=2).
@@ -34,7 +34,7 @@ If no covariance is given, an identity matrix and marker genotypes are used for 
 }
   \item{ES}{A (optional) list of IDs for the estimation set in each fold within each replication.
 }
-  \item{varComp}{A \code{vector} of variance components for the random effects, which has to be specified if \code{VC.est="commit"}. The first variance components should be 
+  \item{varComp}{A \code{vector} of variance components for the random effects, which has to be specified if \code{VC.est="commit"}. The first variance components should be
 the same order as the given covariance matrices, the last given variance component is for the residuals.
 }
   \item{popStruc}{Vector of length \code{nrow(y)} assigning individuals to a population structure. If no \code{popStruc} is defined, family information of \code{gpData} is used. Only required for options \code{sampling="within popStruc"} or  \code{sampling="across popStruc"}
@@ -74,15 +74,15 @@ An object of class \code{list} with following items:
 \item{PredAbi}{Predictive ability of each fold within each replication calculated as correlation coefficient \eqn{r(y_{TS},\hat y_{TS})}.}
 \item{rankCor}{Spearman's rank correlation of each fold within each replication calculated between \eqn{y_{TS}} and \eqn{\hat y_{TS}}.}
 \item{mse}{Mean squared error of each fold within each replication calculated between \eqn{y_{TS}} and \eqn{\hat y_{TS}}.}
-\item{bias}{Regression coefficients of a regression of the observed values on the predicted values in the TS. 
+\item{bias}{Regression coefficients of a regression of the observed values on the predicted values in the TS.
 A regression coefficient \eqn{< 1} implies inflation of predicted values, and a coefficient of \eqn{> 1} deflation of predicted values.}
 \item{m10}{Mean of observed values for the 10\% best predicted of each replication. The k test sets are pooled within each replication.}
 \item{k}{Number of folds}
-\item{Rep}{Replications} 
+\item{Rep}{Replications}
 \item{sampling}{Sampling method}
 \item{Seed}{Seed for \code{set.seed()}}
 \item{rep.seed}{Calculated seeds for each replication}
-\item{nr.ranEff}{Number of random effects} 
+\item{nr.ranEff}{Number of random effects}
 \item{VC.est.method}{Method for the variance components (\code{committed} or \code{reestimated with ASReml/BRR/BL})}
 }
 \references{
@@ -106,6 +106,7 @@ http://CRAN.R-project.org/package=BLR
 \examples{
 # loading the maize data set
 \dontrun{
+library(synbreedData)
 data(maize)
 maize2 <- codeGeno(maize)
 U <- kin(maize2,ret="realized")
@@ -117,8 +118,8 @@ cv.maize2 <- crossVal(maize2,k=5,Rep=1,
 # comparing results, both are equal!
 cv.maize$PredAbi
 cv.maize2$PredAbi
-summary(cv.maize) 
-summary(cv.maize2) 
+summary(cv.maize)
+summary(cv.maize2)
 }
 }
 
