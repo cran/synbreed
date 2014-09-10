@@ -122,8 +122,24 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   if (verbose) cat("   step 2  : Recoding alleles \n")
   if(gpData$info$codeGeno) {
     if(reference.allele[1]=="minor"){
-      afCols <- (1:ncol(res))[colMeans(res)>1]
+      afCols <- (1:ncol(res))[colMeans(res, na.rm=TRUE)>1]
       res[, afCols] <-  rep(1, nrow(res)) %*% t(rep(2, length(afCols))) - res[, afCols]
+      # inititialize report list
+      if(print.report){
+        alleles <- apply(res,2,table,useNA="no")
+        major.allele <- function(x) names(which.max(x[!names(x) %in% label.heter]))
+        minor.allele <- function(x) names(which.min(x[!names(x) %in% label.heter]))
+        if(class(alleles) != "list"){
+          mytable <- function(x,...) as.data.frame(table(x,...),stringsAsFactors=FALSE)
+          alleles <- apply(res,2,mytable,useNA="no")
+          major.allele <- function(x) x$x[which.max(x$Freq)]
+          minor.allele <- function(x) x$x[which.min(x$Freq)]
+        }
+        major <- unlist(sapply(alleles,major.allele))
+        minor <- unlist(sapply(alleles,minor.allele))
+        names(major) <- names(minor) <- cnames
+      }
+
     } else {
       if(reference.allele[1]!="keep") gpData$info$codeGeno==FALSE
     }
