@@ -1,4 +1,4 @@
-21f1de7376927922ebbf7c08ef31e6d4 *DESCRIPTION
+36e241718cf46a45dc6667c3f40e33ab *DESCRIPTION
 6cf7cff29512f5d194dff0cf1ee01dc2 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -7,7 +7,7 @@ af6970c7629a56fa9c0d3910ff5eaddf *R/LDDist.r
 166e9a51c91da1aae019abff601e1295 *R/LDMap.r
 6c6b43cece684eac36993f1c1191c319 *R/MME.r
 b12af2bb5d9e965078a1f79e03cab0ec *R/add.markers.r
-e50911ac44b063cb1a84da34e5e606a5 *R/codeGeno.r
+03a377d55bb816bd4bdb09eb951339dc *R/codeGeno.r
 4a5d8bcb875ca65a4f6ab18e456a5902 *R/create.gpData.r
 9d62b2bd61d7d896296f9416d2aa2286 *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r

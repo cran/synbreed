@@ -25,9 +25,9 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
               "with 'beaglePath' a variable with the location of beagle.jar.\n",
               "beagle.jar can be found in synbreed versions up to 0.9 in\n",
               "the synbreed subfolder exec")
-          return(NULL)
           beaglePath <- NULL
-        }
+          return(NULL)
+}
       if(impute.type %in% c("beagle", "beagleAfterFamily") & !is.null(gpData$map))
         if(grepl("string mismatches", all.equal(rownames(gpData$map), colnames(gpData$geno))))
           stop("Order of markers in geno and map does not fit!")
@@ -401,12 +401,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
           if(lg==1) ptm <- proc.time()[3]
           if(verbose) cat("          chromosome ", as.character(chr)[lg], "\n")
           sel <- rownames(gpData$map[is.na(gpData$map$pos) | gpData$map$chr != chr[lg] | !rownames(gpData$map) %in% colnames(res) ,])
-          if (length(sel)>0) {
-            markerTEMPbeagle <- discard.markers(gpData,which=sel)
-            markerTEMPbeagle$geno <- res[, colnames(res)[!colnames(res) %in% sel]]
-          } else {
-            markerTEMPbeagle <- gpData    # this occurs for only 1 chr
-          }
+          markerTEMPbeagle <- discard.markers(gpData,which=sel)
+          markerTEMPbeagle$geno <- res[, colnames(res)[!colnames(res) %in% sel]]
           # recode for Beagle
           markerTEMPbeagle$geno[markerTEMPbeagle$geno==0] <- "AA"
           markerTEMPbeagle$geno[markerTEMPbeagle$geno==1] <- "AB"
