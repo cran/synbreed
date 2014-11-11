@@ -1,4 +1,4 @@
-36e241718cf46a45dc6667c3f40e33ab *DESCRIPTION
+ea0ab352c34fecfbfb948358748aff72 *DESCRIPTION
 6cf7cff29512f5d194dff0cf1ee01dc2 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -22,7 +22,7 @@ f6f4a82361ab92696668c0e21d359174 *R/manhattanPlot.r
 1d7257ce479cc75bc13a991c23f9d3f3 *R/plot.genMap.r
 54220826e566f042e45e955be9da3f0f *R/plot.neighbourLD.r
 115c7ef61722fa2aac7ce2ea9ba76bc4 *R/plot.pedigree.r
-b46ed87228139a6dd7f6babe6c42aa13 *R/plot.relationshipMatrix.r
+6e907717049abb9cc87e778e889ba9f3 *R/plot.relationshipMatrix.r
 1d00240310238272317531c32e04cfe1 *R/predict.gpMod.r
 1081826a4318ff083905a5e49b1b0bf9 *R/simul.pedigree.r
 db72bd5ff81194207d9bfc4500328c70 *R/simul.phenotype.r
@@ -31,7 +31,7 @@ fc362fdd129a1d2cef99d91e44916a1f *R/summary.LD.r
 ffaed96e8546832e61b51499c5f3e665 *R/summary.gpData.r
 358e157c5086ed64ea4cb0dd842e2a7f *R/summary.map.r
 123a3582440892a5520d23b908f074a8 *R/summary.pedigree.r
-2845b9449c5bc6d3669724f22085e7c1 *R/summary.relationshipMatrix.r
+ea3b2a61e49d924989c52abcfef340f9 *R/summary.relationshipMatrix.r
 2d6cfffc3dc3ab64b650ae94ebd6eb89 *R/write.beagle.r
 6ac0d4115e8d99649fa605d9eb4e8ce8 *R/write.plink.r
 00daa4742fb137a3dc1fefed81824ae5 *R/write.relationshipMatrix.r
