@@ -10,18 +10,18 @@ predict.gpMod <- function(object,newdata=NULL,...){
       if(!is.null(object$kin)) ("including a polygenic effect is not yet implemented")
       if(class(newdata)!="gpData") stop("object 'newdata' must be of class 'gpData'")
       X <- newdata$geno
-      m <- object$m
+      m <- object$markerEffects
       mu <- object$fit$mu
       prediction <- mu + X %*% m
   }
-  if(model == "BLUP" & !is.null(object$m)){    # if marker effects are available
+  if(model == "BLUP" & !is.null(object$markerEffects)){    # if marker effects are available
      if(class(newdata)!="gpData") stop("object 'newdata' must be of class 'gpData'")
      X <- newdata$geno
-     m <- object$m
+     m <- object$markerEffects
      mu <- c(object$fit$beta)
      prediction <- mu + X %*% m
   }
-  if(model == "BLUP" & is.null(object$m)){
+  if(model == "BLUP" & is.null(object$markerEffects)){
 #      prediction <- gpData$geno %*% t(gpData$geno[rownames(kin), ]) %*% ginv(kin) %*% genVal[rownames(kin)]
 #      prediction <- prediction[!names(prediction) %in% names(genVal)] / mean(prediction[names(genVal)]/genVal)
       if (any(newdata %in%  names(object$y))) warning("Some individuals in newdata have been used also for model training")

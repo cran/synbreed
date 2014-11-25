@@ -1,4 +1,4 @@
-ea0ab352c34fecfbfb948358748aff72 *DESCRIPTION
+8efedf50585af7b4b2c7ab5442d5167c *DESCRIPTION
 6cf7cff29512f5d194dff0cf1ee01dc2 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -23,7 +23,7 @@ f6f4a82361ab92696668c0e21d359174 *R/manhattanPlot.r
 54220826e566f042e45e955be9da3f0f *R/plot.neighbourLD.r
 115c7ef61722fa2aac7ce2ea9ba76bc4 *R/plot.pedigree.r
 6e907717049abb9cc87e778e889ba9f3 *R/plot.relationshipMatrix.r
-1d00240310238272317531c32e04cfe1 *R/predict.gpMod.r
+01703cf5e31db139e981a0cdac715bcd *R/predict.gpMod.r
 1081826a4318ff083905a5e49b1b0bf9 *R/simul.pedigree.r
 db72bd5ff81194207d9bfc4500328c70 *R/simul.phenotype.r
 fc362fdd129a1d2cef99d91e44916a1f *R/summary.LD.r
