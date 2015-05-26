@@ -7,8 +7,9 @@ Relatedness based on pedigree or marker data
 This function implements different measures of relatedness between individuals in an object of class \code{gpData}: (1) Expected relatedness based on pedigree and (2) realized relatedness based on marker data. See 'Details'.  The function uses as first argument an object of class \code{gpData}. An argument \code{ret} controls the type of relatedness coefficient.
 }
 \usage{
-kin(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),
-    DH=NULL, maf=NULL)
+kin(gpData, ret=c("add","kin","dom","gam","realized","realizedAB",
+                  "sm","sm-smin","gaussian"),
+            DH=NULL, maf=NULL, selfing=NULL, lambda=1)
 }
 \arguments{
   \item{gpData}{
@@ -22,8 +23,15 @@ object of class \code{gpData}
 }
   \item{maf}{
     \code{numeric} vector of length equal the number of markers. Supply values for the \eqn{p_i}{pi} of each marker, which were used to correct the allele counts in \code{ret="realized"} and \code{ret="realizedAB"}. If not specified, \eqn{p_i}{pi} equals the minor allele frequency of each locus.
-  }
 }
+  \item{selfing}{
+\code{numeric} vector of length \eqn{n}. It is used as the number of selfings of the individual. Only used for pedigree based relatedness coefficients. No need for animal relationships.
+}
+  \item{lambda}{
+\code{numeric} bandwidth parameter for the gaussian kernel. Only used for calculating the gaussian
+kernel. }
+}
+
 \details{
 
 \bold{Pedigree based relatedness (return arguments \code{"add"}, \code{"kin"}, \code{"dom"}, and \code{"gam"})}
@@ -49,17 +57,23 @@ If \code{ret="realized"}, the realized relatedness between individuals is comput
 If \code{ret="realizedAB"}, the realized relatedness between individuals is computed according to the formula in Astle and Balding (2009)
 \deqn{U = \frac{1}{M} \sum \frac{(w_i-2p_i)(w_i-2p_i)'}{2p_i(1-p_i)}}{1/M sum((wi-2pi)(wi-2pi)'/(2pi(1-pi)))} where \eqn{w_i}{wi} is the marker genotype, \eqn{p_i}{pi} is the allele frequency at marker locus \eqn{i}, and \eqn{M} is the number of marker loci, and the sum is over all loci.
 
-If \code{ret="sm"}, the realized relatedness between individuals is computed according to the simple matching coefficient (Reif et al. 2005). The simple matching coefficient counts the number of shared alleles across loci. It can only be applied to homozygous inbred lines, i.e. only genotypes 0 and 2. To account for loci that are alike in state but not identical by descent (IBD),  Hayes and Goddard (2008) correct the simple matching coefficient by the minimum of observed simple matching coefficients
-\deqn{\frac{s-s_{min}}{1-s_{min}}}{s-smin/(1-smin)}
-where \eqn{s} is the matrix of simple matching coefficients. This formula is used with argument \code{ret="sm-smin"}.
+If \code{ret="sm"}, the realized relatedness between individuals is computed according to the simple
+matching coefficient (Reif et al. 2005). The simple matching coefficient counts the number of shared
+alleles across loci. It can only be applied to homozygous inbred lines, i.e. only genotypes 0 and 2.
+To account for loci that are alike in state but not identical by descent (IBD),  Hayes and Goddard
+(2008) correct the simple matching coefficient by the minimum of observed simple matching
+coefficients \deqn{\frac{s-s_{min}}{1-s_{min}}}{s-smin/(1-smin)} where \eqn{s} is the matrix of
+simple matching coefficients. This formula is used with argument \code{ret="sm-smin"}.
+
+If \code{ret="gaussian"}, the euklidian distances \code{distEuk} for all individuals are calculated.
+The values of \code{distEuk} are than used to calculate similarity coefficients between the
+individuals with \code{exp(distEuk^2/numMarker)}. Be aware that this relationship matrix scales
+theoretically between 0 and 1!
+
 }
-\value{
-An object of class "relationshipMatrix".
-}
-\author{
-Valentin Wimmer and Theresa Albrecht, with contributions by Yvonne Badke
-}
-\references{
+
+\value{ An object of class "relationshipMatrix". } \author{ Valentin Wimmer and Theresa Albrecht,
+with contributions by Yvonne Badke } \references{
 
 Habier D, Fernando R, Dekkers J (2007). The Impact of Genetic Relationship information
 on Genome-Assisted Breeding Values. Genetics, 177, 2389 -- 2397.

@@ -1,8 +1,7 @@
-kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),DH=NULL, maf = NULL){
+kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),DH=NULL, maf=NULL, selfing=NULL, lambda=1){
 
-    ret <- match.arg(ret,choices=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin"),several.ok = FALSE)
-
-    # (1) expected relatedness
+    ret <- match.arg(ret,choices=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),several.ok = FALSE)
+# (1) expected relatedness
 
     if (ret %in% c("add","kin","dom","gam")){
 
@@ -16,18 +15,36 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
     n <- nrow(ped)
     if(is.null(DH)) DH <- rep(0,n)
     if(!is.null(DH) & (length(DH) != n)) stop("DH must have same length as pedigree")
+    if(!is.null(selfing) & (length(selfing) != n)) stop("DH must have same length as pedigree")
 
-    # set up extended pedigree
-    ID <- rep(seq_along(ped$ID),each=2)
-    par1 <- pmatch(ped$Par1,ped$ID,nomatch = 0, duplicates.ok = TRUE)
-    par2 <- pmatch(ped$Par2,ped$ID,nomatch = 0, duplicates.ok = TRUE)
+    if(ret %in% c("add", "kin")){
+      IDplus <- unique(c(0,ped$Par1[!ped$Par1 %in% ped$ID], ped$Par2[!ped$Par2 %in% ped$ID]))
+      if(length(IDplus)>1) warning("There are parents in the pedigree, which are not coded as ancestors in the ID column!")
+      A <- matrix(data=0,nrow=n+length(IDplus),ncol=n+length(IDplus))
+      if(is.null(selfing)) selfing <- rep(0, ncol(A)) else selfing <- c(rep(0, length(IDplus)), selfing)
+      if(is.numeric(c(IDplus, ped$ID))) stop("You use only numbers as identifier of your individuals! This causes trouble!")
+      names(selfing) <- colnames(A) <- rownames(A) <- c(IDplus, ped$ID)
+      A[IDplus, IDplus] <- diag(length(IDplus))
+      A[1, 1] <- 0
+      for(i in ped$ID){
+        cnt <- match(i, ped$ID)
+        cnt2 <- cnt + length(IDplus)
+        A[i, 1:cnt2] <- A[1:cnt2, i] <- (A[ped[cnt, "Par1"],1:cnt2]+A[ped[cnt, "Par2"],1:cnt2])*.5
+        if(DH[cnt]!=0) A[i, i] <- 2 else
+          A[i, i] <- 2 -.5^selfing[i] + .5^(selfing[i]+1) * A[ped[cnt, "Par1"], ped[cnt, "Par2"]] #Schoenleben et al., unpublished
+      }
+      A <- A[-c(1:length(IDplus)), -c(1:length(IDplus))]
+    } else {
+      # set up extended pedigree
+      ID <- rep(seq_along(ped$ID),each=2)
+      par1 <- pmatch(ped$Par1,ped$ID,nomatch = 0, duplicates.ok = TRUE)
+      par2 <- pmatch(ped$Par2,ped$ID,nomatch = 0, duplicates.ok = TRUE)
 
-    # set up gametic pedigree data.frame
-    gamMat <- matrix(data=0,nrow=n*2,ncol=3,byrow=FALSE)
-    gamMat[,1] <- ID
-
-    # loop over ID
-    for (i in 1:n){
+      # set up gametic pedigree data.frame
+      gamMat <- matrix(data=0,nrow=n*2,ncol=3,byrow=FALSE)
+      gamMat[,1] <- ID
+      # loop over ID
+      for (i in 1:n){
         par1gam <- par1[i]
         par2gam <- par2[i]
         j <- (i-1)*2 + 1
@@ -42,55 +59,47 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
            gamMat[k,2] <- (par2gam - 1)*2 + 1
            gamMat[k,3] <- (par2gam - 1)*2 + 2
         }
-    }  # end of loop over ID
+      }  # end of loop over ID
 
-    #  Build Gametic Relationship
-    ngam <- 2*n
-    DHgam <- rep(DH,each=2)
-    G <- diag(ngam)
-    dimnames(G) <- list(paste(rep(ped$ID,each=2),rep(1:2,times=n),sep="_"), paste(rep(ped$ID,each=2),rep(1:2,times=n),sep="_"))
+      #  Build Gametic Relationship
+      ngam <- 2*n
+      DHgam <- rep(DH,each=2)
+      G <- diag(ngam)
+      dimnames(G) <- list(paste(rep(ped$ID,each=2),rep(1:2,times=n),sep="_"), paste(rep(ped$ID,each=2),rep(1:2,times=n),sep="_"))
+      # set inbreed coefficients of DHs on 1
+      G[cbind((1:ngam)*DHgam,((1:ngam)+c(1,-1))*DHgam)] <- 1
 
-    # set inbreed coefficients of DHs on 1
-    G[cbind((1:ngam)*DHgam,((1:ngam)+c(1,-1))*DHgam)] <- 1
-
-    # caluclate gametic relationship
-    # loop over gamets
-    for(i in 1:(ngam-1-DHgam[2*n])){
-      ip <- i+1 + (DHgam* rep(c(1,0),ngam))[i]
-
-      for(j in ip:ngam){
-          if(gamMat[j,2] > 0) {
-
-            x <- 0.5*(G[i,gamMat[j,2]]+G[i,gamMat[j,3]])
-
-            G[i,j] <- G[j,i] <- x
-            }
-    }
-    } # end of loop over gamets
-
-    # calculate addiditive and dominance relationship
-    if(any(c("add","dom","kin") %in% ret)){
-      A <- D <- matrix(data=NA,nrow=n,ncol=n)
-      dimnames(A) <-  dimnames(D) <- list(ped$ID, ped$ID)
-
-   # set up A and D matrices
-   # loop over individuals
-      for(i in 1:n){
-         ka <- (i-1)*2 + 1
-         for(j in i:n){
-            kb <- (j-1)*2 + 1
-            fab <- 0.25*(G[ka,kb]+G[ka,kb+1]+G[ka+1,kb]+G[ka+1,kb+1])
-            A[i,j] <- A[j,i] <- 2*fab
-            dab <- (G[ka,kb]*G[ka+1,kb+1] + G[ka+1,kb]*G[ka,kb+1])#*(1-G[ka,ka+1])*(1-G[kb,kb+1])
-            # acoount for inbreeding
-            # dominance = 0 if Fi=1
-            D[i,j] <- D[j,i] <- dab
+      # caluclate gametic relationship
+      # loop over gamets
+      for(i in 1:(ngam-1-DHgam[2*n])){
+        ip <- i+1 + (DHgam* rep(c(1,0),ngam))[i]
+        for(j in ip:ngam){
+            if(gamMat[j,2] > 0) {
+              x <- 0.5*(G[i,gamMat[j,2]]+G[i,gamMat[j,3]])
+              G[i,j] <- G[j,i] <- x
+              }
         }
-      } # end of loop over individuals
+      } # end of loop over gamets
 
-      #diag(D) <- 1 - (diag(A)-1)
+      # calculate dominance relationship
+      if(ret=="dom"){
+        D <- matrix(data=NA,nrow=n,ncol=n)
+        dimnames(D) <- list(ped$ID, ped$ID)
 
-    }  # end of if
+     # set up D matrix
+     # loop over individuals
+        for(i in 1:n){
+           ka <- (i-1)*2 + 1
+           for(j in i:n){
+              kb <- (j-1)*2 + 1
+              dab <- (G[ka,kb]*G[ka+1,kb+1] + G[ka+1,kb]*G[ka,kb+1])#*(1-G[ka,ka+1])*(1-G[kb,kb+1])
+              # acoount for inbreeding
+              # dominance = 0 if Fi=1
+              D[i,j] <- D[j,i] <- dab
+          }
+        } # end of loop over individuals
+      }  # end of if
+    }
 
     # set return matrices
     if(ret == "add") kmat <- A
@@ -98,38 +107,40 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
     if(ret == "kin") kmat <- A/2
     if(ret == "gam") kmat <- G
 
+    attr(kmat, "SNPs") <- NULL
     }
 
     # (2) realized relatedness
 
     if (ret == "realized"){ # former method vanRaden
+      # extract information from arguments
+      if(any(class(gpData)=="gpData")){
+        if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
+          marker <- gpData$geno
+          if(!is.null(maf) & length(maf)!=ncol(gpData$geno))  stop("minor allele frequency not provided for all markers")
+        } else
+          stop("object is not of class 'gpData'")
 
-        # extract information from arguments
-          if(any(class(gpData)=="gpData")){
-             if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
-             marker <- gpData$geno
-             if(!is.null(maf) & length(maf)!=ncol(gpData$geno))  stop("minor allele frequency not provided for all markers")
-          }
-           else stop("object is not of class 'gpData'")
+      # M supposed to be coded with 0,1,2
+      M <- marker
+      n <- nrow(M)
+      p <- ncol(M)
 
-    # M supposed to be coded with 0,1,2
-    M <- marker
-    n <- nrow(M)
-    p <- ncol(M)
+      # use user-supplied values for maf
+      # or, otherwise 2* minor allele frequency as expectation
+      if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
 
-    # use user-supplied values for maf
-    # or, otherwise 2* minor allele frequency as expectation
-    if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
+      P <- matrix(rep(maf,each=n),ncol=p)
 
-    P <- matrix(rep(maf,each=n),ncol=p)
+      # compute realized relationship matrix G
+      Z <- M - P
+      Zq <- tcrossprod(Z)
+      U <- 2*Zq/(sum(maf*(2-maf)))
 
-    # compute realized relationship matrix G
-    Z <- M - P
-    Zq <- tcrossprod(Z)
-    U <- Zq/(2*sum(maf/2*(1-maf/2)))
-
-    kmat <- U
-    attr(kmat, "SNPs") <- colnames(gpData$geno)
+      kmat <- U
+      attr(kmat, "alleleFrequencies") <- maf
+      attr(kmat, "expectedMAX") <- 2*sum((2-maf)**2)/(sum(maf*(2-maf)))
+      attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
 
     if (ret == "realizedAB"){ # based an Astle & Balding (2009)
@@ -151,7 +162,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         # or, otherwise 2* minor allele frequency as expectation
         if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
 
-        pq2 <- 2*maf/2*(1-maf/2)
+        pq2 <- 0.5*maf*(2-maf)
         # compute realized relationship matrix U
         Z <- sweep(M,2,maf)
         for (i in 1:p){  # loop for standardizing columns by sd
@@ -159,6 +170,8 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         }
         U <- (Z %*% t(Z))/(p)
         kmat <- U
+        attr(kmat, "alleleFrequencies") <- maf
+        attr(kmat, "markerVariances") <- pq2
         attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
 
@@ -167,7 +180,6 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
           # extract information from arguments
           if(any(class(gpData)=="gpData")){
              if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
-             if(any(gpData$geno == 1)) stop("simple matching coefficient is only for homozygous inbred lines")
              marker <- gpData$geno
           }
           else stop("object is not of class 'gpData'")
@@ -176,20 +188,29 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
           marker <- marker - (max(marker,na.rm=TRUE)-1)
           m <- ncol(marker)
 
-          # rogers distance
-          d <- 1- (tcrossprod(marker) + m)/(2*m)
+          s <- (tcrossprod(marker) + m)/(2*m)
 
-          #  simple matching coefficient
           if(ret=="sm-smin"){
-            s <- 1-d
             smin <- min(s,na.rm=TRUE)
-            f <- (s-smin)/(1-smin)
+            s <- (s-smin)/(1-smin)
           }
-          else f <- 1-d
 
-          kmat <- 2*f
+          kmat <- 2*s
           attr(kmat, "SNPs") <- colnames(gpData$geno)
 
+    }
+
+    if (ret == "gaussian"){ # euklidian distance with gaussian
+      if(any(class(gpData)=="gpData")){
+        if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
+          marker <- gpData$geno
+      } else stop("object is not of class 'gpData'")
+
+      marker <- scale(marker,center=TRUE,scale=TRUE)
+      Dist <- (as.matrix(dist(marker, method='euclidean'))**2)/ncol(marker)
+      kmat <- exp(-lambda*Dist)
+
+      attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
 
     attr(kmat, "type") <- ret

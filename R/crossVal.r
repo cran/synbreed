@@ -473,7 +473,10 @@ crossVal <- function (gpData,trait=1,cov.matrix=NULL, k=2,Rep=1,Seed=NULL,sampli
 
     # return object
     if(VC.est=="commit") est.method <- "committed" else est.method <- paste("reestimated with ",VC.est,sep="")
-    obj <- list(n.SNP=ncol(gpData$geno), n.TS=n.TS,n.DS=n.DS,id.TS=id.TS2,bu=bu3,y.TS=y.TS2,PredAbi=COR2,rankCor=rCOR2,bias=lm.coeff,k=k, Rep=Rep, sampling=sampling,Seed=Seed, rep.seed=seed2,nr.ranEff = ncol(Z),VC.est.method=est.method,m10=m10,mse=mse)
+    obj <- list(n.SNP=ncol(gpData$geno), n.TS=n.TS,n.DS=n.DS,id.TS=id.TS2,bu=bu3,y.TS=y.TS2,PredAbi=COR2,
+                rankCor=rCOR2,bias=lm.coeff,k=k, Rep=Rep, sampling=sampling,Seed=Seed,
+                rep.seed=seed2,nr.ranEff = ncol(Z),VC.est.method=est.method,m10=m10,mse=mse)
+    if(est.method=="committed") obj$varComp  <- varComp
     class(obj) <- "cvData"
     return(obj)
 }

@@ -5,15 +5,35 @@
 exportPattern(".")
 
 # Import all packages listed as Imports or Depends
-import(
-  lattice,
-  igraph,
-  MASS,
-  LDheatmap,
-  qtl,
-  doBy,
-  BLR,
-  regress,
-  abind,
-  synbreedData
+import(igraph, 	
+	   LDheatmap, 	
+	   qtl, 	
+	   doBy, 	
+	   BLR, 	
+	   regress, 	
+	   abind,
+       MASS,
+       lattice
 )
+#	   synbreedData rJava 	
+
+S3method("plot", GenMap)
+S3method("plot", LDdf)
+S3method("plot", LDmat)
+S3method("plot", pedigree)
+S3method("plot", relationshipMatrix)
+S3method("predict", gpMod)
+S3method("print", summary.cvData)
+S3method("print", summary.gpData)
+S3method("print", summary.gpMod)
+S3method("print", summary.gpModList)
+S3method("print", summary.pedigree)
+S3method("print", summary.relationshipMatrix)
+S3method("summary", LDdf)
+S3method("summary", LDmat)
+S3method("summary", cvData)
+S3method("summary", gpData)
+S3method("summary", gpMod)
+S3method("summary", gpModList)
+S3method("summary", pedigree)
+S3method("summary", relationshipMatrix)

@@ -10,11 +10,12 @@ Raw marker data is a matrix with elements of arbitrary format (e.g. alleles code
 Imputation of missing values can be done by random sampling from allele distribution, the \code{Beagle} software or family information (see details). Additional preselection of markers can be carried out according to the minor allele frequency and/or fraction of missing values.
 }
 \usage{
-codeGeno(gpData,impute=FALSE,impute.type=c("random","family",
-         "beagle", "beagleAfterFamily","fix"), replace.value=NULL, maf=NULL,
-         nmiss=NULL, label.heter="AB",reference.allele="minor", keep.identical=TRUE,
-         verbose=FALSE, minFam=5, showBeagleOutput=FALSE, tester=NULL,
-         print.report=FALSE, check=FALSE)
+codeGeno(gpData,impute=FALSE,
+         impute.type=c("random","family","beagle","beagleAfterFamily","beagleNoRand",
+                       "beagleAfterFamilyNoRand","fix"),
+         replace.value=NULL, maf=NULL, nmiss=NULL, label.heter="AB",
+         reference.allele="minor", keep.list=NULL, keep.identical=TRUE, verbose=FALSE,
+         minFam=5, showBeagleOutput=FALSE, tester=NULL, print.report=FALSE, check=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -25,7 +26,7 @@ object of class \code{gpData} with arbitrary coding in element \code{geno}. Miss
 \code{logical}. Should missing value be replaced by imputing?
 }
   \item{impute.type}{
-\code{character} with one out of \code{"fix"}, \code{"random"} , \code{"family"}, \code{"beagle"}, \code{"beagleAfterFamily"} (default = \code{"random"}).  See details.
+\code{character} with one out of \code{"fix"}, \code{"random"} , \code{"family"}, \code{"beagle"}, \code{"beagleAfterFamily"} , \code{"beagleAfterFamilyNoRand"}, \code{"beagleAfterFamilyNoRand"} (default = \code{"random"}).  See details.
 }
   \item{replace.value}{
 \code{numeric} scalar to replace missing values in case \code{impute.type="fix"}.
@@ -41,6 +42,9 @@ This is either a scalar or vector of characters to identify heterozygous genotyp
 }
   \item{reference.allele}{
 Define the reference allele which is used for the coding. Default is \code{"minor"}, i.e. data is coded by the number of copies of the minor allele. Alternatively, \code{reference.allele} can specify a single character defining the reference allele for all markers, or a vector defining marker-specific reference alleles (using the same order as of the markers in \code{gpData}). In case you have already a gpObject with \code{info$codeGeno == TRUE}, and like only to use higher maf or remove duplicated markers, you can use the option \code{"keep"}, than the coding of the original object is kept.
+}
+  \item{keep.list}{
+A vector with the names of markers, which should be kept during the process of coding and filtering.
 }
   \item{keep.identical}{
 \code{logical}. Should duplicated markers be kept? NOTE: From a set of identical markers (with respect to the non-missing alleles) the one with the smallest number of missing values is kept. For those with an identical number of missing values, the first one is kept and all others are removed.
@@ -81,21 +85,12 @@ Imputing is done according to \code{impute.type}
 This option is only suitable for homozygous individuals (such as doubled-haploid lines) structured in families.
 Suppose an observation \eqn{i} is missing (NA) for a marker \eqn{j} in family \eqn{k}. If marker \eqn{j} is fixed in family \eqn{k}, the imputed value will be the fixed allele. If marker \eqn{j} is segregating for the population \eqn{k},
 the value is 0 with probability of 0.5 and 2 with probability of 0.5. To use this algorithm, family information has to be stored as variable \code{family} in list element \code{covar} of an object of class \code{gpData}. This column should contain a \code{character} or \code{numeric} to identify family of all genotyped individuals.}
-\item{"beagle"}{To use this option, you have to define the variable \code{beaglePath}, so that the function \code{codeGeno} can find the location of the executable beagle.jar. This has changed from version 0.9 to 0.10 due to the policy of R. In the older versions beagle.jar is included in the folder exec in the synbreed library, so that you can find this executable on CRAN. To make your life easier, you can include in the Rprofile.site file the code \code{beaglePath <- "Path/to/beagle"}.
-
-    With this option the Beagle Genetic Analysis Software Package (Browning and Browning 2007; 2009) to
-    infer missing genotypes is used. This software is a java program, so that you have to install java and make it available at your computer.
-    Further beagle needs the program gzip. You have to install this program manually, and make the \code{gzip} command generally available,
-    e.g through putting the command to a public directory or add the directory to the public search path or environment variable. If
-    you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking
-    markers. The beagle executive file \code{beagle.jar} (version 3.3.1) is in the directory \code{exec} of the package.
-    Function \code{codeGeno} will create a directory \code{beagle} for Beagle
-    input and output files (if it does not exist) and run Beagle with default settings. The information on marker
-    position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be
-    available for all markers. By default, three genotypes 0, 1, 2 are imputed. To restrict the
-    imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
+\item{"beagle"}{Use Beagle Genetic Analysis Software Package version 4.0 (r1399) (Browning and Browning 2007; 2013) to infer missing genotypes is used. This software is a java program, so that you have to install java (>=1.7) and make it available at your computer. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking markers. Function \code{codeGeno} will create a directory \code{beagle} for Beagle input and output files (if it does not exist) and run Beagle with default settings. The information on marker position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be available for all markers. The program can only handle the position units "bp", "kb" and "Mb". Make sure that there are than only integer numbers for the unit "bp", because beagle can only work with integer numbers. By default, three genotypes 0, 1, 2 are imputed. To restrict the imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
 \item{"beagleAfterFamily"}{
 In the first step, missing genotypes are imputed according to the algorithm with \code{impute.type="family"}, but only for markers that are fixed within the family. Moreover, markers with a missing position (\code{map$pos=NA}) are imputed using the algorithm of \code{impute.type="family"}. In the second step, the remaining genotypes are imputed by Beagle. For details of this see the description of the \code{beagle} option.}
+\item{"beagleNoRand" and "beagleAfterFamilyNoRand"}{
+The same as the option \code{beagle}, respectively \code{beagleAfterFamily}, except that markers without map information will be not imputed.}
+
 \item{"random"}{The missing values for a marker \eqn{j} are sampled from the marginal allele distribution of marker \eqn{j}. With 2 possible genotypes (to force this option, use \code{label.heter=NULL}), i.e. 0 and 2, values are sampled from distribution with probabilities \eqn{P(x=0)=1-p} and \eqn{P(x=2)=p}, where \eqn{p} is the minor allele frequency of marker \eqn{j}.  In the standardd case of 3 genotypes, i.e. with heterozygous genotypes, values are sampled from distribution \eqn{P(x=0)=(1-p)^2}, \eqn{P(x=1)=p(1-p)} and \eqn{P(x=2)=p^2} assuming Hardy-Weinberg equilibrium for all loci.}
 \item{"fix"}{All missing values are imputed by \code{replace.value}. Note that only 0, 1 or 2 should be chosen.}
 }
@@ -119,7 +114,7 @@ An object of class \code{gpData} containing the recoded marker matrix. If \code{
 \references{
 S R Browning and B L Browning (2007) Rapid and accurate haplotype phasing and missing data inference for whole genome association studies using localized haplotype clustering. Am J Hum Genet 81:1084-1097
 
-B L Browning and S R Browning (2009) A unified approach to genotype imputation and haplotype phase inference for large data sets of trios and unrelated individuals. Am J Hum Genet 84:210-223
+B L Browning and S R Browning (2013) Improving the accuracy and efficiency of identity by descent detection in population data. Genetics 194(2):459-471
 }
 
 \author{

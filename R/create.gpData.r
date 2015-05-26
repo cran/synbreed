@@ -1,9 +1,10 @@
 # read genomic prediction data
 create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NULL,covar=NULL,
                           reorderMap=TRUE,map.unit="cM",repeated=NULL,modCovar=NULL){
-  
+
   # start with some checks on data
-  # geno as matrix but not data.frame (storage) 
+  # geno as matrix but not data.frame (storage)
+  if(!map.unit %in% c("cM", "bp", "kb", "Mb")) warning("The measurement unit for the positions in the map should be either 'cM', 'bp', 'kb' or 'Mb'")
   if(!is.null(geno)){
     if(is.data.frame(geno)){
       geno <- as.matrix(geno)
@@ -108,23 +109,23 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
     }
     pheno <- arrPheno
     rm(arrPheno)
-  } 
+  }
 
   # match geno and pheno
   if(!is.null(geno) & !is.null(pheno)){
     if(is.null(dimnames(pheno)[[1]]) | is.null(rownames(geno))){
       if(dim(pheno)[1] == nrow(geno)){
-        warning("assuming identical order of genotypes in 'pheno' and 'geno' because of identical length.\nControll the Output! There is no warranty of correctness!\n")  
+        warning("assuming identical order of genotypes in 'pheno' and 'geno' because of identical length.\nControll the Output! There is no warranty of correctness!\n")
         if(is.null(dimnames(pheno)[[1]])) dimnames(pheno)[[1]] <- rownames(geno)
         else rownames(geno) <- dimnames(pheno)[[1]]
         if(is.null(dimnames(pheno)[[1]]) & is.null(rownames(geno))) dimnames(pheno)[[1]] <- rownames(geno) <- paste0("ID",10^ceiling(log10(nrow(geno)))+1:nrow(geno))
       }else stop("missing rownames (animal IDs) for either 'pheno' or 'geno' and lengths do not agree.")
       # now geno and pheno have rownames
     }
-  } 
+  }
   # sort geno by rownames (alphabetical order)
   if(!is.null(geno)){
-    if(all(row.names(geno) %in% 1:nrow(geno))) 
+    if(all(row.names(geno) %in% 1:nrow(geno)))
       geno <- geno[order(as.numeric(row.names(geno))), ]
     else
       geno <- geno[order(row.names(geno)),]
@@ -151,10 +152,10 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
 
   # return object
   obj <- list(covar=NULL,pheno=pheno,geno=geno,map=map,pedigree=pedigree,phenoCovars=phenoCovars)
-  
+
   # add information to element covar
   # sort all available individuals
-  ids <- sort(unique(c(dimnames(obj$pheno)[[1]],rownames(obj$geno),as.character(obj$pedigree$ID)))) 
+  ids <- sort(unique(c(dimnames(obj$pheno)[[1]],rownames(obj$geno),as.character(obj$pedigree$ID))))
   if(all(ids %in% 1:length(ids))) ids <- sort(as.numeric(ids))
 
   obj$covar <- data.frame(id=ids,
@@ -162,14 +163,16 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
                           genotyped=ids %in% rownames(obj$geno),
                           stringsAsFactors=FALSE)
 
-  # family information for genotyped indviduals  
+  # family information for genotyped indviduals
   if(!is.null(family)){
     if(!is.data.frame(family) & !is.matrix(family)) stop('family must be either a data.frame or a matrix, not a ', class(family))
     colnames(family)[1] <- "family"
     obj$covar <- merge(obj$covar,family,by.x="id",by.y=0,all=TRUE)
+    obj$covar$genotyped[is.na(obj$covar$genotyped)] <- FALSE
+    obj$covar$phenotyped[is.na(obj$covar$phenotyped)] <- FALSE
   } else obj$covar$family <- rep(NA, nrow(obj$covar))
-  
-  # add covar from arguments, if available 
+
+  # add covar from arguments, if available
   if(!is.null(covar)){
     if(is.matrix(covar)){
       if(is.null(rownames(covar))) warning("the supplied covar's rownames will default to 1:nrow(covar), which is likely not correct.  Inspect the resulting $covar.")
@@ -181,7 +184,10 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
     # merge with existing data
     obj$covar <- merge(obj$covar,covar,by.x=1,by.y=0,all=TRUE)
   }
-  
+
+  if(!is.null(obj$pedigree))
+    obj$covar <- obj$covar[match(obj$pedigree$ID, obj$covar$id), ]
+
   # further information
   obj$info$map.unit <- map.unit
   obj$info$codeGeno <- FALSE

@@ -1,12 +1,12 @@
 summary.relationshipMatrix <- function(object,...){
      relMat <- object
+     offdiag <- relMat[lower.tri(relMat,diag=FALSE)]
      ans <- list(dim=c(nrow=nrow(relMat),ncol=ncol(relMat)),
                  rank=try(qr(relMat)$rank, silent=TRUE),
-                 range.off.diagonal=c(min=min(relMat[upper.tri(relMat,diag=FALSE)], na.rm=TRUE),
-                 max=max(relMat[upper.tri(relMat,diag=FALSE)], na.rm=TRUE)),
+                 range.off.diagonal=c(min=min(offdiag, na.rm=TRUE), max=max(offdiag, na.rm=TRUE)),
                  mean.diag=mean(diag(relMat), na.rm=TRUE),
-                 mean.off.diag=mean(relMat[lower.tri(relMat,diag=FALSE)], na.rm=TRUE),
-                 nUnique=length(unique(relMat[upper.tri(relMat,diag=TRUE)])),
+                 mean.off.diag=mean(offdiag, na.rm=TRUE),
+                 nUnique=length(unique(offdiag)),
                  diag.val=summary(diag(relMat)),
                  empty = sum(is.na(relMat)))
      class(ans) <- "summary.relationshipMatrix"

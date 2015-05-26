@@ -8,12 +8,15 @@ Heatmap for relationship Matrix
 Visualization for objects of class \code{relationshipMatrix} using a heatmap of pairwise relatedness coefficients.
 }
 \usage{
-\method{plot}{relationshipMatrix}(x, \ldots)
+\method{plot}{relationshipMatrix}(x, levelbreaks=NULL, \ldots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
 Object of class \code{relationshipMatrix}
+}
+  \item{levelbreaks}{
+Defined breaks in the color scheme of the levelplot. If you make to many breaks, the color scheme repeats!
 }
   \item{\dots}{
 further graphical arguments passed to function \code{levelplot} in package \code{lattice}. To create equal colorkeys for two heatmaps, use \code{at=seq(from,to,length=9)}.
@@ -38,11 +41,9 @@ data(maize)
 K <- kin(maize,ret="kin")
 U <- kin(codeGeno(maize),ret="realized")/2
 # equal colorkeys
-plot(K,at=seq(0,2,length=9))
-plot(U,at=seq(0,2,length=9))
+plot(K,levelbreaks=seq(0,2,length=9))
+plot(U,levelbreaks=seq(0,2,length=9))
 }
 }
 
 \keyword{hplot}
-
-
