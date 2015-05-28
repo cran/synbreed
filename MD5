@@ -1,4 +1,4 @@
-ff3a94552f11e13dcfe5f1430af4806f *DESCRIPTION
+7db964aafb18931da0da8c05f11fb52c *DESCRIPTION
 1c2ac176f81ea41010d4b76f529acc55 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -7,8 +7,8 @@ af6970c7629a56fa9c0d3910ff5eaddf *R/LDDist.r
 166e9a51c91da1aae019abff601e1295 *R/LDMap.r
 6c6b43cece684eac36993f1c1191c319 *R/MME.r
 b12af2bb5d9e965078a1f79e03cab0ec *R/add.markers.r
-deb14473a7945c8b5da46d33d8c00dcc *R/codeGeno.r
-0c6318fce7c39540a5c37643ea3eb785 *R/create.gpData.r
+97c8041fc0fe7d99e4dd8dd0c7199b25 *R/codeGeno.r
+1051629aa791484607f3a7e38e7f4774 *R/create.gpData.r
 9d62b2bd61d7d896296f9416d2aa2286 *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r
 e52c331d5aa5cfb6cb02ca559e333e77 *R/crossVal.r
@@ -203,7 +203,7 @@ e9de2a98ec819fe0ee3535f9a07bfe68 *man/plot.LDdf.Rd
 f81ff86a0b1745dd0e3ab8ba79e3ae02 *man/plot.relationshipMatrix.Rd
 9a890312289669a7728cced8224f25c0 *man/plotNeighbourLD.Rd
 b8cfdb3159b8b760c129ddf4909b9fe9 *man/predict.gpMod.Rd
-91608d938d0780100d8ea3dffefc7940 *man/read.vcf2list.Rd
+9c7f04aad1310b85757ddd4c61c0ac28 *man/read.vcf2list.Rd
 9baf94599c6f1815075c9c85ca83185e *man/read.vcf2matrix.Rd
 160c19d46dac16b05e23c3f655f23b7d *man/simul.pedigree.Rd
 07f4429ea42a7234084bcf654d325395 *man/simul.phenotype.Rd

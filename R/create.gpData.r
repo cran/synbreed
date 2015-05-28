@@ -27,7 +27,7 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
     # test if chr in map is numeric or character
     if(!(is.numeric(map$chr)|is.character(map$chr)))
       warning(paste("Chromosome information (in map$chr) should be numeric or character, not",class(map$chr)))
-  }
+  } else map.unit <- NULL
 
   # match geno and map
   if(!is.null(geno) & !is.null(map)){

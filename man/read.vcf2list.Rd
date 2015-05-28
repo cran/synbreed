@@ -5,7 +5,7 @@
 Read data of a vcf-file to a matrix
 }
 \description{
-To easily read genomic data in vcf-Format to a matrix. Function \code{codeGeno} uses \code{read.vcf2matrix} with imputing by beagle.
+Function for easily read genomic data in vcf-Format to a list, which contains the map information and the marker information.
 }
 \usage{
 read.vcf2list(file, FORMAT = "GT", coding = c("allele", "ref"), IDinRow = TRUE)
