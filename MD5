@@ -1,4 +1,4 @@
-7db964aafb18931da0da8c05f11fb52c *DESCRIPTION
+41be65ff7c99608f12d76a552f637143 *DESCRIPTION
 1c2ac176f81ea41010d4b76f529acc55 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -7,8 +7,8 @@ af6970c7629a56fa9c0d3910ff5eaddf *R/LDDist.r
 166e9a51c91da1aae019abff601e1295 *R/LDMap.r
 6c6b43cece684eac36993f1c1191c319 *R/MME.r
 b12af2bb5d9e965078a1f79e03cab0ec *R/add.markers.r
-97c8041fc0fe7d99e4dd8dd0c7199b25 *R/codeGeno.r
-1051629aa791484607f3a7e38e7f4774 *R/create.gpData.r
+eb0a7712c87041dde38f4b2fcb012e18 *R/codeGeno.r
+91567a61f7c9539ffb0f912c2d0877d9 *R/create.gpData.r
 9d62b2bd61d7d896296f9416d2aa2286 *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r
 e52c331d5aa5cfb6cb02ca559e333e77 *R/crossVal.r
@@ -24,7 +24,7 @@ f6f4a82361ab92696668c0e21d359174 *R/manhattanPlot.r
 115c7ef61722fa2aac7ce2ea9ba76bc4 *R/plot.pedigree.r
 341d2aeaec8c2dd8ce2547ab59115721 *R/plot.relationshipMatrix.r
 01703cf5e31db139e981a0cdac715bcd *R/predict.gpMod.r
-0b6f66e099cd6848e483445c86980014 *R/read.write.vcf.r
+aa75c5ce4d9aa9b3a57c87186e7b274c *R/read.write.vcf.r
 c5e1cb5f8055e70abc7a4fd6b1e6d08e *R/simul.pedigree.r
 db72bd5ff81194207d9bfc4500328c70 *R/simul.phenotype.r
 fc362fdd129a1d2cef99d91e44916a1f *R/summary.LD.r

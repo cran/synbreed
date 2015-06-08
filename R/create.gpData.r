@@ -143,6 +143,7 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
       # sortcolumns in geno, too
       geno <- geno[,rownames(map)]
     }
+    map$pos[is.na(map$chr)] <- NA
     class(map) <- c("GenMap", "data.frame")
   }
 
@@ -167,7 +168,8 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   if(!is.null(family)){
     if(!is.data.frame(family) & !is.matrix(family)) stop('family must be either a data.frame or a matrix, not a ', class(family))
     colnames(family)[1] <- "family"
-    obj$covar <- merge(obj$covar,family,by.x="id",by.y=0,all=TRUE)
+    family$id <- as.character(rownames(family))
+    obj$covar <- merge(obj$covar,family,by="id",all=TRUE)
     obj$covar$genotyped[is.na(obj$covar$genotyped)] <- FALSE
     obj$covar$phenotyped[is.na(obj$covar$phenotyped)] <- FALSE
   } else obj$covar$family <- rep(NA, nrow(obj$covar))

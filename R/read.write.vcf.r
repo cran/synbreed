@@ -18,7 +18,7 @@ write.vcf <- function(gp,file){
   cat(file=file, '##fileformat=VCFv4.1\n##filedate=20120310\n##source="write.vcf of R-synbreed"\n##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n#')
   cat(file=file, paste(colnames(bgl), collapse="\t"), "\n", append=TRUE)
   write.table(bgl, file=file,
-              quote=FALSE, col.names=FALSE, row.names=FALSE, append=TRUE, sep="\t", na="./.")
+              quote=FALSE, col.names=FALSE, row.names=FALSE, append=TRUE, sep="\t", na=".|.")
 
 }
 
