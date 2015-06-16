@@ -649,6 +649,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       } else {# end of missing value step
         if(sum(which.duplicated) >0){
           mat.ld <- cor(gpData$geno[, which.duplicated], gpData$geno[, rev.which.duplicated])
+          rownames(mat.ld) <- cnames[which.duplicated]
+          colnames(mat.ld) <- cnames[rev.which.duplicated]
           df.ld <- data.frame(kept=rep(colnames(mat.ld), nrow(mat.ld)),
                               removed=rep(rownames(mat.ld), each=ncol(mat.ld)),
                               ld=as.numeric(mat.ld),

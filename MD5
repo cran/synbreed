@@ -1,4 +1,4 @@
-41be65ff7c99608f12d76a552f637143 *DESCRIPTION
+800e96388e183bcdcea6e793aae68610 *DESCRIPTION
 1c2ac176f81ea41010d4b76f529acc55 *NAMESPACE
 556c60f086695fc389a9a785f6d5eb3c *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
@@ -7,7 +7,7 @@ af6970c7629a56fa9c0d3910ff5eaddf *R/LDDist.r
 166e9a51c91da1aae019abff601e1295 *R/LDMap.r
 6c6b43cece684eac36993f1c1191c319 *R/MME.r
 b12af2bb5d9e965078a1f79e03cab0ec *R/add.markers.r
-eb0a7712c87041dde38f4b2fcb012e18 *R/codeGeno.r
+bdbff6b33224a68ffaf902df7306addc *R/codeGeno.r
 91567a61f7c9539ffb0f912c2d0877d9 *R/create.gpData.r
 9d62b2bd61d7d896296f9416d2aa2286 *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r
@@ -16,7 +16,7 @@ b3ad9c900b549541b0fa5150ac26ccc6 *R/discard.markers.r
 d841863795e4c431d73b22fc742fea45 *R/gpData2cross.r
 b69294e927cfbd1efc44632f3ba3f7bd *R/gpData2data.frame.r
 bd8b6b57246816cf60b10cf02673c660 *R/gpMod.r
-71cfbf1ff1ebcebc7e5cf624a01d0c59 *R/kinship.r
+a89310988efcec9fae1d2c7ef6ada414 *R/kinship.r
 f6f4a82361ab92696668c0e21d359174 *R/manhattanPlot.r
 92512eee109b976419acefa83e364922 *R/plot.LDdf.LDmat.r
 1d7257ce479cc75bc13a991c23f9d3f3 *R/plot.genMap.r

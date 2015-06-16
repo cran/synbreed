@@ -116,26 +116,25 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
       # extract information from arguments
       if(any(class(gpData)=="gpData")){
         if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
-          marker <- gpData$geno
+          W <- gpData$geno
           if(!is.null(maf) & length(maf)!=ncol(gpData$geno))  stop("minor allele frequency not provided for all markers")
         } else
           stop("object is not of class 'gpData'")
 
-      # M supposed to be coded with 0,1,2
-      M <- marker
-      n <- nrow(M)
-      p <- ncol(M)
+      # W supposed to be coded with 0,1,2
+      n <- nrow(W)
+      p <- ncol(W)
 
       # use user-supplied values for maf
       # or, otherwise 2* minor allele frequency as expectation
-      if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
+      if(is.null(maf)) {maf <- colMeans(W, na.rm = TRUE)}
 
       P <- matrix(rep(maf,each=n),ncol=p)
 
       # compute realized relationship matrix G
-      Z <- M - P
-      Zq <- tcrossprod(Z)
-      U <- 2*Zq/(sum(maf*(2-maf)))
+      Z <- W - P
+      U <- tcrossprod(Z)
+      U <- 2*U/(sum(maf*(2-maf)))
 
       kmat <- U
       attr(kmat, "alleleFrequencies") <- maf
@@ -148,27 +147,24 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         # extract information from arguments
           if(any(class(gpData)=="gpData")){
              if(!gpData$info$codeGeno) stop("use function 'codeGeno' before using 'kin'")
-             marker <- gpData$geno
+             W <- gpData$geno
              if(!is.null(maf) & length(maf)!=ncol(gpData$geno))     stop("minor allele frequency not provided for all markers")
           }
            else stop("object is not of class 'gpData'")
 
-        # M supposed to be coded with 0,1,2
-        M <- marker
-        n <- nrow(M)
-        p <- ncol(M)
+        # W supposed to be coded with 0,1,2
+        n <- nrow(W)
+        p <- ncol(W)
 
         # use user-supplied values for maf
         # or, otherwise 2* minor allele frequency as expectation
-        if(is.null(maf)) {maf <- colMeans(M, na.rm = TRUE)}
+        if(is.null(maf)) {maf <- colMeans(W, na.rm = TRUE)}
 
         pq2 <- 0.5*maf*(2-maf)
         # compute realized relationship matrix U
-        Z <- sweep(M,2,maf)
-        for (i in 1:p){  # loop for standardizing columns by sd
-	    Z[,i]<-Z[,i]/sqrt(pq2[i])
-        }
-        U <- (Z %*% t(Z))/(p)
+        W <- sweep(W,2,maf)
+        W <- sweep(W,2,sqrt(pq2), "/")
+        U <- tcrossprod(W) / p
         kmat <- U
         attr(kmat, "alleleFrequencies") <- maf
         attr(kmat, "markerVariances") <- pq2
