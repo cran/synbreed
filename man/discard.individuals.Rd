@@ -1,14 +1,14 @@
-\name{discard.markers}
-\alias{discard.markers}
+\name{discard.individuals}
+\alias{discard.individuals}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Subsets for objects of class gpData
 }
 \description{
-The function produces subsets from an object of class \code{gpData} with reduced markers. Marker informartion will be discarded from elements \code{geno} and \code{map}
+The function produce subsets from an object of class \code{gpData} with reduced individuals. Individual information will be discarded from elements \code{geno}, \code{pheno}, \code{covar} and \code{pedigree}.
 }
 \usage{
-discard.markers(gpData, which)
+discard.individuals(gpData, which, keepPedigree = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,7 +16,10 @@ discard.markers(gpData, which)
 object of class \code{gpData}
 }
   \item{which}{
-character vector identifying names of markers which get discarded in \code{geno} from a \code{gpData}-object.
+character vector either identifying names of individuals get discarded from a \code{gpData}-object.
+}
+  \item{keepPedigree}{
+\code{logical}. Should the individual only be removed from elements \code{geno} and \code{pheno} but kept in the pedigree?
 }
 }
 \value{
@@ -27,7 +30,7 @@ Valentin Wimmer and Hans-Juergen Auinger
 }
 
 \seealso{
-\code{\link{create.gpData}}, \code{\link{add.markers}}, \code{\link{add.individuals}}, \code{\link{discard.individuals}}
+\code{\link{create.gpData}}, \code{\link{add.individuals}}, \code{\link{add.markers}}, \code{\link{discard.markers}}
 }
 \examples{
 
@@ -46,18 +49,19 @@ rownames(map) <- paste("M",c(1:4,6:12),sep="")
 gp <- create.gpData(pheno=pheno,geno=geno,map=map)
 summary(gp)
 
-# remove unmapped SNP M5 (which has no postion in the map)
-gp2 <- discard.markers(gp,"M5")
-summary(gp2)
+# discard genotypes with missing values in the marker matrix
+gp3 <- discard.individuals(gp,names(which(rowSums(is.na(gp$geno))>0)))
+summary(gp3)
 
 \dontrun{
 # add one new DH line to maize data
 library(synbreedData)
 data(maize)
 
-# delete markers
-maize2 <- discard.individuals(maize,colnames(maize$geno)[1:50])
+# delete individual
+maize2 <- discard.individuals(maize,rownames(maize$geno)[1:10])
 summary(maize2)
+
 }
 }
 \keyword{manip}

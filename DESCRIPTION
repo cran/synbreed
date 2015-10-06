@@ -1,13 +1,14 @@
 Package: synbreed
 Type: Package
 Title: Framework for the Analysis of Genomic Prediction Data using R
-Version: 0.11-10
-Date: 2015-06-10
+Version: 0.11-22
+Date: 2015-10-06
 Author: Valentin Wimmer, Hans-Juergen Auinger, Theresa Albrecht, Chris-Carolin Schoen with contributions by Larry Schaeffer, Malena Erbe, Ulrike Ober, Christian Reimer, Yvonne Badke and Peter VandeHaar
-Depends: R (>= 2.14), doBy, BLR, regress (>= 1.3-8), abind
-Imports: igraph, lattice, MASS, LDheatmap, qtl
+Depends: R (>= 2.14)
+Imports: methods, doBy, igraph, lattice, MASS, LDheatmap, abind, BGLR,
+        regress (>= 1.3-8)
 Suggests: synbreedData (>= 1.5)
-Maintainer: Valentin Wimmer <Valentin.Wimmer@kws.com>
+Maintainer: Hans-Juergen Auinger <auinger@tum.de>
 Description: A collection of functions required for genomic prediction which were developed within the Synbreed project for synergistic plant and animal breeding (www.synbreed.tum.de). This covers data processing, data visualization, and analysis. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats in plant and animal breeding. This research was funded by the German Federal Ministry of Education and Research (BMBF) within the AgroClustEr Synbreed - Synergistic plant and animal breeding (FKZ 0315528A).
 URL: http://synbreed.r-forge.r-project.org/
 License: GPL-3
@@ -16,8 +17,8 @@ LazyData: no
 ZipData: no
 Repository: CRAN
 Repository/R-Forge/Project: synbreed
-Repository/R-Forge/Revision: 561
-Repository/R-Forge/DateTimeStamp: 2015-06-10 14:25:18
-Date/Publication: 2015-06-16 11:49:44
+Repository/R-Forge/Revision: 579
+Repository/R-Forge/DateTimeStamp: 2015-10-06 09:19:26
+Date/Publication: 2015-10-06 14:04:27
 NeedsCompilation: no
-Packaged: 2015-06-10 14:46:26 UTC; rforge
+Packaged: 2015-10-06 09:25:23 UTC; rforge

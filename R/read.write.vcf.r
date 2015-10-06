@@ -1,24 +1,27 @@
-write.vcf <- function(gp,file){
+write.vcf <- function(gp,file,unphased=TRUE){
 
   if(is.null(nrow(gp$geno)) | is.null(ncol(gp$geno))){
     print(str(gp$geno))
     stop("Wrong genotypic information!")
   }
-  if(!gp$info$map.unit %in% c("bp", "kb", "Mb")) stop("You need basepairs as map positions to write a vcf-file!")
+  if(unphased) sepSign <- "/" else sepSign <- "|"
+  if(!gp$info$map.unit %in% c("bp", "kb", "Mb")) stop(paste("You need basepairs as map positions to write a vcf-file!\nThe map unit of ", substitute(gp)," is '", gp$info$map.unit, "'.", sep=""))
   if(gp$info$map.unit =="kb") gp$map$pos <- gp$map$pos * 1000
   if(gp$info$map.unit =="Mb") gp$map$pos <- gp$map$pos * 1000000
   if(any((gp$map$pos-round(gp$map$pos, digits=0)) >1e-6)) stop("Your map positions and the unit of the position do not fit!")
   geno <- as.data.frame(t(gp$geno), stringsAsFactors=FALSE)
-  geno[geno==0] <- "0|0"
-  geno[geno==1] <- "0|1"
-  geno[geno==2] <- "1|1"
+  s00 <- paste("0", "0", sep=sepSign); s01 <- paste("0", "1", sep=sepSign); s11 <- paste("1", "1", sep=sepSign); s10 <- paste("1", "0", sep=sepSign)
+  geno[geno==0] <- s00
+  geno[geno==1] <- s01
+  geno[geno==2] <- s11
+  geno[geno==-1] <- s10
   bgl <- cbind(data.frame(CHROM=paste("chr",gp$map$chr, sep=""), POS=gp$map$pos,ID=rownames(gp$map), REF="A", ALT="G", QUAL=".", FILTER="PASS", INFO=".", FORMAT="GT", stringsAsFactors=FALSE),
                geno)
   if (any(grep(" ",colnames(geno)))) stop("no blanks allowed in IDs when running beagle")
   cat(file=file, '##fileformat=VCFv4.1\n##filedate=20120310\n##source="write.vcf of R-synbreed"\n##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n#')
   cat(file=file, paste(colnames(bgl), collapse="\t"), "\n", append=TRUE)
   write.table(bgl, file=file,
-              quote=FALSE, col.names=FALSE, row.names=FALSE, append=TRUE, sep="\t", na=".|.")
+              quote=FALSE, col.names=FALSE, row.names=FALSE, append=TRUE, sep="\t", na=paste(".", ".", sep=sepSign))
 
 }
 

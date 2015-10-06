@@ -19,13 +19,13 @@ object of class \code{gpData}
 \code{character}. The type of relationship matrix to be returned. See 'Details'.
 }
   \item{DH}{
-\code{logical} vector of length \eqn{n}. \code{TRUE} or 1 if individual is a doubled-haploid (DH) line and \code{FALSE} or 0 otherwise. Only used for pedigree based relatedness coefficients
+\code{logical} vector of length \eqn{n}. \code{TRUE} or 1 if individual is a doubled-haploid (DH) line and \code{FALSE} or 0 otherwise. This option is only used, if \code{ret} argument is \code{"add"} or \code{"kin"}.
 }
   \item{maf}{
     \code{numeric} vector of length equal the number of markers. Supply values for the \eqn{p_i}{pi} of each marker, which were used to correct the allele counts in \code{ret="realized"} and \code{ret="realizedAB"}. If not specified, \eqn{p_i}{pi} equals the minor allele frequency of each locus.
 }
   \item{selfing}{
-\code{numeric} vector of length \eqn{n}. It is used as the number of selfings of the individual. Only used for pedigree based relatedness coefficients. No need for animal relationships.
+\code{numeric} vector of length \eqn{n}. It is used as the number of selfings of an recombinant inbred line individual. This option is only used, if \code{ret} argument is \code{"add"} or \code{"kin"}.
 }
   \item{lambda}{
 \code{numeric} bandwidth parameter for the gaussian kernel. Only used for calculating the gaussian

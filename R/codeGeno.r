@@ -43,7 +43,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       else if(length(MG) > 0) warning(paste("Of genotype(s) ", MG, " all genotypic values are missing! \nImputation may be erroneus.", sep=" "))
     } else if(length(MG) > 0) warning(paste("Of genotype(s) ", MG, " all genotypic values are missing!", sep=" "))
 
-  if (is.character(label.heter)) if(label.heter == "alleleCoding") label.heter <- function(x){substr(x, 1, 1) != substr(x, 3, 3)}
+  if (is.character(label.heter)) if(label.heter[1] == "alleleCoding") label.heter <- function(x){substr(x, 1, 1) != substr(x, nchar(x), nchar(x))}
 
   orgFormat <- class(gpData)
   # check for class 'gpData'
@@ -61,7 +61,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       if(is.function(label.heter)){
         warning("assuming heterozygous genotypes coded as 1. Use 'label.heter' to specify if that is not the case")
         label.heter <- "1"
-      } else if(is.na(as.numeric(label.heter))){
+      } else if(is.na(as.numeric(label.heter[1]))){
         warning("assuming heterozygous genotypes coded as 1. Use 'label.heter' to specify if that is not the case")
         label.heter <- "1"
       }
@@ -377,55 +377,43 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       for (j in vec.cols){
         if(j==vec.cols[1]) ptm <- Sys.time()
         if(sum(!is.na(gpData$geno[,j]))>0){
-#          try({# compute population structure  as counts
-               poptab <- table(popStruc[vec.big],gpData$geno[vec.big,j])
-               rS <- rowSums(poptab)
-               # compute otherstatistics
-               major.allele <- unlist(attr(poptab,"dimnames")[[2]][apply(poptab,1,which.max)])
-               # look if SNP is segregating  for this population
-               polymorph <- apply(poptab,1,length) > 1 & (apply(poptab,1,min) != 0)
-               polymorph2 <- rS > minFam
-               polymorph[!polymorph2] <- TRUE
-               # count missing values
-               nmissfam <- tapply(is.na(gpData$geno[vec.big,j]),popStruc[vec.big],sum)
-               # must be a named list
-               names(major.allele) <- names(polymorph)
-               # loop over all families
-               for (i in rownames(poptab)[nmissfam > 0]){
-                 # impute values for impute.type="family" : all missing genotypes
-                 allTab <- table(gpData$geno[popStruc[vec.big] %in% i, j])
-                 if(length(allTab) == 0 & noHet) {
-                   allTab <- table(c(0,2))
-                 } else if(all(names(allTab) == c(0, 2)) & !noHet)  allTab <- table(c(0,1,1,2))
-                 if (impute.type=="family"){
-                   gpData$geno[is.na(gpData$geno[,j]) & popStruc %in% i ,j] <- ifelse(length(allTab)>1,
-                                                                    sample(as.numeric(names(allTab)),size=nmissfam[as.character(i)],prob=probList[[length(allTab)]],replace=TRUE),
-                                                                    as.numeric(names(allTab)))
-                   # update counter
-                   if(polymorph[as.character(i)]) cnt3[j] <- cnt3[j] + nmissfam[as.character(i)] else cnt1[j] <- cnt1[j] + nmissfam[as.character(i)]
-                 }
-                 if(impute.type %in%c("beagleAfterFamily")){
-                   if (is.na(gpData$map$pos[j])){     # if no position is available use family algorithm
-                     gpData$geno[is.na(gpData$geno[,j]) & popStruc %in% i ,j] <- ifelse(length(allTab)>1,
-                                                                      sample(as.numeric(names(allTab)),size=nmissfam[as.character(i)],prob=probList[[length(allTab)]],replace=TRUE),
-                                                                      as.numeric(names(allTab)))
-                     # update counter
-                     if(polymorph[as.character(i)]) cnt3[j] <- cnt3[j] +  nmissfam[as.character(i)] else cnt1[j] <- cnt1[j] +  nmissfam[as.character(i)]
-                   } else { # use Beagle and impute NA for polymorphic families
-                     if(!polymorph[as.character(i)]){
-                       # impute values for impute.type="beagleAfterfamily"  : only monomorph markers
-                       # update counter
-                       cnt1[j] <- cnt1[j] + nmissfam[as.character(i)]
-                     }
-                   }
-                 }
-               }
-               if(j==ceiling(length(vec.cols)/50))
-                 if(verbose)  cat("         approximative run time for imputation by family information ",
-                                  paste(round(as.numeric(difftime(Sys.time(), ptm)*50)), digits=1, " ",
-                                  units(difftime(Sys.time(), ptm))," ... \n",sep=""))
-
-#          }, silent= !verbose) # end try
+          poptab <- table(popStruc[vec.big],gpData$geno[vec.big,j])
+          rS <- rowSums(poptab)
+          # compute otherstatistics
+          major.allele <- unlist(attr(poptab,"dimnames")[[2]][apply(poptab,1,which.max)])
+          # look if SNP is segregating  for this population
+          polymorph <- apply(poptab,1,length) > 1 & (apply(poptab,1,min) != 0)
+          polymorph2 <- rS > minFam
+          polymorph[!polymorph2] <- TRUE
+          # count missing values
+          nmissfam <- tapply(is.na(gpData$geno[vec.big,j]),popStruc[vec.big],sum)
+          # must be a named list
+          names(major.allele) <- names(polymorph)
+          # loop over all families
+          for (i in rownames(poptab)[nmissfam > 0]){
+            # impute values for impute.type="family" : all missing genotypes
+            allTab <- table(gpData$geno[popStruc[vec.big] %in% i, j])
+            if(length(allTab) == 1){
+              gpData$geno[is.na(gpData$geno[,j]) & popStruc %in% i ,j] <- as.numeric(names(allTab))
+              cnt1[j] <- cnt1[j] + nmissfam[as.character(i)]
+            } else if(impute.type %in% c("family", "beagleAfterFamily")){
+              if(length(allTab) == 0 & noHet) {
+                allTab <- table(c(0,2))
+              } else if(all(names(allTab) == c(0, 2)) & !noHet){
+                allTab <- table(c(0,1,1,2))
+              }
+              if (impute.type=="family"|is.na(gpData$map$pos[j])){
+                gpData$geno[is.na(gpData$geno[,j]) & popStruc %in% i ,j] <- ifelse(length(allTab)>1,
+                                                               sample(as.numeric(names(allTab)),size=nmissfam[as.character(i)],prob=probList[[length(allTab)]],replace=TRUE),
+                                                               as.numeric(names(allTab)))
+                cnt3[j] <- cnt3[j] + nmissfam[as.character(i)]
+              }
+            }
+          }
+          if(j==ceiling(length(vec.cols)/50))
+            if(verbose)  cat("         approximative run time for imputation by family information ",
+                             paste(round(as.numeric(difftime(Sys.time(), ptm)*50)), digits=1, " ",
+                             units(difftime(Sys.time(), ptm))," ... \n",sep=""))
         }   # end of if(sum(!is.na(gpData$geno[,j]))>0)
       } # end of marker loop
     }
@@ -505,7 +493,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       #########################################################################
       # impute missing values with no population structure or missing positions
       #########################################################################
-      if(impute.type %in% c("random", "beagle", "beagleAfterFamily")){
+      if(impute.type %in% c("random", "beagle", "beagleAfterFamily", "family")){
         if (verbose) cat("   step 7d : Random imputing of missing values \n")
         # initialize counter (- number of heterozygous values)
         for (j in (1:M)[apply(is.na(gpData$geno), 2, sum)>0]){
@@ -578,8 +566,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
     if(impute){
        if(sum(which.duplicated) >0){
         mat.ld <- cor(gpData$geno[, which.duplicated], gpData$geno[, rev.which.duplicated], use="pairwise.complete.obs")
-        df.ld <- data.frame(kept=rep(cnames[which.duplicated], ncol(mat.ld)),
-                            removed=rep(cnames[rev.which.duplicated], each=nrow(mat.ld)),
+        df.ld <- data.frame(kept=rep(cnames[which.duplicated], nrow(mat.ld)),
+                            removed=rep(cnames[rev.which.duplicated], each=ncol(mat.ld)),
                             ld=as.numeric(mat.ld),
                             stringsAsFactors=FALSE)
         df.ld <- df.ld[df.ld$ld>1-1e-14,]
@@ -591,8 +579,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
         if(sum(which.duplicated) >0){
           gpData$geno[is.na(gpData$geno)] <- 3
           mat.ld <- cor(gpData$geno[, which.duplicated], gpData$geno[, rev.which.duplicated])
-          df.ld <- data.frame(kept=rep(cnames[which.duplicated], each=nrow(mat.ld)),
-                              removed=rep(cnames[rev.which.duplicated], ncol(mat.ld)),
+          df.ld <- data.frame(kept=rep(cnames[which.duplicated], each=ncol(mat.ld)),
+                              removed=rep(cnames[rev.which.duplicated], nrow(mat.ld)),
                               ld=as.numeric(mat.ld),
                               stringsAsFactors=FALSE)
           df.ld <- df.ld[df.ld$ld>1-1e-14,]
@@ -651,8 +639,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
           mat.ld <- cor(gpData$geno[, which.duplicated], gpData$geno[, rev.which.duplicated])
           rownames(mat.ld) <- cnames[which.duplicated]
           colnames(mat.ld) <- cnames[rev.which.duplicated]
-          df.ld <- data.frame(kept=rep(colnames(mat.ld), nrow(mat.ld)),
-                              removed=rep(rownames(mat.ld), each=ncol(mat.ld)),
+          df.ld <- data.frame(kept=rep(colnames(mat.ld), ncol(mat.ld)),
+                              removed=rep(rownames(mat.ld), each=nrow(mat.ld)),
                               ld=as.numeric(mat.ld),
                               stringsAsFactors=FALSE)
           df.ld <- df.ld[df.ld$ld>1-1e-14,]
@@ -720,11 +708,15 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   # overwrite original genotypic data
   if(orgFormat == "gpData") {
     gpData$info$codeGeno <- TRUE
+    gpData$info$version <- paste("gpData object was coded by synbreed version", sessionInfo()$otherPkgs$synbreed$Version)
   } else gpData <- gpData$geno
 
   if(print.report){
     if (verbose) cat("  Writing report to file 'SNPreport.txt' \n")
-    report.list <- data.frame(SNPname=cnames,major=major[cnames],minor=minor[cnames],MAF=round(colMeans(res,na.rm=TRUE)/2,3),impute.fam=cnt1[cnames],impute.beagle=cnt2[cnames],impute.ran=cnt3[cnames])
+    report.list <- data.frame(SNPname=cnames,major=major[cnames], minor=minor[cnames],
+                              MAF=round(colMeans(gpData$geno,na.rm=TRUE)/2,3),
+                              impute.fam=cnt1[cnames], impute.beagle=cnt2[cnames],
+                              impute.ran=cnt3[cnames])
     write.table(report.list,file="SNPreport.txt",quote=FALSE,row.names=FALSE)
    }
 

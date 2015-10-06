@@ -8,7 +8,7 @@ Prepare genotypic data in vcf-Format
 Create vcf-file for miscellaneous applications. Within the package it is used to write files for beagle usage.
 }
 \usage{
-write.vcf(gp, file)
+write.vcf(gp, file, unphased=TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -18,7 +18,16 @@ write.vcf(gp, file)
   \item{file}{
 \code{character}. Filename for writing the file.
 }
+  \item{unphased}{
+\code{logical}. The default is TRUE. Than the seperator between the alleles is \code{"/"}, and the
+possible codings are \code{"0/0"} for \code{0} in the genotype matrix, \code{"0/1"} for \code{1} and
+\code{"1/1"} for {2}. For getting a phased output, use \code{unphased=FALSE}. Than the seperator is
+\code{"|"}. For hetercygous genotypes you have to change the 1 to -1 if you like to get the coding
+\code{"1|0"}, So posible codings in this case are \code{"0|0"} for \code{0} in the genotype matrix,
+\code{"0|1"} for \code{1}, \code{"1|0"} for \code{-1} and \code{"1|1"} for {2}.
 }
+}
+
 \details{
 The function writes a vcf-file. The format of the output is "GT". Other formats are not supported.
 }

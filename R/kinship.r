@@ -31,7 +31,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
         cnt2 <- cnt + length(IDplus)
         A[i, 1:cnt2] <- A[1:cnt2, i] <- (A[ped[cnt, "Par1"],1:cnt2]+A[ped[cnt, "Par2"],1:cnt2])*.5
         if(DH[cnt]!=0) A[i, i] <- 2 else
-          A[i, i] <- 2 -.5^selfing[i] + .5^(selfing[i]+1) * A[ped[cnt, "Par1"], ped[cnt, "Par2"]] #Schoenleben et al., unpublished
+          A[i, i] <- 2 -.5^selfing[i]*(1 - .5*A[ped[cnt, "Par1"], ped[cnt, "Par2"]]) #Schoenleben et al., unpublished
       }
       A <- A[-c(1:length(IDplus)), -c(1:length(IDplus))]
     } else {
@@ -210,6 +210,6 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
     }
 
     attr(kmat, "type") <- ret
-    class(kmat) <- "relationshipMatrix"
+    class(kmat) <- c("relationshipMatrix", "matrix")
     return(kmat)
 }

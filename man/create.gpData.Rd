@@ -1,15 +1,15 @@
 \name{create.gpData}
 \alias{create.gpData}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{                                                                           
+\title{
 Create genomic prediction data object
 }
-\description{                                                                                                            
+\description{
 This function combines all raw data sources in a single, unified data object of class \code{gpData}. This is a \code{list} with elements for phenotypic, genotypic, marker map, pedigree and further covariate data. All elements are optional.
 }
-\usage{                                                                                         
+\usage{
 create.gpData(pheno = NULL, geno = NULL, map = NULL, pedigree = NULL,
-              family = NULL, covar = NULL, reorderMap = TRUE, 
+              family = NULL, covar = NULL, reorderMap = TRUE,
               map.unit = "cM", repeated  = NULL, modCovar = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
@@ -59,7 +59,9 @@ Object of class \code{gpData} which is a \code{list} with the following elements
 \item{pedigree}{object of class \code{pedigree}}
 \item{map}{\code{data.frame} with columns 'chr' and 'pos' and markers sorted by 'pos' within 'chr'}
 \item{phenoCovars}{\code{array} with phenotypic covariates}
-\item{info}{\code{list} with additional information on data (coding of data, unit in \code{map})}
+\item{info}{\code{list} with additional information on data (coding of data, unit in \code{map})
+ From synbreed version 0.11-11 on the function \code{\link{codeGeno}} adds here the package version which was used to do the coding. There are differences in codings between version 0.10-11 and 0.11-0!
+}
 }
 \author{
 Valentin Wimmer and Hans-Juergen Auinger with contributions be Peter VandeHaar
@@ -67,7 +69,7 @@ Valentin Wimmer and Hans-Juergen Auinger with contributions be Peter VandeHaar
 \note{
 In case of missing row names or column names in one item, information is substituted from other elements (assuming the same order of individuals/markers) and a warning specifying the assumptions is returned. Please check them carefully.
 }
-                                
+
 \seealso{
 \code{\link{codeGeno}}, \code{\link{summary.gpData}}, \code{\link{gpData2data.frame}}
 }
@@ -88,7 +90,7 @@ colnames(geno) <- paste("M",1:12,sep="")
 # one SNP is not mapped (M5) and will therefore be removed
 map <- data.frame(chr=rep(1:3,each=4),pos=rep(1:12))
 map  <- map[-5,]
-rownames(map) <- paste("M",c(1:4,6:12),sep="") 
+rownames(map) <- paste("M",c(1:4,6:12),sep="")
 
 # simulate pedigree
 ped <- simul.pedigree(3,c(3,3,n-6))
@@ -100,7 +102,7 @@ summary(gp)
 
 # 9 plants with 2 traits , 3 replcations
 n <- 9  #
-pheno <- data.frame(ID = rep(letters[1:n],3), rep = rep(1:3,each=n), 
+pheno <- data.frame(ID = rep(letters[1:n],3), rep = rep(1:3,each=n),
                     Yield = rnorm(3*n,200,5), Height=rnorm(3*n,100,1))
 
 # combine in one object
