@@ -11,15 +11,13 @@ predict.gpMod <- function(object,newdata=NULL,...){
       if(class(newdata)!="gpData") stop("object 'newdata' must be of class 'gpData'")
       X <- newdata$geno
       m <- object$markerEffects
-      mu <- object$fit$mu
-      prediction <- mu + X %*% m
+      prediction <- X %*% m
   }
   if(model == "BLUP" & !is.null(object$markerEffects)){    # if marker effects are available
      if(class(newdata)!="gpData") stop("object 'newdata' must be of class 'gpData'")
      X <- newdata$geno
      m <- object$markerEffects
-     mu <- c(object$fit$beta)
-     prediction <- mu + X %*% m
+     prediction <- X %*% m
   }
   if(model == "BLUP" & is.null(object$markerEffects)){
 #      prediction <- gpData$geno %*% t(gpData$geno[rownames(kin), ]) %*% ginv(kin) %*% genVal[rownames(kin)]
@@ -29,14 +27,14 @@ predict.gpMod <- function(object,newdata=NULL,...){
       y <- object$y
       n <- length(y) # size of the training set
       Z <- cbind(diag(n),matrix(data=0,nrow=n,ncol=length(setdiff(y=names(object$y),x=newdata))))
-      X <- matrix(1,nrow=n)
+      X <- object$fit$X
       sigma2g <- object$fit$sigma[1]
       sigma2  <- object$fit$sigma[2]
       #diag(G) <- diag(G) + 0.00001
       GI <- ginv(G)*sigma2/sigma2g    # to ensure a solution for the inverse
       RI <- diag(n)
       sol <- MME(X, Z, GI, RI, y)
-      prediction <- sol$b + sol$u[-(1:n)]
+      prediction <- sol$u[-(1:n)]
       names(prediction) <- setdiff(y=names(object$y),x=newdata)
   }
 

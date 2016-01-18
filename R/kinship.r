@@ -1,4 +1,4 @@
-kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),DH=NULL, maf=NULL, selfing=NULL, lambda=1){
+kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"), DH=NULL, maf=NULL, selfing=NULL, lambda=1, P=NULL){
 
     ret <- match.arg(ret,choices=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),several.ok = FALSE)
 # (1) expected relatedness
@@ -34,7 +34,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
           A[i, i] <- 2 -.5^selfing[i]*(1 - .5*A[ped[cnt, "Par1"], ped[cnt, "Par2"]]) #Schoenleben et al., unpublished
       }
       A <- A[-c(1:length(IDplus)), -c(1:length(IDplus))]
-    } else {
+    } else if(ret %in% c("gam", "dom")){
       # set up extended pedigree
       ID <- rep(seq_along(ped$ID),each=2)
       par1 <- pmatch(ped$Par1,ped$ID,nomatch = 0, duplicates.ok = TRUE)
@@ -127,16 +127,20 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
 
       # use user-supplied values for maf
       # or, otherwise 2* minor allele frequency as expectation
-      if(is.null(maf)) {maf <- colMeans(W, na.rm = TRUE)}
+      if(is.null(maf)) { maf <- colMeans(W, na.rm = TRUE)}
 
-      P <- matrix(rep(maf,each=n),ncol=p)
-
+      if(is.null(P)) {
+        p <- matrix(rep(maf,each=n),ncol=p)
+      } else if(!all.equal(dim(P),dim(W))) {
+        stop("wrong dimension of the matrix P")
+      } else p <- as.matrix(P)
       # compute realized relationship matrix G
-      Z <- W - P
+      Z <- W - p
       U <- tcrossprod(Z)
       U <- 2*U/(sum(maf*(2-maf)))
 
       kmat <- U
+      if(!is.null(P)) attr(kmat, "P") <- P
       attr(kmat, "alleleFrequencies") <- maf
       attr(kmat, "expectedMAX") <- 2*sum((2-maf)**2)/(sum(maf*(2-maf)))
       attr(kmat, "SNPs") <- colnames(gpData$geno)
@@ -189,12 +193,11 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
           if(ret=="sm-smin"){
             smin <- min(s,na.rm=TRUE)
             s <- (s-smin)/(1-smin)
+            attr(kmat, "min") <- smin
           }
-
           kmat <- 2*s
           attr(kmat, "SNPs") <- colnames(gpData$geno)
-
-    }
+}
 
     if (ret == "gaussian"){ # euklidian distance with gaussian
       if(any(class(gpData)=="gpData")){
@@ -208,7 +211,7 @@ kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm
 
       attr(kmat, "SNPs") <- colnames(gpData$geno)
     }
-
+    attr(kmat, "info") <-  paste("This relationshipMatrix was calculated by synbreed version", sessionInfo()$otherPkgs$synbreed$Version)
     attr(kmat, "type") <- ret
     class(kmat) <- c("relationshipMatrix", "matrix")
     return(kmat)

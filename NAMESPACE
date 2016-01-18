@@ -16,7 +16,7 @@ importFrom("lattice", "levelplot")
 importFrom("LDheatmap", "LDheatmap") 	
 importFrom("MASS", "ginv")
 importFrom("methods", "as", "is")
-importFrom("regress", "regress", "BLUP")
+importFrom("regress", "regress", "BLUP", summary.regress, print.regress)
 importFrom("stats", "as.formula", "coef", "cor", "dist", "lm", "model.matrix", "na.omit", "na.pass", "nls", "quantile", "rnorm", "runif", "sd", "smooth", "step", "terms", "weighted.mean")
 importFrom("utils", "capture.output", "read.table", "sessionInfo", "str", "write.table")
 

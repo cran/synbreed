@@ -194,6 +194,7 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
   obj$info$map.unit <- map.unit
   obj$info$codeGeno <- FALSE
   obj$info$attrPhenoCovars <- attrModCovars
+  obj$info$version <- paste("gpData object was created by synbreed version", sessionInfo()$otherPkgs$synbreed$Version)
 
   # return object of class 'gpData'
   class(obj) <- "gpData"

@@ -124,7 +124,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
         else
           capture.output(res <- BLR(y=y,XL=X,GF=list(ID=df.trait$ID,A=kinTS),XF=XF,...),file="BLRout.txt")
       }
-      genVal <- res$yHat
+      genVal <- res$yHat - mean(res$yHat)
       names(genVal) <- rownames(X)
       m <- res$bL
       if(predict){
@@ -152,7 +152,7 @@ gpMod <- function(gpData,model=c("BLUP","BL","BRR"),kin=NULL,predict=FALSE,trait
         else
           capture.output(res <- BLR(y=y,XR=X,GF=list(ID=df.trait$ID,A=kinTS),XF=XF,...),file="BLRout.txt")
       }
-      genVal <- res$yHat
+      genVal <- res$yHat - mean(res$yHat)
       names(genVal) <- rownames(X)
       m <- res$bR
       if(predict){

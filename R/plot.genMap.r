@@ -13,7 +13,7 @@ plotGenMap <- function (map, dense = FALSE, nMarker = TRUE, bw=1, centr=NULL, fi
       else stop("not supported file format choosen!")
     }
 
-    if (class(map) == "gpData"){
+    if (class(map)[1] == "gpData"){
        map.unit <- map$info$map.unit
        map <- map$map
     } else map.unit <- "unit"

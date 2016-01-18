@@ -8,7 +8,7 @@ Subsets for objects of class gpData
 The function produces subsets from an object of class \code{gpData} with reduced markers. Marker informartion will be discarded from elements \code{geno} and \code{map}
 }
 \usage{
-discard.markers(gpData, which)
+discard.markers(gpData, which, whichNot=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,6 +17,9 @@ object of class \code{gpData}
 }
   \item{which}{
 character vector identifying names of markers which get discarded in \code{geno} from a \code{gpData}-object.
+}
+  \item{whichNot}{
+character vector identifying names of markers which get kept in \code{geno} from a \code{gpData}-object. Overwrites argument \code{which}!
 }
 }
 \value{

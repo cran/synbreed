@@ -49,9 +49,8 @@ plot.pedigree <- function(x, effect=NULL, ...){
   #if(onlyFamily) plot(ped.graph,rescale=TRUE,vertex.label=NA,layout=pos,edge.color=1,edge.width=0.5,edge.arrow.size=0,vertex.size=0,...)
 
   #else{
-  print(str(ped.graph))
-    plot(ped.graph,rescale=TRUE,vertex.label=pedigree$ID,layout=pos,edge.color=1,edge.width=0.5,edge.arrow.size=0.5,vertex.label.family="Helvetica",vertex.color=cols,...)
+    plot(ped.graph,rescale=TRUE,vertex.label=pedigree$ID,layout=pos,edge.color=1,edge.width=0.5,edge.arrow.size=0.5,vertex.label.family="sans",vertex.color=cols,...)
   #}
-
   if (!is.null(effect)) axis(side=1,at=seq(-1,1,length=10),labels=round(seq(min(pos[,1]),max(pos[,1]),length=10),0))
+  return(ped.graph)
 }

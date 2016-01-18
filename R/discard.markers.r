@@ -1,20 +1,27 @@
 # discard markers from class 'gpData'
 
-discard.markers <- function(gpData,which){
+discard.markers <- function(gpData,which,whichNot=NULL){
   if(class(gpData) != "gpData")
     stop(substitute(gpData), " is not a gpData-object!")
   # update geno
-  gpData$geno <- gpData$geno[,!colnames(gpData$geno) %in% which]
+  if(is.null(whichNot))
+     whichNot <- colnames(gpData$geno)[!colnames(gpData$geno) %in% which]
+  if(!is.null(attr(gpData$geno, "identical"))) attrG <- attr(gpData$geno, "identical") else attrG <- NULL
+  gpData$geno <- gpData$geno[,colnames(gpData$geno) %in% whichNot]
+  if(!is.null(attrG)) attr(gpData$geno, "identical") <- attrG
   # update map
-  gpData$map <- gpData$map[!rownames(gpData$map) %in% which,]
+  gpData$map <- gpData$map[rownames(gpData$map) %in% whichNot,]
   return(gpData)
 }
 
 # discard individuals from class 'gpData'
 
-discard.individuals <- function(gpData,which,keepPedigree=FALSE){
+discard.individuals <- function(gpData,which,keepPedigree=FALSE,whichNot=NULL){
   if(class(gpData) != "gpData")
     stop(substitute(gpData), " is not a gpData-object!")
+  if(!is.null(whichNot))
+    which <- c(rownames(gpData$geno)[!rownames(gpData$geno) %in% whichNot],
+               dimnames(gpData$pheno)[[1]][[!dimnames(gpData$pheno)[[1]] %in% whichNot]])
   if(!all(which %in% gpData$covar$id)) stop("Some individuals are not in the ", substitute(gpData), "-object!")
   if(!is.null(gpData$pheno)){
   # updata pheno
@@ -26,7 +33,9 @@ discard.individuals <- function(gpData,which,keepPedigree=FALSE){
     dimnames(gpData$pheno) <- phenoNames
   }
   # update geno
+  if(!is.null(attr(gpData$geno, "identical"))) attrG <- attr(gpData$geno, "identical") else attrG <- NULL
   gpData$geno <- subset(gpData$geno,!rownames(gpData$geno) %in% which)
+  if(!is.null(attrG)) attr(gpData$geno, "identical") <- attrG
   if(!is.null(gpData$phenoCovars)){
     phenoCovarsNames <- dimnames(gpData$phenoCovars)
     phenoCovarsNames[[1]] <- phenoCovarsNames[[1]][!phenoCovarsNames[[1]] %in% which]

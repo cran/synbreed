@@ -6,8 +6,8 @@ summary.relationshipMatrix <- function(object,...){
                  range.off.diagonal=c(min=min(offdiag, na.rm=TRUE), max=max(offdiag, na.rm=TRUE)),
                  mean.diag=mean(diag(relMat), na.rm=TRUE),
                  mean.off.diag=mean(offdiag, na.rm=TRUE),
-                 nUnique=length(unique(offdiag)),
-                 diag.val=summary(diag(relMat)),
+                 nUnique=length(unique(as.vector(offdiag))),
+                 diag.val=summary(as.vector(diag(relMat))),
                  empty = sum(is.na(relMat)))
      class(ans) <- "summary.relationshipMatrix"
      ans
