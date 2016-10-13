@@ -1,6 +1,6 @@
 # discard markers from class 'gpData'
 
-discard.markers <- function(gpData,which,whichNot=NULL){
+discard.markers <- function(gpData,which=NULL,whichNot=NULL){
   if(class(gpData) != "gpData")
     stop(substitute(gpData), " is not a gpData-object!")
   # update geno
@@ -16,7 +16,7 @@ discard.markers <- function(gpData,which,whichNot=NULL){
 
 # discard individuals from class 'gpData'
 
-discard.individuals <- function(gpData,which,keepPedigree=FALSE,whichNot=NULL){
+discard.individuals <- function(gpData,which=NULL,keepPedigree=FALSE,whichNot=NULL){
   if(class(gpData) != "gpData")
     stop(substitute(gpData), " is not a gpData-object!")
   if(!is.null(whichNot))

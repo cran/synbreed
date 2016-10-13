@@ -15,7 +15,8 @@ codeGeno(gpData,impute=FALSE,
                        "beagleAfterFamilyNoRand","fix"),
          replace.value=NULL, maf=NULL, nmiss=NULL, label.heter="AB",
          reference.allele="minor", keep.list=NULL, keep.identical=TRUE, verbose=FALSE,
-         minFam=5, showBeagleOutput=FALSE, tester=NULL, print.report=FALSE, check=FALSE)
+         minFam=5, showBeagleOutput=FALSE, tester=NULL, print.report=FALSE, check=FALSE,
+         nodes=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -67,6 +68,9 @@ For \code{impute.type} \code{family} and \code{beagleAfterFamily}, each family s
 \item{check}{
  This option has as default \code{FALSE}. If something seems to be wrong with the coding, with the option \code{check=TRUE} the function tries to catch the error.
  }
+  \item{nodes}{
+ \code{numeric}. This option is not in use yet.
+ }
 }
 \details{
 Coding of genotypic data is done in the following order (depending on choice of arguments; not all steps are performed):
@@ -85,7 +89,7 @@ Imputing is done according to \code{impute.type}
 This option is only suitable for homozygous individuals (such as doubled-haploid lines) structured in families.
 Suppose an observation \eqn{i} is missing (NA) for a marker \eqn{j} in family \eqn{k}. If marker \eqn{j} is fixed in family \eqn{k}, the imputed value will be the fixed allele. If marker \eqn{j} is segregating for the population \eqn{k},
 the value is 0 with probability of 0.5 and 2 with probability of 0.5. To use this algorithm, family information has to be stored as variable \code{family} in list element \code{covar} of an object of class \code{gpData}. This column should contain a \code{character} or \code{numeric} to identify family of all genotyped individuals.}
-\item{"beagle"}{Use Beagle Genetic Analysis Software Package version 4.0 (r1399) (Browning and Browning 2007; 2013) to infer missing genotypes is used. This software is a java program, so that you have to install java (>=1.7) and make it available at your computer. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking markers. Function \code{codeGeno} will create a directory \code{beagle} for Beagle input and output files (if it does not exist) and run Beagle with default settings. The information on marker position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be available for all markers. The program can only handle the position units "bp", "kb" and "Mb". Make sure that there are than only integer numbers for the unit "bp", because beagle can only work with integer numbers. By default, three genotypes 0, 1, 2 are imputed. To restrict the imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
+\item{"beagle"}{Use Beagle Genetic Analysis Software Package version 4.1 (r22Apr16.1cf) (Browning and Browning 2007; 2013; 2016) to infer missing genotypes is used. This software is a java program, so that you have to install java (>=1.7) and make it available at your computer. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking markers. Function \code{codeGeno} will create a directory \code{beagle} for Beagle input and output files (if it does not exist) and run Beagle with default settings. The information on marker position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be available for all markers. The program can only handle the position units "bp", "kb" and "Mb". Make sure that there are than only integer numbers for the unit "bp", because beagle can only work with integer numbers. By default, three genotypes 0, 1, 2 are imputed. To restrict the imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
 \item{"beagleAfterFamily"}{
 In the first step, missing genotypes are imputed according to the algorithm with \code{impute.type="family"}, but only for markers that are fixed within the family. Moreover, markers with a missing position (\code{map$pos=NA}) are imputed using the algorithm of \code{impute.type="family"}. In the second step, the remaining genotypes are imputed by Beagle. For details of this see the description of the \code{beagle} option.}
 \item{"beagleNoRand" and "beagleAfterFamilyNoRand"}{
@@ -115,10 +119,11 @@ An object of class \code{gpData} containing the recoded marker matrix. If \code{
 S R Browning and B L Browning (2007) Rapid and accurate haplotype phasing and missing data inference for whole genome association studies using localized haplotype clustering. Am J Hum Genet 81:1084-1097
 
 B L Browning and S R Browning (2013) Improving the accuracy and efficiency of identity by descent detection in population data. Genetics 194(2):459-471
-}
 
+S R Browning and B L Browning (2016) Genotype imputation with millions of reference samples. Am J Hum Genet 98:116-126
+}
 \author{
-Valentin Wimmer and Hans-Juergen Auinger
+Hans-Juergen Auinger and Valentin Wimmer
 }
 
 
@@ -163,7 +168,7 @@ mice.coded <- codeGeno(mice,label.heter=function(x) substr(x,1,1)!=substr(x,3,3)
 # example with maize data and imputing by family
 data(maize)
 # first only recode alleles
-maize.coded <- codeGeno(maize,label.heter=NULL)
+maize.coded <- codeGeno(maize,label.heter=1)
 
 # set 200 random chosen values to NA
 set.seed(123)

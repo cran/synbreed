@@ -8,7 +8,7 @@ Subsets for objects of class gpData
 The function produce subsets from an object of class \code{gpData} with reduced individuals. Individual information will be discarded from elements \code{geno}, \code{pheno}, \code{covar} and \code{pedigree}.
 }
 \usage{
-discard.individuals(gpData, which, keepPedigree = FALSE, whichNot=NULL)
+discard.individuals(gpData, which=NULL, keepPedigree = FALSE, whichNot=NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

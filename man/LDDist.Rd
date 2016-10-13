@@ -18,7 +18,7 @@ LDDist(LDdf,chr=NULL,type="p",breaks=NULL,n=NULL,file=NULL,fileFormat="pdf",
 object of class \code{LDdf} which is the output of function \code{pairwiseLD} and argument \code{type="data.frame"}
 }
   \item{chr}{
-\code{numeric} scalar or vector. Return value is a plot for each chromosome in \code{chr}. Note: Remember to add in a batch-script one empty line for each chromosome, if you use more than one chromosome!
+\code{numeric} scalar or vector. Return value is a plot for each chromosome in \code{chr}. To plot the complete LD within Chromosomes in a single plot use \code{"all"}. Note: This includes no values for between chromosom LD! The default is \code{NULL}. This givs a single plot for each chromosome. Note: Remember to add one empty line for each chromosome in batch-scripts , if you use more than one chromosome!
 }
   \item{type}{
 Character string to specify the type of plot. Use \code{"p"} for a scatterplot, \code{"bars"} for stacked bars or \code{"nls"} for scatterplot together with nonlinear regression curve according to Hill and Weir (1988).
@@ -79,4 +79,3 @@ r2=c(1,0.6,0.4,0.3,0.1,0)))
 }
 }
 \keyword{hplot}
-

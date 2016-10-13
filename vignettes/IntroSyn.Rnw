@@ -78,12 +78,20 @@ High-throughput genotyping and large scale phenotyping produces massive amounts 
 %Put all in another directory
 %\SweaveOpts{prefix.string=figs/article}
 \setkeys{Gin}{width=0.9\textwidth}
-
+\SweaveOpts{prefix.string=figs/IntroSyn}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initial R code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+<<Initial R Code,results=hide,echo=FALSE>>=
+options(prompt = "R> ", continue = "+  ", width = 80, useFancyQuotes = FALSE)
+options(SweaveHooks=list(fig=function() par(mar=c(4,4,4,1.5)+0.1,cex.axis=1,cex.lab=1,cex.main=1)))
+options(SweaveSyntax="SweaveSyntaxNoweb")
+set.seed(1234)
+library(synbreed)
+library(synbreedData)
+@
 
 
 %% include your article here, just as usual
@@ -227,11 +235,9 @@ Their application is demonstrated by examples in Section~\ref{sec:Examples}. The
 \subsection{Data processing}
 
 In all analyses using the \pkg{synbreed} package, the first step is to create an object of class \code{gpData}. The function \code{create.gpData} merges the different raw data sources. The return value is a list with elements \code{covar}, \code{pheno}, \code{geno}, \code{map}, \code{pedigree} and \code{info}. The function \code{create.gpData} performs consistency checks on the data and returns an object of class \code{gpData} with the data taken from the arguments. The basic call to create an object of class \code{gpData} is
-\begin{Schunk}
-\begin{Sinput}
-R> gp <- create.gpData(covar,pheno,geno,map,pedigree) 
-\end{Sinput}
-\end{Schunk}
+<<Call to create an object of class gpData,eval=FALSE>>=
+gp <- create.gpData(covar,pheno,geno,map,pedigree) 
+@
 
 
 
@@ -372,59 +378,25 @@ $$ g_i= \sum_{k=1}^K QTL_{ik}, \; i =1,...,n$$
 where $QTL_{ik}$ is the effect of the $k$-th QTL allele for individual $i$.  Phenotypic values are simulated by adding a random environmental residual. Thus the underlying genetic model is
 $$y_i=g_i+e_i, \; i =1,...,n$$
 where $e_i = N(0,\sigma^2)$. Genotypic and phenotypic data was simulated for 1250 DH lines. Moreover, pedigree for additional 360 ancestor individuals is available. These ancestors can be heterozygous. The 1250 DH lines belong to 25 biparental families with 50 lines in each family. The \code{maize} data can be loaded within the \pkg{synbreed} package using
-\begin{Schunk}
-\begin{Sinput}
-R> library(synbreed)
-R> data(maize)
-\end{Sinput}
-\end{Schunk}
+<<Load the maize data set,results=hide>>=
+library(synbreed)
+data(maize)
+@
 A basic overview over the contents of the \code{gpData} is available through
-\begin{Schunk}
-\begin{Sinput}
-R> summary(maize)
-\end{Sinput}
-\begin{Soutput}
-object of class 'gpData' 
-covar 
-	 No. of individuals 1610 
-	         phenotyped 1250 
-	          genotyped 1250 
-pheno 
-	 No. of traits:		   1 
-
-    IDTrait     
- Min.   :120.7  
- 1st Qu.:142.8  
- Median :148.9  
- Mean   :148.9  
- 3rd Qu.:154.9  
- Max.   :181.8  
-
-geno 
-	 No. of markers 1117 
-	 genotypes 0 1 
-	 frequencies 0.339995 0.660005 
-	 NA's 0.000 %
-map 
-	 No. of mapped markers  1117 
-	 No. of chromosomes     10 
-
-	 markers per chromosome 
-	
-  1   2   3   4   5   6   7   8   9  10 
- 76  96  99 122  85 106 154 130 121 128 
-
-pedigree 
-Number of 
-	 individuals  1610 
-	 Par 1        219 
-	 Par 2        221 
-	 generations  15 
-\end{Soutput}
-\end{Schunk}
+<<>>=
+summary(maize)
+@
 
 Genotypic data in element \code{geno}  comprises  1117 polymorphic SNP markers. The distribution of markers across the chromosomes is visualized in Figure~\ref{fig:maizemap} using function \code{plotGenMap(maize)}. Phenotypic data was simulated for the quantitative trait yield [dt/ha], evaluated in testcrosses of DH lines in 3 locations. Figure~\ref{fig:maizepheno} shows a histogram of average testcross performance of the 1250 DH lines.
 
+<<maize data: Plots for the genetic map and a histogram of phenotypic values,results=hide,echo=FALSE>>=
+pdf("figs/genMapMaize.pdf")
+plotGenMap(maize,ylab="pos[cM]")
+dev.off()
+pdf("figs/maizeHist.pdf")
+hist(maize$pheno[,1,],xlab="yield [dt/ha]",main="",freq=FALSE)
+dev.off()
+@
 
 \begin{figure}[!h]
 \centering
@@ -443,17 +415,46 @@ Genotypic data in element \code{geno}  comprises  1117 polymorphic SNP markers. 
 \subsubsection{Mice data}
 
 The mice data set was recently used to illustrate prospects of GP \citep{Legarra2008,Lee2010}. The data is publicly available from \url{http://gscan.well.ox.ac.uk} and comprises data of 2527 mice. They are progenies from eight inbred strains followed by 50 generations of pseudorandom mating. Original data comprises several qualitative and quantitative traits. See the website or  \citet{Valdar2006} for more details on this data set. The data can be loaded using
-\begin{Schunk}
-\begin{Sinput}
-R> data("mice")
-\end{Sinput}
-\end{Schunk}
+<<Load the mice data set>>=
+data("mice")
+@
 Genotypic data in element \code{geno} consists of 12545 SNP markers. Marker data is available for a subset of 1940 individuals. The marker map in element \code{map} is the sex-averaged genetic map with distances given in cM. See Figure~\ref{fig:miceMap} for a visualization of the marker map using \code{plotGenMap(mice,TRUE,FALSE,ylab="pos [cM]")}. Element \code{pheno} comprises two quantitative traits for 2527 mice: the body weight at 6 weeks age [g] and growth slope between 6 and 10 weeks age [g/day]. The distribution of both traits is shown in Figure~\ref{fig:micepheno}.  Pedigree information is not yet available from the website. The element \code{covar}  includes the variables sex (females=0, males=1), month of birth (1-12), birth year, coat color, cage density and litter.   
 
 
 
 
+<<mice data: Plot of the genetic map,results=hide,echo=FALSE>>=
+pdf("figs/genMapMice.pdf")
+plotGenMap(mice,TRUE,FALSE,ylab="pos [cM]")
+dev.off()
+@
 
+<<mice data: Plot scatterplot matrix of the phenotype,results=hide,echo=FALSE>>=
+panel.hist <- function(x, ...)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(usr[1:2], 0, 1.5) )
+    h <- hist(x, plot = FALSE)
+    breaks <- h$breaks; nB <- length(breaks)
+    y <- h$counts; y <- y/max(y)
+    rect(breaks[-nB], 0, breaks[-1], y, col="lightgrey")
+}
+panel.cor <- function(x, y, digits=2, prefix="", cex.cor)
+{
+    usr <- par("usr"); on.exit(par(usr))
+    par(usr = c(0, 1, 0, 1))
+    r <- cor(x, y,use="pairwise.complete.obs")
+    txt <- format(c(r, 0.123456789), digits=digits)[1]
+    txt <- paste(prefix, txt, sep="")
+    if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+    text(0.5, 0.5, txt, cex = cex.cor * (0.5+r/2))
+}
+
+mypoints <- function(x,y, ...) points(x,y,col=hsv(alpha=0.25,v=0))
+pdf("figs/miceHist.pdf")
+pairs(mice$pheno,diag.panel = panel.hist,upper.panel=mypoints,lower.panel=panel.cor)
+dev.off()
+@
 
 \begin{figure}[!h]
 \centering
@@ -465,22 +466,30 @@ Genotypic data in element \code{geno} consists of 12545 SNP markers. Marker data
 \includegraphics[width=0.44\textwidth]{figs/miceHist.pdf}
 \label{fig:micepheno}
 }
-\caption{Publicly available \code{mice} data. (a) Visualization of the marker map comprising in total 12545 SNP markers along 19 autosomes and the X-chromosome using \code{plotGenMap}. (b) Histograms for univariate distribution of traits weight and growth slope for 2527 mice and scatterplots  for the bivariate distribution and the correlation coefficient.}
+\caption{Publicly available \code{mice} data. (a) Visualization of the marker map comprising in total \Sexpr{nrow(mice$map)} SNP markers along 19 autosomes and the X-chromosome using \code{plotGenMap}. (b) Histograms for univariate distribution of traits weight and growth slope for \Sexpr{nrow(mice$pheno)} mice and scatterplots  for the bivariate distribution and the correlation coefficient.}
 \label{fig:miceData}
 \end{figure}
 
 \subsubsection{Dairy cattle data}
 
 This data set contains genotypic, phenotypic, map and pedigree data of 500 bulls. Genotypic and pedigree data are taken from real cattle data while phenotypes are simulated. The \code{cattle} data was provided by the Animal Breeding and Genetics group of Henner Simianer, Georg-August-Universität Göttingen. The data can be loaded using
-\begin{Schunk}
-\begin{Sinput}
-R> data("cattle")
-\end{Sinput}
-\end{Schunk}
+<<Load the cattle data set>>=
+data("cattle")
+@
 Two quantitative traits are available with simulated heritabilities of 0.41 and 0.66, respectively. The distribution of both traits is shown in Figure~\ref{fig:cattlepheno}.  
 Genotypic data consists of 7250 biallelic SNP markers for every phenotyped individual with missing data included. SNPs are mapped across all 29 autosomes. Distances in the SNP map are given in mega bases (Mb). See Figure~\ref{fig:cattleMap} for a visualization of the marker map using function \code{plotGenMap}. The pedigree information is available at least on parents and grandparents of the phenotyped individuals.
 
+<<mice data: Plot of the genetic map,results=hide,echo=FALSE>>=
+pdf("figs/genMapCattle.pdf")
+plotGenMap(cattle,TRUE,FALSE,ylab="pos [Mb]")
+dev.off()
+@
 
+<<cattle data: Plot scatterplot matrix of the phenotype,results=hide,echo=FALSE>>=
+pdf("figs/cattleHist.pdf")
+pairs(cattle$pheno,diag.panel = panel.hist,upper.panel=mypoints,lower.panel=panel.cor)
+dev.off()
+@
 
 \begin{figure}[!h]
 \centering
@@ -492,7 +501,7 @@ Genotypic data consists of 7250 biallelic SNP markers for every phenotyped indiv
 \includegraphics[width=0.44\textwidth]{figs/cattleHist.pdf}
 \label{fig:cattlepheno}
 }
-\caption{Description of the \code{cattle} data. (a) Visualization of the marker map comprising in total 7250 SNP markers along 29 autosomes using \code{plotGenMap}. (b) Histograms for univariate distribution of traits 1 and 2 for 500 bulls and scatterplots  for the bivariate distribution and the correlation coefficient.}
+\caption{Description of the \code{cattle} data. (a) Visualization of the marker map comprising in total \Sexpr{nrow(cattle$map)} SNP markers along 29 autosomes using \code{plotGenMap}. (b) Histograms for univariate distribution of traits 1 and 2 for \Sexpr{nrow(cattle$pheno)} bulls and scatterplots  for the bivariate distribution and the correlation coefficient.}
 \label{fig:cattleData}
 \end{figure}
 
@@ -501,32 +510,27 @@ Genotypic data consists of 7250 biallelic SNP markers for every phenotyped indiv
 \subsection{Data processing and visualization}
 
 All data sets are already given as objects of class \code{gpData}. Hence the next step is the processing of the genotypic data in element \code{geno}.  The \code{maize} data includes no missing values. Thus data processing only involves the recoding of the alleles into the number of copies of the minor allele. There are only homozygous genotypes. Hence no heterozygous genotype must be declared and genotypic data is recoded by
-\begin{Schunk}
-\begin{Sinput}
-R> maizeC <- codeGeno(maize)
-\end{Sinput}
-\end{Schunk}
+<<Recode maize data,eval=TRUE>>=
+maizeC <- codeGeno(maize)
+@  
 Resulting object \code{maizeC} is again of class \code{gpData} but with recoded genotypic data. This information is stored for further analysis as \code{codeGeno} sets \code{maizeC$info$codeGeno=TRUE}. When there are heterozygous genotypes, the argument \code{label.heter} is required. This is shown for the \code{mice} data, where genotypes are coded by the observed alleles separated by a slash symbol. A heterozygous genotype is identified whenever the first allele differs from the second allele. This can be generalized by the function
-\begin{Schunk}
-\begin{Sinput}
-R> is.heter <- function(x) {
-+      substr(x, 1, 1) != substr(x, 3, 3)
-+  }
-\end{Sinput}
-\end{Schunk}
+<<Function to identify heterozygous genotypes,keep.source=FALSE>>=   
+# function to check if first character of a string equals third character
+is.heter <- function(x){
+  substr(x,1,1)!=substr(x,3,3)           
+} 
+@
 The function \code{is.heter} checks for unequal alleles at a locus to identify heterozygous genotypes. It is passed to the function \code{codeGeno} by the argument \code{label.heter}. 
-\begin{Schunk}
-\begin{Sinput}
-R> miceC <- codeGeno(mice, label.heter = is.heter)
-\end{Sinput}
-\end{Schunk}
+<<Recode mice data,eval=FALSE,keep.source=FALSE>>=
+# simple recoding of alleles
+miceC <- codeGeno(mice,label.heter=is.heter)                        
+@
 The function \code{codeGeno} enables a preselection of markers and the imputing of missing values. For the following analysis, we choose a threshold for the MAF of $0.05$ and of $0.01$ for the fraction of missing values. All SNPs failing these criteria  are discarded from the object of class \code{gpData}. Missing values are sampled from the marginal marker allele distribution. The corresponding call and verbose output is
-\begin{Schunk}
-\begin{Sinput}
-R> miceC <- codeGeno(mice, label.heter = is.heter, impute = TRUE, 
-+      impute.type = "random", maf = 0.05, nmiss = 0.01, verbose = TRUE)
-\end{Sinput}
-\end{Schunk}
+<<Recode and impute mice data,eval=FALSE,keep.source=FALSE>>=
+# recoding of mice data and imputing of missing values by family structure
+# discarding markers with maf < 0.05 and nmiss > 0.01
+miceC <- codeGeno(mice,label.heter=is.heter,impute=TRUE,impute.type="random",maf=0.05,nmiss=0.01,verbose=TRUE)   
+@  
 \begin{Schunk}
 \begin{Soutput}
 step 1  : 400 marker(s) removed with > 1 % missing values 
@@ -547,48 +551,38 @@ Summary of imputation
 Recoding of the \code{cattle} data can be performed according to the \code{mice} data using argument \code{label.heter="AB"}.                       
 
 In the next step, the pairwise LD for markers on chromosome 1 of \code{maize} is computed using the within-\proglang{R} solution for homozygous genotypes. We choose \code{type="data.frame"} and visualize the LD with the function \code{LDDist}.
-\begin{Schunk}
-\begin{Sinput}
-R> maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")
-\end{Sinput}
-\end{Schunk}
+<<Pairwise LD for the maize data,eval=FALSE>>=
+maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")
+@
 The LD decay for the LD data in the object \code{maizeLD} is shown in Figure~\ref{fig:LDDist}. This plot can be  generated using
-\begin{Schunk}
-\begin{Sinput}
-R> LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0)) 
-\end{Sinput}
-\end{Schunk}
+<<LD decay scatterplot,eval=FALSE,keep.source=TRUE>>=
+LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0)) 
+@      
 for the scatterplot and                                        
-\begin{Schunk}
-\begin{Sinput}
-R> LDDist(maizeLD,type="bars",breaks=list(dist=c(0,25,50,75,200),
-+  r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")  
-\end{Sinput}
-\end{Schunk}
+<<LD decay stacked histogram,eval=FALSE,keep.source=TRUE>>=
+LDDist(maizeLD,type="bars",breaks=list(dist=c(0,25,50,75,200),
+r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")  
+@                                                                                                                               
 for the stacked histograms with user-specified breaks. The graphical layout is controlled by specifying additional graphical parameters. The LD for the recoded mice data may be obtained using the \proglang{PLINK} software invoked by the argument \code{use.plink=TRUE}.
 
 \begin{figure}[!ht]
 \centering
 \includegraphics{figs/LDmaize.png}
-\caption{LD  decay as a scatter plot (left side) and stacked histogram (right side) for 76 markers on the first chromosome for the \code{maize} data.}
+\caption{LD  decay as a scatter plot (left side) and stacked histogram (right side) for \Sexpr{nrow(maizeC$map[maizeC$map$chr==1,])} markers on the first chromosome for the \code{maize} data.}
 \label{fig:LDDist}
 \end{figure}   
                               
 \subsection{Data analysis}                                                               
 
 In the following, different coefficients of relatedness are calculated for the individuals. Pedigree-based coefficients are only inferred for the \code{maize} data. All genotyped individuals are DH lines having an inbreeding coefficient of 1. When using function \code{kin}, the special argument \code{DH} identifies DH lines in the data.  For a DH line $i_1$, $F_{i_1} = \Prob(X_1 \equiv X_2)$ is set to $1$ by the algorithm. In the \code{maize} data a variable \code{DH} in element \code{covar} indicates DH lines. The additive relationship matrix for all individuals in the pedigree is computed by
-\begin{Schunk}
-\begin{Sinput}
-R> A <- kin(maize,ret="add",DH=maize$covar$DH)
-\end{Sinput}
-\end{Schunk}
+<<Additive numerator relationship matrix for the maize data,eval=FALSE>>=
+A <- kin(maize,ret="add",DH=maize$covar$DH)
+@
 The additive relationship matrix for the general case is obtained by omitting the argument \code{DH}.
 A summary of the relationship matrix is obtained by
-\begin{Schunk}
-\begin{Sinput}
-R> summary(A)
-\end{Sinput}
-\end{Schunk}
+<<Summary method for class relationshipMatrix,eval=FALSE>>=
+summary(A)
+@
 \begin{Schunk}
 \begin{Soutput}
  dimension                    1610 x 1610 
@@ -602,12 +596,10 @@ R> summary(A)
 \end{Schunk}
 Genomic relationship coefficients can be computed using the recoded marker matrix. 
 
-\begin{Schunk}
-\begin{Sinput}
-R> U <- kin(maizeC,ret="realized")
-R> summary(U)
-\end{Sinput}
-\end{Schunk}
+<<Realized relationship matrix for the maize data,eval=FALSE>>=
+U <- kin(maizeC,ret="realized")
+summary(U)
+@
 \begin{Schunk}
 \begin{Soutput}
  dimension                    1250 x 1250 
@@ -620,12 +612,10 @@ R> summary(U)
 \end{Soutput}
 \end{Schunk}
 Resulting matrix \code{U} is the genome-based analogon for \code{A}. The difference in expected and realized relationship matrices can be visualized using the heatmap visualization, see Figure~\ref{fig:heatmap}. Note that only the 1250 genotyped individuals in \code{A} instead of all 1610 individuals are presented. Hence expected and realized relationship can be compared directly. The individuals were selected using the column \code{genotyped} in element \code{covar} to query only rows and columns in \code{A} for genotyped individuals.
-\begin{Schunk}
-\begin{Sinput}
-R> plot(A[maize$covar$genotyped,maize$covar$genotyped])
-R> plot(U)
-\end{Sinput}
-\end{Schunk}
+<<Heatmap visualization of the expected and realized relationship matrices,eval=FALSE>>=
+plot(A[maize$covar$genotyped,maize$covar$genotyped])
+plot(U)
+@
 The DH lines in the \code{maize} data are sorted by their family number. Thus the heatmap in Figure~\ref{fig:subfigHM1} is structured as $25 \times 25$ squares. Pedigree-based coefficients indicate no difference within families but differ across families. In contrast, the marker-based relationship reveals random Mendelian sampling effects within families. Thus, the heatmap provides a higher resolution for the coefficients. 
 
 \begin{figure}[!h]
@@ -638,7 +628,7 @@ The DH lines in the \code{maize} data are sorted by their family number. Thus th
 \includegraphics[width=0.45\textwidth]{figs/relMatG.png}
 \label{fig:subfig2}
 }
-\caption{Comparison of pedigree-based (expected) relationship matrix and marker-based (realized) relationship for the 1250 genotyped individuals in \code{maize} data. Visualized are the heatmaps of pairwise relationship coefficients.}
+\caption{Comparison of pedigree-based (expected) relationship matrix and marker-based (realized) relationship for the \Sexpr{nrow(maize$geno)} genotyped individuals in \code{maize} data. Visualized are the heatmaps of pairwise relationship coefficients.}
 \label{fig:heatmap}
 \end{figure}
 
@@ -647,23 +637,17 @@ The DH lines in the \code{maize} data are sorted by their family number. Thus th
 In this section, we fit statistical models to predict genetic values for the individuals in the \code{mice} and \code{maize} data. Model performance is assessed by cross-validation.
 
 For the \code{mice} data, model ``G-BLUP'' is fitted for the trait \code{weight}. The model includes a random genetic effect and the population mean $\mu$ as fixed effect. The covariance structure for the genetic values is given by the realized relationship matrix. This is obtained by
-\begin{Schunk}
-\begin{Sinput}
-R> UM <- kin(miceC,ret="realized")
-\end{Sinput}
-\end{Schunk}
+<<Realized relationship matrix for the mice data,eval=FALSE>>=
+UM <- kin(miceC,ret="realized")
+@
 The model is fitted using the function \code{gpMod}
-\begin{Schunk}
-\begin{Sinput}
-R> miceGBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight")
-\end{Sinput}
-\end{Schunk}
+<<Genomic BLUP for the mice data using trait weight,eval=FALSE>>=
+miceGBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight")
+@
 The resulting object \code{miceGBLUP} is of class \code{gpMod}. A summary of the model fit is obtained by
-\begin{Schunk}
-\begin{Sinput}
-R> summary(miceGBLUP)
-\end{Sinput}
-\end{Schunk}
+<<Summary of the model,eval=FALSE>>=
+summary(miceGBLUP)
+@
 \begin{Schunk}
 \begin{Soutput}
 Object of class 'gpMod' 
@@ -690,30 +674,27 @@ Variance Coefficients:
 \end{Schunk}
 
 Estimates for the SNP effect may be obtained using ``RR-BLUP'' through 
-\begin{Schunk}
-\begin{Sinput}
-R> miceRRBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight",markerEffects=TRUE)
-\end{Sinput}
-\end{Schunk}
+<<Genomic BLUP for the mice data using trait weight,eval=FALSE>>=
+miceRRBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight",markerEffects=TRUE)
+@
 Note that in this case the variance components pertaining to model (\ref{eq:snpMod}), i.e. $\sigma^2_m$ rather than $\sigma^2_u$ is reported. The model ``RR-BLUP'' uses marker-homogenous shrinkage. As a contrasting model, ``BL'' is employed which uses marker-specific shrinkage. Values for the prior distribution of $\sigma^2$ and $\lambda$ are determined using the equations of \citet{Perez2010}.
-\begin{Schunk}
-\begin{Sinput}
-R> prior <- list(varE = list(df = 3, S = 40), lambda = list(shape = 0.8, 
-+      rate = 1e-04, value = 52, type = "random"))
-\end{Sinput}
-\end{Schunk}
-\begin{Schunk}
-\begin{Sinput}
-R> miceModBL  <- gpMod(miceC,model="BL",trait="weight",
-+  prior=prior,nIter=12000,burnIn=2000,thin=10)
-\end{Sinput}
-\end{Schunk}
+<<keep.source=FALSE>>=
+# 40 = 8 * (3+2)
+# h2 = 0.74 (Valdar 2006)
+# 52.3  = sqrt(2*(1-h2)/h2*sum(colMeans(miceC$geno)^2))
+# lambda = 1:100
+# plot(dgamma(lambda^2,shape=0.8,rate=1e-4)*lambda*2)
+# abline(v=52.3)
+prior <- list(varE=list(df=3,S=40),lambda = list(shape=0.8,rate=1e-4,value=52,type='random'))
+@
+<<Bayesian Lasso model for the mice data,results=hide,eval=FALSE>>=
+miceModBL  <- gpMod(miceC,model="BL",trait="weight",
+prior=prior,nIter=12000,burnIn=2000,thin=10)
+@
 A summary of the model fit may be obtained using
-\begin{Schunk}
-\begin{Sinput}
-R> summary(miceModBL)
-\end{Sinput}
-\end{Schunk}
+<<Summary of the model,eval=FALSE>>=
+summary(miceModBL)
+@
 \begin{Schunk}
 \begin{Soutput}
 Object of class 'gpMod' 
@@ -733,6 +714,11 @@ lambda       128.6805
 \end{Schunk}
 
 The summary reveals only marginal differences compared to the mixed model ``G-BLUP''. A ``Manhattan'' plot of the predicted marker effects is shown in Figure~\ref{fig:manhattanPlot}.
+<<Manhattanplot for the marker effects in the mice data,echo=FALSE,results=hide,eval=FALSE>>=
+pdf("figs/manhattanPlot.pdf",width=11,height=5)
+manhattanPlot(abs(miceModBL$m),miceC,ylab="|marker effect|")
+dev.off()
+@
 
 \begin{figure}[!ht]
 \centering
@@ -741,67 +727,50 @@ The summary reveals only marginal differences compared to the mixed model ``G-BL
 \label{fig:manhattanPlot}
 \end{figure}  
 
-The estimated SNP effects of ``BL'' are used to predict the genetic performance of the 12 individuals with a missing value for weight. First, a new object of class \code{gpData} is created including the marker genotypes of the individuals of the prediction set. 
-\begin{Schunk}
-\begin{Sinput}
-R> unphenotyped <- dimnames(mice$pheno)[[1]][is.na(mice$pheno[,1,])]
-R> phenotyped <- mice$covar$id[!mice$covar$id %in% unphenotyped]
-R> predSet <- discard.individuals(miceC,phenotyped)
-\end{Sinput}
-\end{Schunk}
+The estimated SNP effects of ``BL'' are used to predict the genetic performance of the \Sexpr{sum(is.na(mice$pheno[mice$covar$genotyped,1,]))} individuals with a missing value for weight. First, a new object of class \code{gpData} is created including the marker genotypes of the individuals of the prediction set. 
+<<Set up a gpData for the prediction set,eval=FALSE>>=
+unphenotyped <- dimnames(mice$pheno)[[1]][is.na(mice$pheno[,1,])]
+phenotyped <- mice$covar$id[!mice$covar$id %in% unphenotyped]
+predSet <- discard.individuals(miceC,phenotyped)
+@
 Predictions for the genetic performance are obtained by
-\begin{Schunk}
-\begin{Sinput}
-R> predict(miceModBL,predSet)
-\end{Sinput}
-\end{Schunk}
+<<Predict their genetic performance,results=hide,eval=FALSE>>=
+predict(miceModBL,predSet)
+@
 
 
 The predictive performance of the mixed model is judged by CV. Here, we use 2-fold CV as in \citet{Legarra2008}. The splitting into TS and ES is repeated  10 times. Individuals are assigned randomly to TS and ES. For computational ease, the variance-components are estimated once for the complete data set and committed to model training in CV. This CV scheme may be employed using
-\begin{Schunk}
-\begin{Sinput}
-R> cv.mice <- crossVal(miceC,cov.matrix=list(UM),k=2,Rep=10,Seed=123,
-+               sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")  
-\end{Sinput}
-\end{Schunk}
+<<Cross-validation of the GBLUP model with the mice data,eval=FALSE>>=
+cv.mice <- crossVal(miceC,cov.matrix=list(UM),k=2,Rep=10,Seed=123,
+             sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")  
+@
 
+<<Load previous results to save time,echo=FALSE,results=hide>>=
+load("cv.mice.Rdata")
+cv.mice <- cv.mice2
+@
 A summary of the CV is obtained by
-\begin{Schunk}
-\begin{Soutput}
-Object of class 'cvData' 
-
- 2 -fold cross validation with 10 replication(s) 
-     Sampling:                 random 
-     Variance components:      committed 
-     Number of random effects: 1 
-     Size of the TS:           964 -- 964  
-
-Results: 
-                      Min 	  Mean +- pooled SE 	  Max 
- Predictive ability:  0.2916  	  0.3697 +- 0.009471  	  0.4323 
- Bias (reg. slope)    0.6830  	  0.9927 +- 0.02621  	  1.2195 
-
-Seed start:  123 
-Seed replications: 
- [1] 28758 78831 40898 88302 94047  4557 52811 89242 55144 45662
-\end{Soutput}
-\end{Schunk}
+<<Summary for the cross-validation,echo=FALSE>>=
+summary(cv.mice)
+@
 The mean of the predictive ability is $0.37$ using random sampling. \citet{Legarra2008} reported values of $0.25$ for across family sampling and $0.67$ for within family sampling but of a different subset of the \code{mice} data. Moreover, they included a cage effect in the model. 
 
 For the \code{maize} data, we compare the predictive ability of the pedigree-based model ``P-BLUP''  with the  genome-based models ``GBLUP'' and ``BL''.  Because phenotypic performance is evaluated as testcrosses of DH lines, the relationship matrix must be replaced by the kinship matrix \citep{Albrecht2011}. Thus, relationship matrices are divided by 2. The models are fitted by
-\begin{Schunk}
-\begin{Sinput}
-R> PBLUP <- gpMod(maizeC, model = "BLUP", kin = A/2)
-R> GBLUP <- gpMod(maizeC, model = "BLUP", kin = U/2)
-R> prior <- list(varE = list(df = 3, S = 35), lambda = list(shape = 0.52, 
-+      rate = 1e-04, value = 20, type = "random"))
-R> modBL <- gpMod(maizeC, model = "BL", prior = prior, nIter = 6000, 
-+      burnIn = 1000, thin = 5)
-\end{Sinput}
-\end{Schunk}
+<<Models for the maize data,results=hide,eval=FALSE,keep.source=FALSE>>=
+# animal model
+PBLUP <- gpMod(maizeC,model="BLUP",kin=A/2)
+# G-BLUP
+GBLUP <- gpMod(maizeC,model="BLUP",kin=U/2)
+# Bayesian Lass
+prior <- list(varE=list(df=3,S=35),lambda = list(shape=0.52,rate=1e-4,value=20,type='random'))
+modBL <- gpMod(maizeC,model="BL",prior=prior,nIter=6000,burnIn=1000,thin=5)
+@
 
 Convergence of the Markov chain for \code{modBL} was examined visually. No convergence problems were observed. The model performance is measured by the predictive ability $r(\mathbf{\hat{g}}_{TS},\mathbf{y}_{TS})$ from CV. The accuracy is defined as the correlation of the predicted genetic value with true breeding values $r(\mathbf{g},\hat \mathbf{g})$ for the whole data set. We use 5-fold CV with 10 replications. The results are summarized in Table~\ref{tab:resMaizeMod}. The models using marker data outperform the pedigree-based model ``P-BLUP''. However, the average predictive ability of ``BL'' using  marker-specific shrinkage is similar compared to ``G-BLUP'' using marker-homogeneous shrinkage. 
 
+<<Extract true breeding values from the maize data object,echo=FALSE,results=hide>>=
+tbv <- maize$covar$tbv[maize$covar$genotyped]
+@
 
 
 \begin{table}[h]

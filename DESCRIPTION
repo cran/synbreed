@@ -1,15 +1,15 @@
 Package: synbreed
 Type: Package
 Title: Framework for the Analysis of Genomic Prediction Data using R
-Version: 0.11-29
-Date: 2016-01-18
+Version: 0.11-41
+Date: 2016-10-04
 Author: Valentin Wimmer, Hans-Juergen Auinger, Theresa Albrecht, Chris-Carolin Schoen with contributions by Larry Schaeffer, Malena Erbe, Ulrike Ober, Christian Reimer, Yvonne Badke and Peter VandeHaar
 Depends: R (>= 2.14)
 Imports: methods, doBy, igraph, lattice, MASS, LDheatmap, abind, BGLR,
-        regress (>= 1.3-8)
+        regress (>= 1.3-8), parallel, doParallel, foreach
 Suggests: synbreedData (>= 1.5)
 Maintainer: Hans-Juergen Auinger <auinger@tum.de>
-Description: A collection of functions required for genomic prediction which were developed within the Synbreed project for synergistic plant and animal breeding (www.synbreed.tum.de). This covers data processing, data visualization, and analysis. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats in plant and animal breeding. This research was funded by the German Federal Ministry of Education and Research (BMBF) within the AgroClustEr Synbreed - Synergistic plant and animal breeding (FKZ 0315528A).
+Description: A collection of functions required for genomic prediction which were developed within the Synbreed project for synergistic plant and animal breeding (<http://www.synbreed.tum.de>). This covers data processing, data visualization, and analysis. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats in plant and animal breeding. This research was funded by the German Federal Ministry of Education and Research (BMBF) within the AgroClustEr Synbreed - Synergistic plant and animal breeding (FKZ 0315528A).
 URL: http://synbreed.r-forge.r-project.org/
 License: GPL-3
 LazyLoad: yes
@@ -17,8 +17,8 @@ LazyData: no
 ZipData: no
 Repository: CRAN
 Repository/R-Forge/Project: synbreed
-Repository/R-Forge/Revision: 590
-Repository/R-Forge/DateTimeStamp: 2016-01-18 19:40:01
-Date/Publication: 2016-01-18 22:20:26
+Repository/R-Forge/Revision: 623
+Repository/R-Forge/DateTimeStamp: 2016-10-12 11:55:44
+Date/Publication: 2016-10-13 00:24:51
 NeedsCompilation: no
-Packaged: 2016-01-18 19:45:32 UTC; rforge
+Packaged: 2016-10-12 12:05:55 UTC; rforge
