@@ -8,12 +8,15 @@ Summary of marker map information
 This function can be used to summarize information from a marker map in an object of class \code{gpData}.  Return value is a \code{data.frame} with one row for each chromosome and one row summarizing all chromosomes.
 }
 \usage{
-summaryGenMap(map)
+summaryGenMap(map, cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{map}{
 \code{data.frame} with columns \code{chr} and \code{pos} or a \code{gpData} object with element \code{map}
+}
+  \item{cores}{
+\code{numeric}. Specifies the number of cores for parallel computing.
 }
 }
 \details{

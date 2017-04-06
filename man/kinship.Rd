@@ -9,7 +9,7 @@ This function implements different measures of relatedness between individuals i
 \usage{
 kin(gpData, ret=c("add","kin","dom","gam","realized","realizedAB",
                   "sm","sm-smin","gaussian"),
-            DH=NULL, maf=NULL, selfing=NULL, lambda=1, P=NULL)
+            DH=NULL, maf=NULL, selfing=NULL, lambda=1, P=NULL, cores=1)
 }
 \arguments{
   \item{gpData}{
@@ -32,6 +32,9 @@ object of class \code{gpData}
 }
   \item{P}{
     \code{numeric} matrix of the same dimension as \code{geno} of the \code{gpData} object. This option can be used for own allelefrequencies of different groups in the genotypes.
+}
+ \item{cores}{
+\code{numeric}. Here you can specify the number of cores you like to use.
 }
 }
 \details{

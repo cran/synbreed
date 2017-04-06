@@ -9,8 +9,8 @@ This function combines all raw data sources in a single, unified data object of 
 }
 \usage{
 create.gpData(pheno = NULL, geno = NULL, map = NULL, pedigree = NULL,
-              family = NULL, covar = NULL, reorderMap = TRUE,
-              map.unit = "cM", repeated  = NULL, modCovar = NULL)
+              family = NULL, covar = NULL, reorderMap = TRUE, map.unit = "cM",
+              repeated  = NULL, modCovar = NULL, cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -44,6 +44,9 @@ Character. Unit of position in \code{map}, i.e. 'cM' for genetic distance or 'bp
 }
   \item{modCovar}{
   \code{vector} with \code{colnames} which identify columns with covariables in \code{pheno}. This argument is only required for repeated measurements.
+}
+  \item{cores}{
+ \code{numeric}. Here you can specify the number of cores you like to use.
 }
 }
 \details{

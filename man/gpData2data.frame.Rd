@@ -39,7 +39,7 @@ further arguments to be used in function \code{reshape}. The argument \code{time
 }
 }
 \details{
-Argument \code{all.geno} can be used to predict the genetic value of individuals without phenotypic records using the \code{BLR} package. Here, the genetic value of individuals with \code{NA} as phenotype is predicted by the marker profile.
+Argument \code{all.geno} can be used to predict the genetic value of individuals without phenotypic records using the \code{BGLR} package. Here, the genetic value of individuals with \code{NA} as phenotype is predicted by the marker profile.
 
 
 For multiple measures, phenotypic data in object \code{gpData} is arranged with replicates in an \code{array}. With \code{gpData2data.frame} this could be reshaped to "long" format with multiple observations in one column. In this case, one column for the phenotype and 2 additional columns for the \code{id} and the levels of the grouping variable (such as replications, years of locations in multi-environment trials) are added.
@@ -60,7 +60,7 @@ Valentin Wimmer and Hans-Juergen Auinger
 # example data with unrepeated observations
 set.seed(311)
 
-# simulating genotypic and phenotypic data 
+# simulating genotypic and phenotypic data
 pheno <- data.frame(Yield = rnorm(12,100,5),Height=rnorm(12,100,1))
 rownames(pheno) <- letters[4:15]
 geno <- matrix(sample(c("A","A/B","B",NA),size=120,replace=TRUE,
@@ -84,7 +84,7 @@ gpData2data.frame(gp,1:2,all.geno=TRUE)
 # example with repeated observations
 set.seed(311)
 
-# simulating genotypic and phenotypic data 
+# simulating genotypic and phenotypic data
 pheno <- data.frame(ID = letters[1:10], Trait = c(rnorm(10,1,2),rnorm(10,2,0.2),
                     rbeta(10,2,4)), repl = rep(1:3, each=10))
 geno <- matrix(rep(c(1,0,2),10),nrow=10)
@@ -97,7 +97,7 @@ gp <- create.gpData(pheno=pheno,geno=geno, repeated="repl")
 # reshape of phenotypic data and merge of genotypic data,
 # levels of grouping variable loc are named "a", "b" and "c"
 gpData2data.frame(gp,onlyPheno=FALSE,times=letters[1:3])
-                            
+
 
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

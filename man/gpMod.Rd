@@ -6,7 +6,7 @@ Genomic predictions models for objects of class gpData
 }
 \description{
 This function fits genomic prediction models based on phenotypic and genotypic data in an object of class \code{gpData}. The possible models are Best Linear Unbiased Prediction (BLUP) using a pedigree-based or a marker-based genetic relationship matrix and Bayesian Lasso (BL) or Bayesian Ridge regression (BRR).
-BLUP models are fitted using the REML implementation of the \code{regress} package (Clifford and McCullagh, 2012). The Bayesian regression models are fitted using the Gibbs-Sampler of the \code{BLR} package (de los Campos and Perez, 2010). The covariance structure in the BLUP model is defined by an object of class \code{relationshipMatrix}. The training set for the model fit consists of all individuals with phenotypes and genotypes. All data is restricted to individuals from the training set used to fit the model.
+BLUP models are fitted using the REML implementation of the \code{regress} package (Clifford and McCullagh, 2012). The Bayesian regression models are fitted using the Gibbs-Sampler of the \code{BGLR} package (de los Campos and Perez, 2010). The covariance structure in the BLUP model is defined by an object of class \code{relationshipMatrix}. The training set for the model fit consists of all individuals with phenotypes and genotypes. All data is restricted to individuals from the training set used to fit the model.
 
 
 } \usage{
@@ -21,7 +21,7 @@ object of class \code{gpData}
 \code{character}. Type of genomic prediction model. \code{"BLUP"} indicates best linear unbiased prediction (BLUP) using REML for both pedigree-based (P-BLUP) and marker-based (G-BLUP) model. \code{"BL"} and \code{"BRR"} indicate Bayesian Lasso and Bayesian Ridge Regression, respectively.
 }
   \item{kin}{
-object of class \code{relationshipMatrix} (only required for \code{model = "BLUP"}). Use a pedigree-based kinship to evaluate P-BLUP or a marker-based kinship to evaluate G-BLUP. For \code{"BL"} and \code{"BRR"}, also a kinship structure may be used as additional polygenic effect \eqn{u} in the Bayesian regression models (see \code{BLR} package).
+object of class \code{relationshipMatrix} (only required for \code{model = "BLUP"}). Use a pedigree-based kinship to evaluate P-BLUP or a marker-based kinship to evaluate G-BLUP. For \code{"BL"} and \code{"BRR"}, also a kinship structure may be used as additional polygenic effect \eqn{u} in the Bayesian regression models (see \code{BGLR} package).
 }
   \item{predict}{
 \code{logical}. If \code{TRUE}, genetic values will be predicted for genotyped but not phenotyped individuals. Default is \code{FALSE}. Note that this option is only meaningful for marker-based models. For pedigree-based model, please use function \code{predict.gpMod}.
@@ -43,7 +43,7 @@ object of class \code{relationshipMatrix} (only required for \code{model = "BLUP
   A formula for random effects of the model. Specifies the matrices to include in the covariance structure. Each term is either a symmetric matrix, or a factor. Independent Gaussian random effects are included by passing the corresponding block factor. For mor details see \code{\link[regress]{regress}}. Only for \code{model="BLUP"}
 }
   \item{\dots}{
-further arguments to be used by the genomic prediction models, i.e. prior values and MCMC options for the \code{BLR} function (see \code{\link[BLR]{BLR}}) or parameters for the REML algorithm in regress.
+further arguments to be used by the genomic prediction models, i.e. prior values and MCMC options for the \code{BLR} function (see \code{\link[BGLR]{BLR}}) or parameters for the REML algorithm in regress.
 }
 }
 \details{
@@ -71,7 +71,7 @@ Structure. R package version 1.3-8, URL http://www.csiro.au.
 
 Gustavo de los Campos and Paulino Perez Rodriguez, (2010). BLR:
 Bayesian Linear Regression. R package version 1.2.
-http://CRAN.R-project.org/package=BLR
+http://CRAN.R-project.org/package=BGLR
 
 }
 \author{

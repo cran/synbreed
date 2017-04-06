@@ -1,5 +1,7 @@
 \name{summary.LDdf}
+
 \Rdversion{1.1}
+
 \alias{summary.LDdf}
 \alias{summary.LDmat}
 
@@ -10,23 +12,26 @@ Summary for LD objects
 \code{Summary} method for class ''LDdf''  and  ''LDmat''
 }
 \usage{
-\method{summary}{LDdf}(object,...)
-\method{summary}{LDmat}(object,...)
+\method{summary}{LDdf}(object,cores=1,...)
+\method{summary}{LDmat}(object,cores=1,...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{
 object of class \code{LDdf} or \code{LDmat} which is the output of function \code{pairwiseLD} and argument \code{type="data.frame"}  or   \code{type="matrix"}
 }
+  \item{cores}{
+\code{numeric}. Specifies the number of cores for parallel computing.
+}
   \item{...}{
 not used
 }
 }
 \details{
-Returns for each chromosome: Number of markers; mean, minimum and maximum LD measured as \eqn{r^2}{r2};  fraction of markers with \eqn{r^2>0.2}{r2>0.2};  maximum distance of markers
+Returns for each chromosome: Number of markers; mean, minimum and maximum LD measured as \eqn{r^2}{r2};  fraction of markers with \eqn{r^2>0.2}{r2>0.2};  average and maximum distance of number of markers
 }
 \author{
-Valentin Wimmer
+Valentin Wimmer and Hans-Juergen Auinger
 }
 
 \seealso{
@@ -45,4 +50,3 @@ Valentin Wimmer
 }
 
 \keyword{methods}
-

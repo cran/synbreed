@@ -8,9 +8,8 @@ Pairwise LD between markers
 Estimate pairwise Linkage Disequilibrium (LD) between markers measured as \eqn{r^2}{r2} using an object of class \code{gpData}. For the general case, a gateway to the software PLINK (Purcell et al. 2007) is established to estimate the LD. A within-R solution is only available for marker data with only 2 genotypes, i.e. homozgous inbred lines. Return value is an object of class \code{LDdf} which is a \code{data.frame} with one row per marker pair or an object of class \code{LDMat} which is a \code{matrix} with all marker pairs. Additionally, the euclidian distance between position of markers is computed and returned.
 }
 \usage{
-pairwiseLD(gpData, chr = NULL, type = c("data.frame", "matrix"),
-           use.plink=FALSE, ld.threshold=0,
-           ld.window=99999, rm.unmapped = TRUE)
+pairwiseLD(gpData, chr = NULL, type = c("data.frame", "matrix"),use.plink=FALSE,
+           ld.threshold=0, ld.window=99999, rm.unmapped = TRUE, cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,6 +34,9 @@ object of class \code{gpData} with elements \code{geno} and \code{map}
   \item{rm.unmapped}{
 \code{logical}. Remove markers with unknown postion in \code{map} before using PLINK?
 }
+  \item{cores}{
+ \code{numeric}. Here you can specify the number of cores you like to use.
+ }
 }
 \details{
 The function \code{write.plink} is called to prepare the input files and the script for PLINK. The executive PLINK file \code{plink.exe} must be available (e.g. in the working directory or through path variables). The function \code{pairwiseLD} calls PLINK and reads the results. The evaluation is performed separately for every chromosome. The measure for LD is \eqn{r^2}{r2}. This is defined as

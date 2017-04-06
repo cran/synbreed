@@ -12,7 +12,7 @@ summary.gpData <- function(object,...){
     # summary of 'pheno'
     ans$reps <- NULL
     if(is.null(obj$pheno)){
-      ans$pheno <- NULL 
+      ans$pheno <- NULL
     } else {
       ans$pheno <- summary(data.frame(apply(obj$pheno, 2, as.numeric)))
       if(dim(obj$pheno)[[3]]>1) ans$reps <- dim(obj$pheno)[[3]]
@@ -26,7 +26,7 @@ summary.gpData <- function(object,...){
       ans$phenoCovarsMode <- unlist(lapply(df.phenoCovars, class))
       rm(df.phenoCovars)
     }
-    
+
     #summary of 'geno'
     if(is.null(obj$geno)) ans$geno <- NULL
     else{
@@ -45,7 +45,7 @@ summary.gpData <- function(object,...){
          }
          names(frequencies) <- genotypes
          ans$geno <- list(nMarkers=ncol(geno),genotypes=round(frequencies,3),nNA=sum(is.na(geno),na.rm=TRUE)/nobs)
-      } 
+      }
       if(!is.null(obj$map)){
          ans$geno$markerChr <- table(obj$map$chr)#[unique(obj$map$chr)]     # keep same order as in map
          ans$geno$markerChr <- ans$geno$markerChr[!is.na(ans$geno$markerChr)]
@@ -59,7 +59,7 @@ summary.gpData <- function(object,...){
     # summary of 'pedigree'
     if(is.null(obj$pedigree)) ans$pedigree <- NULL
     else ans$pedigree <- summary.pedigree(obj)
-    
+
     class(ans) <- "summary.gpData"
     ans
 }
@@ -75,7 +75,7 @@ print.summary.gpData <- function(x,...){
     cat("\t No. of traits:\t\t  ",dim(x$pheno)[[2]],"\n" )
     if(!is.null(x$reps)) cat("\t No. of repeated measures:", x$reps, "\n")
     cat("\n")
-    print(x$pheno)
+    if(!is.null(x$pheno)) print(x$pheno)
     cat("\n")
     if(!is.null(x$phenoCovars)){
       cat("phenoCovars \n")

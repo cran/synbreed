@@ -39,7 +39,7 @@ Hans-Juergen Auinger
 }
 
 \seealso{
-\code{\link{read.vcf2matrix}}, \code{\link{codeGeno}}
+\code{\link{read.vcf2matrix}}, \code{\link{read.vcf2list}}, \code{\link{codeGeno}}
 }
 \examples{
 map <- data.frame(chr=c(1,1,1,1,1,2,2,2,2),pos=1:9)
@@ -49,7 +49,7 @@ rownames(geno) <- paste("ID",1:10+100,sep="")
 
 gp <- create.gpData(geno=geno,map=map)
 gp1 <- discard.markers(gp,rownames(map[map$chr!=1,]))
-\dontrun{write.vcf(gp1,prefix="test")}
+\dontrun{write.vcf(gp1, file="test.vcf")}
 }
 
 \keyword{manip}

@@ -6,7 +6,6 @@ summary.relationshipMatrix <- function(object,...){
                  range.off.diagonal=c(min=min(offdiag, na.rm=TRUE), max=max(offdiag, na.rm=TRUE)),
                  mean.diag=mean(diag(relMat), na.rm=TRUE),
                  mean.off.diag=mean(offdiag, na.rm=TRUE),
-                 nUnique=length(unique(as.vector(offdiag))),
                  diag.val=summary(as.vector(diag(relMat))),
                  empty = sum(is.na(relMat)))
      class(ans) <- "summary.relationshipMatrix"
@@ -26,5 +25,4 @@ print.summary.relationshipMatrix <- function(x,...){
     cat(" mean off-diagonal values     ",x$mean.off.diag,"\n")
     cat(" range of diagonal values     ",x$diag.val[1],"--",x$diag.val[6],"\n")
     cat(" mean diagonal values         ",x$mean.diag,"\n")
-    cat(" number of unique values      ",x$nUnique,"\n")
 }

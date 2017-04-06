@@ -13,10 +13,10 @@ Imputation of missing values can be done by random sampling from allele distribu
 codeGeno(gpData,impute=FALSE,
          impute.type=c("random","family","beagle","beagleAfterFamily","beagleNoRand",
                        "beagleAfterFamilyNoRand","fix"),
-         replace.value=NULL, maf=NULL, nmiss=NULL, label.heter="AB",
+         replace.value=NULL, maf=NULL, nmiss=NULL, label.heter="alleleCoding",
          reference.allele="minor", keep.list=NULL, keep.identical=TRUE, verbose=FALSE,
          minFam=5, showBeagleOutput=FALSE, tester=NULL, print.report=FALSE, check=FALSE,
-         nodes=NULL)
+         ploidy=2, cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -39,7 +39,7 @@ object of class \code{gpData} with arbitrary coding in element \code{geno}. Miss
 \code{numeric} scalar.  Markers with more than \code{nmiss} fraction of missing values are discarded, thus  \code{nmiss} in [0,1]. If \code{map} in \code{gpData} is available, markers are also removed from \code{map}.
 }
   \item{label.heter}{
-This is either a scalar or vector of characters to identify heterozygous genotypes or a function returning \code{TRUE} if an element of the marker matrix is the heterozygous genotype. Defining a function is useful, if number of unique heterozygous genotypes is large, i.e. if genotypes are coded by alleles. If the heterozygous genotype is coded like "A/T","G/C", ..., "AG", "CG", ..., "T:C", "G:A", ... or "G|T", "A|C", ... then \code{label.heter="alleleCoding"} can be used. Note that heterozygous values must be identified unambiguously by \code{label.heter}. Use \code{label.heter=NULL} if there are only homozygous genotypes, i.e. in DH lines, to speed up computation and restrict imputation to values 0 and 2.
+This is either a scalar or vector of characters to identify heterozygous genotypes or a function returning \code{TRUE} if an element of the marker matrix is the heterozygous genotype. Defining a function is useful, if number of unique heterozygous genotypes is large, i.e. if genotypes are coded by alleles. If the heterozygous genotype is coded like "A/T","G/C", ..., "AG", "CG", ..., "T:C", "G:A", ... or "G|T", "A|C", ... then \code{label.heter="alleleCoding"} can be used (This is the default). Note that heterozygous values must be identified unambiguously by \code{label.heter}. Use \code{label.heter=NULL} if there are only homozygous genotypes, i.e. in DH lines, to speed up computation and restrict imputation to values 0 and 2.
 }
   \item{reference.allele}{
 Define the reference allele which is used for the coding. Default is \code{"minor"}, i.e. data is coded by the number of copies of the minor allele. Alternatively, \code{reference.allele} can specify a single character defining the reference allele for all markers, or a vector defining marker-specific reference alleles (using the same order as of the markers in \code{gpData}). In case you have already a gpObject with \code{info$codeGeno == TRUE}, and like only to use higher maf or remove duplicated markers, you can use the option \code{"keep"}, than the coding of the original object is kept.
@@ -68,8 +68,11 @@ For \code{impute.type} \code{family} and \code{beagleAfterFamily}, each family s
 \item{check}{
  This option has as default \code{FALSE}. If something seems to be wrong with the coding, with the option \code{check=TRUE} the function tries to catch the error.
  }
-  \item{nodes}{
- \code{numeric}. This option is not in use yet.
+ \item{ploidy}{
+\code{numeric}. Here you can specify the number homologous alleles. For this option you need a coding with A and B, e.g. for tetraploids "AAAA", "AAAB", "AABB", "ABBB" and "BBBB". In the \code{geno} element of your gpData-object will be than the dosage of the minor allele. The argument label.heter is ignored for \code{ploidy >2}
+}
+  \item{cores}{
+\code{numeric}. Here you can specify the number of cores you like to use.
  }
 }
 \details{
@@ -89,7 +92,7 @@ Imputing is done according to \code{impute.type}
 This option is only suitable for homozygous individuals (such as doubled-haploid lines) structured in families.
 Suppose an observation \eqn{i} is missing (NA) for a marker \eqn{j} in family \eqn{k}. If marker \eqn{j} is fixed in family \eqn{k}, the imputed value will be the fixed allele. If marker \eqn{j} is segregating for the population \eqn{k},
 the value is 0 with probability of 0.5 and 2 with probability of 0.5. To use this algorithm, family information has to be stored as variable \code{family} in list element \code{covar} of an object of class \code{gpData}. This column should contain a \code{character} or \code{numeric} to identify family of all genotyped individuals.}
-\item{"beagle"}{Use Beagle Genetic Analysis Software Package version 4.1 (r22Apr16.1cf) (Browning and Browning 2007; 2013; 2016) to infer missing genotypes is used. This software is a java program, so that you have to install java (>=1.7) and make it available at your computer. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking markers. Function \code{codeGeno} will create a directory \code{beagle} for Beagle input and output files (if it does not exist) and run Beagle with default settings. The information on marker position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be available for all markers. The program can only handle the position units "bp", "kb" and "Mb". Make sure that there are than only integer numbers for the unit "bp", because beagle can only work with integer numbers. By default, three genotypes 0, 1, 2 are imputed. To restrict the imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
+\item{"beagle"}{Use Beagle Genetic Analysis Software Package version 4.1 (21Jan17.6cc) (Browning and Browning 2007; 2013; 2016) to infer missing genotypes is used. This software is a java program, so that you have to install java (>=1.7) and make it available at your computer. If you use the \code{beagle} option, please cite the original papers in publications. Beagle uses a HMM to reconstruct missing genotypes by the flanking markers. Function \code{codeGeno} will create a directory \code{beagle} for Beagle input and output files (if it does not exist) and run Beagle with default settings. The information on marker position is taken from element \code{map}. Indeed, the postion in \code{map$pos} must be available for all markers. The program can only handle the position units "bp", "kb" and "Mb". Make sure that there are than only integer numbers for the unit "bp", because beagle can only work with integer numbers. By default, three genotypes 0, 1, 2 are imputed. To restrict the imputation only to homozygous genotypes, use \code{label.heter=NULL}.}
 \item{"beagleAfterFamily"}{
 In the first step, missing genotypes are imputed according to the algorithm with \code{impute.type="family"}, but only for markers that are fixed within the family. Moreover, markers with a missing position (\code{map$pos=NA}) are imputed using the algorithm of \code{impute.type="family"}. In the second step, the remaining genotypes are imputed by Beagle. For details of this see the description of the \code{beagle} option.}
 \item{"beagleNoRand" and "beagleAfterFamilyNoRand"}{

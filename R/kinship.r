@@ -1,4 +1,5 @@
-kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"), DH=NULL, maf=NULL, selfing=NULL, lambda=1, P=NULL){
+kin <- function(gpData,ret=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),
+                DH=NULL, maf=NULL, selfing=NULL, lambda=1, P=NULL, cores=1){
 
     ret <- match.arg(ret,choices=c("add","kin","dom","gam","realized","realizedAB","sm","sm-smin","gaussian"),several.ok = FALSE)
     NAs <- FALSE

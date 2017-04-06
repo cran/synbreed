@@ -8,7 +8,7 @@ Read data of a vcf-file to a matrix
 Function for easily read genomic data in vcf-Format to a list, which contains the map information and the marker information.
 }
 \usage{
-read.vcf2list(file, FORMAT = "GT", coding = c("allele", "ref"), IDinRow = TRUE)
+read.vcf2list(file, FORMAT = "GT", coding = c("allele", "ref"), IDinRow = TRUE, cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -28,6 +28,9 @@ allele and \code{"1"} for the alternative allele.
 \code{logical}. Default is \code{TRUE}, this means the genotypes are in the rows and the markers in
 the column. For \code{FALSE} it is the other way round.
 }
+  \item{cores}{
+\code{numeric}. Specifies the number of cores for parallel computing.
+}
 }
  \value{
 A list with a matrix (\code{\link[base]{matrix}}) containing a representation of the genotypic data in the file and a map of classes GenMap and data.frame.
@@ -37,7 +40,7 @@ Hans-Juergen Auinger
 }
 
 \seealso{
-\code{\link{write.vcf}}
+\code{\link{write.vcf}}, \code{\link{read.vcf2matrix}}
 }
 \examples{
 \dontrun{
@@ -47,6 +50,5 @@ maize$info$map.unit <- "kb"
 maize <- codeGeno(maize)
 write.vcf(maize, "maize.vcf")
 genInfo <- read.vcf2list("maize.vcf")
-
 }
 }

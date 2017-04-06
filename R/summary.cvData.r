@@ -29,7 +29,7 @@ summary.cvData <- function(object,...){
      ans$min.pa <- format(min(obj$PredAbi),digits=4,nsmall=4)
      ans$mean.pa <- format(mean(obj$PredAbi),digits=4,nsmall=4)
      ans$max.pa <- format(max(obj$PredAbi),digits=4,nsmall=4)
-     # Spearman's rank correlation 
+     # Spearman's rank correlation
      if(!is.null(obj$rankCor)){
      colmean.rc <- colMeans(obj$rankCor)
      ans$se.rc <- format(sd(colmean.rc)/sqrt(length(colmean.rc)),digits=4,nsmall=4)
@@ -85,7 +85,4 @@ print.summary.cvData <- function(x,...){
     cat("\nSeed start: ",x$Seed,"\n")
     cat("Seed replications: \n")
     print(x$rep.seed)
-} 
-
-
-
+}

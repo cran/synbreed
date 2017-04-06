@@ -45,7 +45,7 @@ the same order as the given covariance matrices, the last given variance compone
   \item{verbose}{Logical. Whether output shows replications and folds.
 }
   \item{\dots}{
-further arguments to be used by the genomic prediction models, i.e. prior values and MCMC options for the \code{BLR} function (see \code{\link[BLR]{BLR}}).
+further arguments to be used by the genomic prediction models, i.e. prior values and MCMC options for the \code{BLR} function (see \code{\link[BGLR]{BLR}}).
 }
 }
 \details{
@@ -126,4 +126,3 @@ summary(cv.maize2)
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
-
