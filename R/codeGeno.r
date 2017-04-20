@@ -485,6 +485,8 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
           if(gpData$info$map.unit == "cM") mapfile[, 4] <- 1000000 * mapfile[, 3]
           while(any(duplicated(markerTEMPbeagle$map))) {mapfile[duplicated(markerTEMPbeagle$map), 4] <- mapfile[duplicated(markerTEMPbeagle$map), 4]+1}
           markerTEMPbeagle$map$pos <- mapfile[, 4]
+          mapfile[,4] <- formatC(mapfile[,4], format="f", digits=0)
+          mapfile[,1] <- paste("chr",mapfile[,1],sep="")
           write.table(mapfile, file=paste("beagle/run", pre, ".map", sep=""), col.names=FALSE, row.names=FALSE, quote=FALSE, na=".", sep="\t")
           mapfile <- paste(" map=beagle/run", pre, ".map ", sep="")
           markerTEMPbeagle$info$map.unit <- "bp"

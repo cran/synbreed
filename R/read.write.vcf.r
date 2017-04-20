@@ -17,7 +17,7 @@ write.vcf <- function(gp,file,unphased=TRUE){
   geno[geno==1] <- s01
   geno[geno==2] <- s11
   geno[geno==-1] <- s10
-  bgl <- cbind(data.frame(CHROM=paste("chr",gp$map$chr, sep=""), POS=gp$map$pos,ID=rownames(gp$map), REF="A", ALT="G", QUAL=".", FILTER="PASS", INFO=".", FORMAT="GT", stringsAsFactors=FALSE),
+  bgl <- cbind(data.frame(CHROM=paste("chr",gp$map$chr, sep=""), POS=formatC(gp$map$pos, format="f", digits=0),ID=rownames(gp$map), REF="A", ALT="G", QUAL=".", FILTER="PASS", INFO=".", FORMAT="GT", stringsAsFactors=FALSE),
                geno)
   if (any(grep(" ",colnames(geno)))) stop("no blanks allowed in IDs!")
   cat(file=file, '##fileformat=VCFv4.1\n##filedate=',Sys.Date(),'\n##source="write.vcf of R-synbreed"\n##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">\n#')

@@ -1,8 +1,8 @@
 Package: synbreed
 Type: Package
 Title: Framework for the Analysis of Genomic Prediction Data using R
-Version: 0.12-4
-Date: 2017-04-05
+Version: 0.12-5
+Date: 2017-04-19
 Author: Hans-Juergen Auinger, Valentin Wimmer, Theresa Albrecht, Chris-Carolin Schoen with contributions by Larry Schaeffer, Malena Erbe, Ulrike Ober, Christian Reimer, Yvonne Badke and Peter VandeHaar
 Depends: R (>= 2.14)
 Imports: abind, BGLR, doBy, doParallel, foreach, grid, igraph, lattice,
@@ -17,8 +17,8 @@ LazyData: no
 ZipData: no
 Repository: CRAN
 Repository/R-Forge/Project: synbreed
-Repository/R-Forge/Revision: 684
-Repository/R-Forge/DateTimeStamp: 2017-04-06 07:45:55
-Date/Publication: 2017-04-06 10:57:30 UTC
+Repository/R-Forge/Revision: 686
+Repository/R-Forge/DateTimeStamp: 2017-04-19 07:27:07
+Date/Publication: 2017-04-20 15:04:34 UTC
 NeedsCompilation: no
-Packaged: 2017-04-06 08:05:58 UTC; rforge
+Packaged: 2017-04-19 07:45:57 UTC; rforge

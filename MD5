@@ -1,6 +1,6 @@
-d04c26e5243b3ada22dabb6c716a6c5e *DESCRIPTION
+746b44585da37f0d2bb55174e3d5de7b *DESCRIPTION
 e4301f4b3118080ca6db567825529a25 *NAMESPACE
-a64228c927c38444ee2076044679b3d2 *NEWS
+a77b1883615b2fdec7ee162671b00853 *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
 7b0f91b9f85c8884dc33d214e678ef30 *R/LD.r
 017e83f00d14d0ba3ee5de2f35ec2312 *R/LDDist.r
@@ -9,7 +9,7 @@ a64228c927c38444ee2076044679b3d2 *NEWS
 561e89239126bcc691c3ac56951a0059 *R/add.individuals.r
 a96430e63dee57b8ba21a8c2f1fc6e3f *R/add.markers.r
 95a5911a085786a007d5c3bb22e600e0 *R/add.pedigree.r
-cb57ef30c6e7c5f5da69670adb10d206 *R/codeGeno.r
+c5ee312cd904ce3f3f0e29b960bcd8df *R/codeGeno.r
 3ebf0f1946ea09b5dbaf2cbf1bf505eb *R/create.gpData.r
 c52167bed3b7343cb734ad18083a2b0e *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r
@@ -26,7 +26,7 @@ bc8c1e5519c4fc9da3b224572ffa59c0 *R/plot.genMap.r
 4036194650ee1c6040e23afec5ec5621 *R/plot.pedigree.r
 bf8f81050ad411bc4801c8b395876374 *R/plot.relationshipMatrix.r
 5c9c613325ba791ff72d57dff5fa4ca3 *R/predict.gpMod.r
-2620a9fc43e89f0ac084beb1a3ff2d66 *R/read.write.vcf.r
+104f6c369f62b1597d0db9e0697acff8 *R/read.write.vcf.r
 c5e1cb5f8055e70abc7a4fd6b1e6d08e *R/simul.pedigree.r
 db72bd5ff81194207d9bfc4500328c70 *R/simul.phenotype.r
 0596328a0774c72015590f6fb29e9781 *R/summary.LD.r
@@ -266,13 +266,13 @@ ef85847e2a99826648d598be8c735708 *vignettes/IntroSyn.Rnw
 a38d834a551d1053ed8a835c8cddcb02 *vignettes/bm.sty
 1394484863f8bbd9ad957d8cd4f03af5 *vignettes/cv.mice.Rdata
 398064e67165143bf0073e4558b2b503 *vignettes/figs/LDmaize.png
-0949bfd0498d9aab1364d54d5661c24c *vignettes/figs/cattleHist.pdf
-c0634e3188f6bb3b1c4aa13651c53095 *vignettes/figs/genMapCattle.pdf
-840fd660cee9271acfafe2d7bad380c6 *vignettes/figs/genMapMaize.pdf
-63ce1b6088a03d1d0c054f0a4731460a *vignettes/figs/genMapMice.pdf
-c2b39a5a21ca2135fc9879cedaf0f1f8 *vignettes/figs/maizeHist.pdf
+3d98c0503a245e1f075927258b88fcd6 *vignettes/figs/cattleHist.pdf
+3e6b1bef52708d469bf7c7966745be53 *vignettes/figs/genMapCattle.pdf
+dd186f64fe3ac058a47c7fe683ce8c51 *vignettes/figs/genMapMaize.pdf
+efefa94579b788fe8785cd96e5a068ac *vignettes/figs/genMapMice.pdf
+0877bf855057708514fc6c5b4c0cd903 *vignettes/figs/maizeHist.pdf
 2c6edbce1d03213476cd6170ed6f5677 *vignettes/figs/manhattanPlot.pdf
-360a26794e3e63e59f3cbbda858a902a *vignettes/figs/miceHist.pdf
+4ca96412dfd26608fd7443061c24490f *vignettes/figs/miceHist.pdf
 d04e9b025ddeacb0e801d724e27b833a *vignettes/figs/relMatA.png
 02d7b4f6733418ee24f011546011f662 *vignettes/figs/relMatG.png
 e24f176a468cb04c03a09a9d0a557f41 *vignettes/figs/synbreedPackageDescription.pdf
