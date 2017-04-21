@@ -1,6 +1,6 @@
-746b44585da37f0d2bb55174e3d5de7b *DESCRIPTION
+7cd332cfafe3fd70842a7a1724e98088 *DESCRIPTION
 e4301f4b3118080ca6db567825529a25 *NAMESPACE
-a77b1883615b2fdec7ee162671b00853 *NEWS
+c4268ad0dcaf34e4280b2bd7e3b81f28 *NEWS
 16c7d5862f8b5a78fc57b7e184f46df0 *R/Extract.classes.r
 7b0f91b9f85c8884dc33d214e678ef30 *R/LD.r
 017e83f00d14d0ba3ee5de2f35ec2312 *R/LDDist.r
@@ -9,7 +9,7 @@ a77b1883615b2fdec7ee162671b00853 *NEWS
 561e89239126bcc691c3ac56951a0059 *R/add.individuals.r
 a96430e63dee57b8ba21a8c2f1fc6e3f *R/add.markers.r
 95a5911a085786a007d5c3bb22e600e0 *R/add.pedigree.r
-c5ee312cd904ce3f3f0e29b960bcd8df *R/codeGeno.r
+cc95d74f7f826e4ce02dca9e8867c3be *R/codeGeno.r
 3ebf0f1946ea09b5dbaf2cbf1bf505eb *R/create.gpData.r
 c52167bed3b7343cb734ad18083a2b0e *R/create.pedigree.r
 db822db5f3416812878ffa27541e9ca9 *R/cross2gpData.r
@@ -266,13 +266,13 @@ ef85847e2a99826648d598be8c735708 *vignettes/IntroSyn.Rnw
 a38d834a551d1053ed8a835c8cddcb02 *vignettes/bm.sty
 1394484863f8bbd9ad957d8cd4f03af5 *vignettes/cv.mice.Rdata
 398064e67165143bf0073e4558b2b503 *vignettes/figs/LDmaize.png
-3d98c0503a245e1f075927258b88fcd6 *vignettes/figs/cattleHist.pdf
-3e6b1bef52708d469bf7c7966745be53 *vignettes/figs/genMapCattle.pdf
-dd186f64fe3ac058a47c7fe683ce8c51 *vignettes/figs/genMapMaize.pdf
-efefa94579b788fe8785cd96e5a068ac *vignettes/figs/genMapMice.pdf
-0877bf855057708514fc6c5b4c0cd903 *vignettes/figs/maizeHist.pdf
+0df8c2489b8da338a77bc83b34903ce8 *vignettes/figs/cattleHist.pdf
+9fe450d12177fed952483c01b8f83e09 *vignettes/figs/genMapCattle.pdf
+04e41a1f0341e88554a7caa9321aa3ee *vignettes/figs/genMapMaize.pdf
+f7d9eaaf846a51e32a1b8155a798675a *vignettes/figs/genMapMice.pdf
+1fd3b77371d8c2ef0a5da60dd9b436b6 *vignettes/figs/maizeHist.pdf
 2c6edbce1d03213476cd6170ed6f5677 *vignettes/figs/manhattanPlot.pdf
-4ca96412dfd26608fd7443061c24490f *vignettes/figs/miceHist.pdf
+fd2dc0a4f877efca19c2d8c2ffddc462 *vignettes/figs/miceHist.pdf
 d04e9b025ddeacb0e801d724e27b833a *vignettes/figs/relMatA.png
 02d7b4f6733418ee24f011546011f662 *vignettes/figs/relMatG.png
 e24f176a468cb04c03a09a9d0a557f41 *vignettes/figs/synbreedPackageDescription.pdf
