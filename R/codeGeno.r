@@ -9,7 +9,6 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   # read information from arguments
   ##### rownames(res)[apply(is.na(res), 1, mean)>.5]
   #============================================================
-
   impute.type <- match.arg(impute.type)
   infoCall <- match.call()
   SEED <- round(runif(2,1,1000000),0)
@@ -56,7 +55,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       if(impute.type %in% c("beagle") & length(MG) > 0) stop(paste("Of genotype(s) ", MG, " all genotypic values are missing!", sep=" "))
       else if(length(MG) > 0) warning(paste("Of genotype(s) ", MG, " all genotypic values are missing! \nImputation may be erroneus.", sep=" "))
     } else if(length(MG) > 0) warning(paste("Of genotype(s) ", MG, " all genotypic values are missing!", sep=" "))
-
+  df.ld <- data.frame(kept=character(), removed=character(), removed.refer=character(), removed.alter=character())
   orgFormat <- class(gpData)
   # check for class 'gpData'
   if(class(gpData)=="gpData"){
@@ -81,6 +80,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
         warning("assuming heterozygous genotypes coded as 1. Use 'label.heter' to specify if that is not the case")
         label.heter <- 1
       }
+    if(is.null(label.heter)) cat("No heterozygous lines were assumed, due to option 'label.heter=NULL'\n")
   } else { # atm other formats are supported too
     if(impute & impute.type %in% c("beagle","beagleAfterFamily","beagleNoRand","beagleAfterFamilyNoRand")) stop("using Beagle is only possible for a gpData object")
     res <- gpData
@@ -114,10 +114,10 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   }  else df.ldOld <- NULL
   #  catch errors
   if(check){
-    if(class(gpData$geno)!= "data.frame" & class(gpData$geno) != "matrix") stop("wrong data format")
+    if(class(gpData$geno)!="data.frame" & class(gpData$geno)!="matrix") stop("wrong data format")
     if(any(colMeans(is.na(gpData$geno))==1)) warning("markers with only missing values in data")
     if(length(reference.allele)>1 & length(reference.allele)!=ncol(gpData$geno)) stop("'reference allele' should be of length 1 or match the number of markers")
-    if(class(reference.allele) != mode(gpData$geno)) stop("'reference allele' should be of class character")
+    if(reference.allele!="keep") if(class(reference.allele)!=mode(gpData$geno)) stop("'reference allele' should be of class", mode(gpData$geno))
   }
   # number of genotypes
   n <- nrow(gpData$geno)
@@ -254,13 +254,15 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
                                       return(paste(alt,mid,alt,sep=""))}))
         }
       }
-      gpData$geno <- gpData$geno-1
+      gpData$geno <- as.data.frame(gpData$geno)-1
       if(reference.allele[1]=="minor"){
         afCols <- cnames[colMeans(gpData$geno, na.rm=TRUE)>midDose]
-        gpData$geno[, cnames%in%afCols] <-  rep(1, nrow(gpData$geno)) %*% t(rep(2, length(afCols))) - gpData$geno[, cnames%in%afCols]
-        df.allele[cnames%in%afCols,c(2,4)] <- df.allele[cnames%in%afCols,c(4,2)]
+        if(length(afCols)>0){
+          gpData$geno[, cnames%in%afCols] <-  rep(1, nrow(gpData$geno)) %*% t(rep(2, length(afCols))) - gpData$geno[, cnames%in%afCols]
+          df.allele[cnames%in%afCols,c(2,4)] <- df.allele[cnames%in%afCols,c(4,2)]
+        }
       }
-      if(all.equal(colnames(gpData$geno), rownames(gpData$map)))
+      if(all(names(gpData$geno)==rownames(gpData$map)))
         gpData$map <- cbind(gpData$map, df.allele[, c("refer", "heter", "alter")])
       else gpData$alleles <- df.allele
     } else { # ploidy
@@ -290,6 +292,7 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       else gpData$alleles <- df.allele
     }
   }
+  gpData$geno <- as.data.frame(gpData$geno)
 
   #============================================================
   # step 3  - Discarding markers for which the tester is not homozygous or values missing (optional, argument tester = "xxx")
@@ -351,17 +354,29 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
   # step 6  - Discarding homozygout values of the minor allele and markers with more than nmiss values
   #============================================================
 
+
   if(!is.null(tester)){
     gpData$geno[gpData$geno == 2] <- NA
-    gpData$geno <- matrix(as.numeric(gpData$geno), nrow = n)
     if(!is.null(nmiss)){
-      which.miss <- multiLapply(as.data.frame(is.na(gpData$geno)),mean,na.rm=TRUE, mc.cores=cores) <= nmiss |knames
+      which.miss <- multiLapply(as.data.frame(is.na(gpData$geno)),mean,na.rm=TRUE, mc.cores=cores) <= nmiss | knames
+      gpData$geno <- gpData$geno[,which.miss]
+      cnames <- cnames[which.miss]; knames <- knames[which.miss]
+      if (verbose) cat("   step 6a :",sum(!which.miss),"marker(s) discarded with >",nmiss*100,"% false genotyping values \n")
+      # update map
+      if(!is.null(gpData$map)) gpData$map <- gpData$map[rownames(gpData$map) %in% cnames,]
+    } else{
+      if (verbose) cat("   step 6a : No markers discarded due to fraction of missing values \n")
+    }
+  } else if (noHet){
+    gpData$geno[gpData$geno == 1] <- NA
+    if(!is.null(nmiss)){
+      which.miss <- multiLapply(as.data.frame(is.na(gpData$geno)),mean,na.rm=TRUE, mc.cores=cores) <= nmiss | knames
       gpData$geno <- gpData$geno[,which.miss]
       cnames <- cnames[which.miss]; knames <- knames[which.miss]
       if (verbose) cat("   step 6  :",sum(!which.miss),"marker(s) discarded with >",nmiss*100,"% false genotyping values \n")
       # update map
       if(!is.null(gpData$map)) gpData$map <- gpData$map[rownames(gpData$map) %in% cnames,]
-    } else{
+    } else {
       if (verbose) cat("   step 6  : No markers discarded due to fraction of missing values \n")
     }
   }
@@ -489,26 +504,18 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
           markerTEMPbeagle$info$map.unit <- "bp"
         }
         markerTEMPbeagle$map$chr <- as.numeric(as.factor(markerTEMPbeagle$map$chr))
-        write.vcf(markerTEMPbeagle,paste(file.path(getwd(),"beagle"),"/run",pre,"input.vcf", sep=""))
-        if(noHet){
-        output <- system(paste("java -Xmx3000m -jar ",
+        write.vcf(markerTEMPbeagle,paste(file.path(getwd(),"beagle"),"/run",pre,"_input.vcf", sep=""))
+        output <- system(paste("java -jar ",#-Xmx5g
                          shQuote(paste(sort(path.package()[grep("synbreed", path.package())])[1], "/java/beagle.21Jan17.6cc.jar", sep="")),
                          # caution with more than one pacakge with names synbreed*, assume synbreed to be the first one
-                         " gtgl=beagle/run", pre, "input.vcf out=beagle/run", pre, "out gprobs=true nthreads=", cores, mapfile, sep=""),
+                         " gtgl=beagle/run", pre, "_input.vcf out=beagle/run", pre, "_out gprobs=true nthreads=", cores, mapfile, sep=""),
                          intern=!showBeagleOutput)
-        } else {
-        output <- system(paste("java -Xmx3000m -jar ",
-                         shQuote(paste(sort(path.package()[grep("synbreed", path.package())])[1], "/java/beagle.21Jan17.6cc.jar", sep="")),
-                         # caution with more than one pacakge with names synbreed*, assume synbreed to be the first one
-                         " gtgl=beagle/run", pre, "input.vcf out=beagle/run", pre, "out gprobs=true nthreads=", cores, mapfile, sep=""),
-                         intern=!showBeagleOutput)
-        }
         # read data from beagle
-        gz <- gzfile(paste("beagle/run",pre,"out.vcf.gz",sep=""))
+        gz <- gzfile(paste("beagle/run",pre, "_out.vcf.gz",sep=""))
         resTEMP <- read.vcf2matrix(file=gz, FORMAT="DS", IDinRow=TRUE, cores=cores)
         mode(resTEMP) <- "numeric"
-
         # convert dose to genotypes
+        cat("noHet: ", noHet, "\n")
         if(noHet){
           resTEMP[resTEMP<1] <- 0
           resTEMP[resTEMP>=1] <- 2
@@ -517,7 +524,6 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
         }
         gpData$geno[,colnames(resTEMP)] <- resTEMP
       }
-
       #########################################################################
       # impute missing values with no population structure or missing positions
       #########################################################################
@@ -605,7 +611,6 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
         if(sum(which.duplicated) >0){
           gpData$geno[is.na(gpData$geno)] <- 3
           mat.ld <- multiCor(gpData$geno[, which.duplicated], gpData$geno[, rev.which.duplicated], use="pairwise.complete.obs", cores=cores)
-          print(mat.ld)
           df.ld <- data.frame(kept=rep(cnames[rev.which.duplicated], each=nrow(mat.ld)),
                               removed=rep(cnames[which.duplicated], ncol(mat.ld)),
                               ld=as.numeric(mat.ld),
@@ -676,8 +681,12 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
       }
     } # end of not imputed step
     gpData$geno <- gpData$geno[, !which.duplicated]
-    df.ld$removed.refer <- gpData$map[df.ld$removed, "refer"]
-    df.ld$removed.alter <- gpData$map[df.ld$removed, "alter"]
+    if("refer" %in% colnames(gpData$map)){
+      df.ld$removed.refer <- gpData$map[df.ld$removed, "refer"]
+      df.ld$removed.alter <- gpData$map[df.ld$removed, "alter"]
+    } else if(nrow(df.ld)>0){
+      df.ld[,"removed.refer"] <- df.ld[,"removed.alter"] <- NA
+    }
     df.ld <- rbind(df.ldOld[, colnames(df.ld)], df.ld)
     df.ld$sort <- match(df.ld$kept, rownames(gpData$map))
     df.ld <- orderBy(~sort+removed, df.ld)
@@ -765,8 +774,6 @@ codeGeno <- function(gpData,impute=FALSE,impute.type=c("random","family","beagle
    }
 
   # return a gpData object (or a matrix)
-  if(reference.allele[1]=="keep"){
-    gpData$geno[, cnames%in%afCols] <-  rep(1, nrow(gpData$geno)) %*% t(rep(2, sum(cnames%in%afCols))) - gpData$geno[, cnames%in%afCols]
-  }
+  gpData$geno <- as.matrix(gpData$geno)
   return(gpData)
 }

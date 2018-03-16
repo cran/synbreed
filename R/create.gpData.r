@@ -1,6 +1,6 @@
 # read genomic prediction data
 create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NULL,covar=NULL,
-                          reorderMap=TRUE,map.unit="cM",repeated=NULL,modCovar=NULL, cores=1){
+                          reorderMap=TRUE,map.unit="cM",repeated=NULL,modCovar=NULL,na.string="NA",cores=1){
   infoCall <- match.call()
   # start with some checks on data
   # geno as matrix but not data.frame (storage)
@@ -10,6 +10,7 @@ create.gpData <- function(pheno=NULL,geno=NULL,map=NULL,pedigree=NULL,family=NUL
       geno <- as.matrix(geno)
       #if(any(duplicated(geno,MARGIN=1))) warning("individuals with duplicated genotypes")
     }
+    geno[geno%in%na.string] <- NA
     if(!is.matrix(geno)) stop("geno must be a matrix or data.frame, not a ", class(geno))
     if(anyDuplicated(rownames(geno)))
       stop(paste("In", substitute(geno), " are duplicated names of genotypes in rownames!"))

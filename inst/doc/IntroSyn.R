@@ -15,18 +15,19 @@ library(synbreedData)
 ###################################################
 ### code chunk number 2: Call to create an object of class gpData (eval = FALSE)
 ###################################################
-## gp <- create.gpData(covar,pheno,geno,map,pedigree) 
+## gp <- create.gpData(covar,pheno,geno,map,pedigree)
 
 
 ###################################################
 ### code chunk number 3: Load the maize data set
 ###################################################
 library(synbreed)
+library(synbreedData)
 data(maize)
 
 
 ###################################################
-### code chunk number 4: IntroSyn.Rnw:386-387
+### code chunk number 4: IntroSyn.Rnw:387-388
 ###################################################
 summary(maize)
 
@@ -114,100 +115,91 @@ maizeC <- codeGeno(maize)
 
 
 ###################################################
-### code chunk number 13: Function to identify heterozygous genotypes
-###################################################
-# function to check if first character of a string equals third character
-is.heter <- function(x){
-  substr(x,1,1)!=substr(x,3,3)           
-} 
-
-
-###################################################
-### code chunk number 14: Recode mice data (eval = FALSE)
+### code chunk number 13: Recode mice data (eval = FALSE)
 ###################################################
 ## # simple recoding of alleles
-## miceC <- codeGeno(mice,label.heter=is.heter)                        
+## miceC <- codeGeno(mice,label.heter="alleleCoding")
 
 
 ###################################################
-### code chunk number 15: Recode and impute mice data (eval = FALSE)
+### code chunk number 14: Recode and impute mice data (eval = FALSE)
 ###################################################
 ## # recoding of mice data and imputing of missing values by family structure
 ## # discarding markers with maf < 0.05 and nmiss > 0.01
-## miceC <- codeGeno(mice,label.heter=is.heter,impute=TRUE,impute.type="random",maf=0.05,nmiss=0.01,verbose=TRUE)   
+## miceC <- codeGeno(mice,label.heter=is.heter,impute=TRUE,impute.type="random",maf=0.05,nmiss=0.01,verbose=TRUE)
 
 
 ###################################################
-### code chunk number 16: Pairwise LD for the maize data (eval = FALSE)
+### code chunk number 15: Pairwise LD for the maize data (eval = FALSE)
 ###################################################
 ## maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")
 
 
 ###################################################
-### code chunk number 17: LD decay scatterplot (eval = FALSE)
+### code chunk number 16: LD decay scatterplot (eval = FALSE)
 ###################################################
-## LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0)) 
+## LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0))
 
 
 ###################################################
-### code chunk number 18: LD decay stacked histogram (eval = FALSE)
+### code chunk number 17: LD decay stacked histogram (eval = FALSE)
 ###################################################
 ## LDDist(maizeLD,type="bars",breaks=list(dist=c(0,25,50,75,200),
-## r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")  
+## r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")
 
 
 ###################################################
-### code chunk number 19: Additive numerator relationship matrix for the maize data (eval = FALSE)
+### code chunk number 18: Additive numerator relationship matrix for the maize data (eval = FALSE)
 ###################################################
 ## A <- kin(maize,ret="add",DH=maize$covar$DH)
 
 
 ###################################################
-### code chunk number 20: Summary method for class relationshipMatrix (eval = FALSE)
+### code chunk number 19: Summary method for class relationshipMatrix (eval = FALSE)
 ###################################################
 ## summary(A)
 
 
 ###################################################
-### code chunk number 21: Realized relationship matrix for the maize data (eval = FALSE)
+### code chunk number 20: Realized relationship matrix for the maize data (eval = FALSE)
 ###################################################
 ## U <- kin(maizeC,ret="realized")
 ## summary(U)
 
 
 ###################################################
-### code chunk number 22: Heatmap visualization of the expected and realized relationship matrices (eval = FALSE)
+### code chunk number 21: Heatmap visualization of the expected and realized relationship matrices (eval = FALSE)
 ###################################################
 ## plot(A[maize$covar$genotyped,maize$covar$genotyped])
 ## plot(U)
 
 
 ###################################################
-### code chunk number 23: Realized relationship matrix for the mice data (eval = FALSE)
+### code chunk number 22: Realized relationship matrix for the mice data (eval = FALSE)
 ###################################################
 ## UM <- kin(miceC,ret="realized")
 
 
 ###################################################
-### code chunk number 24: Genomic BLUP for the mice data using trait weight (eval = FALSE)
+### code chunk number 23: Genomic BLUP for the mice data using trait weight (eval = FALSE)
 ###################################################
 ## miceGBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight")
 
 
 ###################################################
-### code chunk number 25: Summary of the model (eval = FALSE)
+### code chunk number 24: Summary of the model (eval = FALSE)
 ###################################################
 ## summary(miceGBLUP)
 
 
 ###################################################
-### code chunk number 26: Genomic BLUP for the mice data using trait weight (eval = FALSE)
+### code chunk number 25: Genomic BLUP for the mice data using trait weight (eval = FALSE)
 ###################################################
 ## miceRRBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight",markerEffects=TRUE)
 
 
 ###################################################
-### code chunk number 27: IntroSyn.Rnw:681-688
+### code chunk number 26: IntroSyn.Rnw:675-682
 ###################################################
 # 40 = 8 * (3+2)
 # h2 = 0.74 (Valdar 2006)
@@ -219,20 +211,20 @@ prior <- list(varE=list(df=3,S=40),lambda = list(shape=0.8,rate=1e-4,value=52,ty
 
 
 ###################################################
-### code chunk number 28: Bayesian Lasso model for the mice data (eval = FALSE)
+### code chunk number 27: Bayesian Lasso model for the mice data (eval = FALSE)
 ###################################################
 ## miceModBL  <- gpMod(miceC,model="BL",trait="weight",
 ## prior=prior,nIter=12000,burnIn=2000,thin=10)
 
 
 ###################################################
-### code chunk number 29: Summary of the model (eval = FALSE)
+### code chunk number 28: Summary of the model (eval = FALSE)
 ###################################################
 ## summary(miceModBL)
 
 
 ###################################################
-### code chunk number 30: Manhattanplot for the marker effects in the mice data (eval = FALSE)
+### code chunk number 29: Manhattanplot for the marker effects in the mice data (eval = FALSE)
 ###################################################
 ## pdf("figs/manhattanPlot.pdf",width=11,height=5)
 ## manhattanPlot(abs(miceModBL$m),miceC,ylab="|marker effect|")
@@ -240,7 +232,7 @@ prior <- list(varE=list(df=3,S=40),lambda = list(shape=0.8,rate=1e-4,value=52,ty
 
 
 ###################################################
-### code chunk number 31: Set up a gpData for the prediction set (eval = FALSE)
+### code chunk number 30: Set up a gpData for the prediction set (eval = FALSE)
 ###################################################
 ## unphenotyped <- dimnames(mice$pheno)[[1]][is.na(mice$pheno[,1,])]
 ## phenotyped <- mice$covar$id[!mice$covar$id %in% unphenotyped]
@@ -248,33 +240,33 @@ prior <- list(varE=list(df=3,S=40),lambda = list(shape=0.8,rate=1e-4,value=52,ty
 
 
 ###################################################
-### code chunk number 32: Predict their genetic performance (eval = FALSE)
+### code chunk number 31: Predict their genetic performance (eval = FALSE)
 ###################################################
 ## predict(miceModBL,predSet)
 
 
 ###################################################
-### code chunk number 33: Cross-validation of the GBLUP model with the mice data (eval = FALSE)
+### code chunk number 32: Cross-validation of the GBLUP model with the mice data (eval = FALSE)
 ###################################################
 ## cv.mice <- crossVal(miceC,cov.matrix=list(UM),k=2,Rep=10,Seed=123,
-##              sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")  
+##              sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")
 
 
 ###################################################
-### code chunk number 34: Load previous results to save time
+### code chunk number 33: Load previous results to save time
 ###################################################
 load("cv.mice.Rdata")
 cv.mice <- cv.mice2
 
 
 ###################################################
-### code chunk number 35: Summary for the cross-validation
+### code chunk number 34: Summary for the cross-validation
 ###################################################
 summary(cv.mice)
 
 
 ###################################################
-### code chunk number 36: Models for the maize data (eval = FALSE)
+### code chunk number 35: Models for the maize data (eval = FALSE)
 ###################################################
 ## # animal model
 ## PBLUP <- gpMod(maizeC,model="BLUP",kin=A/2)
@@ -286,7 +278,7 @@ summary(cv.mice)
 
 
 ###################################################
-### code chunk number 37: Extract true breeding values from the maize data object
+### code chunk number 36: Extract true breeding values from the maize data object
 ###################################################
 tbv <- maize$covar$tbv[maize$covar$genotyped]
 

@@ -1,3 +1,21 @@
+0.12-8
+================================
+
+* Uploaded on r-forge 2017 - 06 - 16
+
+* complete beagle runs, space value removed
+
+* na.strings option in function create.gpData
+
+0.12-7
+================================
+
+* Uploaded on r-forge 2017 - 05 - 08
+
+* Bug fixed in recoding gpData-objects with kept allele frequencies
+
+* chromosome wise beagle to save space, beagle space value added
+
 0.12-6
 ================================
 

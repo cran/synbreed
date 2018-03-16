@@ -8,7 +8,7 @@ Heatmap for relationship Matrix
 Visualization for objects of class \code{relationshipMatrix} using a heatmap of pairwise relatedness coefficients.
 }
 \usage{
-\method{plot}{relationshipMatrix}(x, y=NULL, levelbreaks=NULL, axes=TRUE, cols=NULL, \ldots)
+\method{plot}{relationshipMatrix}(x, y=NULL, levelbreaks=NULL, axes=TRUE, cols=NULL, groupLines = NULL, \ldots)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,6 +31,9 @@ a \code{logical} value indicating whether axes should be drawn on the plot. Defa
 a \code{list} with one element for each relationship matrix. Colors and the number of levelbreaks
 should fit. But also if not, a plot is drawn. In case option \code{y=NULL}, \code{cols} can bei a
 \code{vector}.
+}
+  \item{groupLines}{
+add positions to make groups more visible
 }
   \item{\dots}{
 further graphical arguments passed to function \code{levelplot} in package \code{lattice}. To create equal colorkeys for two heatmaps, use \code{at=seq(from,to,length=9)}.

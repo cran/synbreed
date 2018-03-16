@@ -15,11 +15,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% almost as usual
-\author{Valentin Wimmer\\Technische Universit\"at M\"unchen 
-\And 
-Theresa Albrecht\\Technische Universit\"at M\"unchen 
+\author{Valentin Wimmer\\Technische Universit\"at M\"unchen
+\And
+Theresa Albrecht\\Technische Universit\"at M\"unchen
 \AND
-Hans-J\"urgen Auinger\\Technische Universit\"at M\"unchen 
+Hans-J\"urgen Auinger\\Technische Universit\"at M\"unchen
 \And
 Chris-Carolin Sch\"on\\Technische Universit\"at M\"unchen
 }
@@ -33,7 +33,7 @@ Chris-Carolin Sch\"on\\Technische Universit\"at M\"unchen
 %% an abstract and keywords
 \Abstract{
 High-throughput genotyping and large scale phenotyping produces massive amounts of data.
-  In this vignette, we present a novel \proglang{R} package named \pkg{synbreed} for the analysis of such data to derive genome-based predictions.  It contains a collection of functions required to fit and validate genomic prediction models in  plant and animal breeding. This covers data processing, data visualization and data analysis. Thereby a versatile analysis pipeline is established within one software package. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats and models.  The package fills an existing gap in the availability of software for next-generation genetics research. Where necessary, the package provides gateways to other software programs to extend the field of applications.  The utility of the package is demonstrated in this document using three large-scale example data sets provided by the \code{synbreedData} R package: a simulated data set representing a maize breeding program, a publicly available mice data set and a dairy cattle data set.   
+  In this vignette, we present a novel \proglang{R} package named \pkg{synbreed} for the analysis of such data to derive genome-based predictions.  It contains a collection of functions required to fit and validate genomic prediction models in  plant and animal breeding. This covers data processing, data visualization and data analysis. Thereby a versatile analysis pipeline is established within one software package. All functions are embedded within the framework of a single, unified data object. The implementation is flexible with respect to a wide range of data formats and models.  The package fills an existing gap in the availability of software for next-generation genetics research. Where necessary, the package provides gateways to other software programs to extend the field of applications.  The utility of the package is demonstrated in this document using three large-scale example data sets provided by the \code{synbreedData} R package: a simulated data set representing a maize breeding program, a publicly available mice data set and a dairy cattle data set.
 }
 \Keywords{genomic prediction, quantitative genetics, pedigree-based relatedness, marker-based relatedness, data processing, visualization}
 \Plainkeywords{genomic prediction, quantitative genetics, pedigree-based relatedness, marker-based relatedness, data processing, visualization} %% without formatting
@@ -99,13 +99,13 @@ library(synbreedData)
 
 \section[Introduction]{Introduction}
 
-The analysis of quantitative traits is of paramount interest in agricultural genetics. For many traits such as yield, quality or resistance against diseases and environmental stress we observe continuously distributed phenotypes. According to quantitative genetic theory, these phenotypes are determined by the joint action of many genes, the so called quantitative trait loci (QTL), and the environment \citep{Falconer1996}. To understand the inheritance of quantitative traits and to predict the unobservable genetic value of an individual are major challenges of agricultural genetics. Recently, high-throughput genotyping technology delivering tens or hundreds of thousands of single nucleotide polymorphism markers (SNPs) has become available for many crop and livestock species. The genomes of a large number of individuals can now be analyzed for their specific marker profile at high density, which allows estimating the proportion of genotype-sharing between them as well as efficient tagging of QTL in segregation analyses. In breeding, selection of the best genotypes can be conducted on high-density marker profiles once sufficiently accurate genome-based prediction models have been established. To achieve this, genomic prediction models are developed based on large training populations for which genotypic and phenotypic data are available. Once the best model is established, it can be used to predict the unobservable genetic value of selection candidates based on their marker profile. 
+The analysis of quantitative traits is of paramount interest in agricultural genetics. For many traits such as yield, quality or resistance against diseases and environmental stress we observe continuously distributed phenotypes. According to quantitative genetic theory, these phenotypes are determined by the joint action of many genes, the so called quantitative trait loci (QTL), and the environment \citep{Falconer1996}. To understand the inheritance of quantitative traits and to predict the unobservable genetic value of an individual are major challenges of agricultural genetics. Recently, high-throughput genotyping technology delivering tens or hundreds of thousands of single nucleotide polymorphism markers (SNPs) has become available for many crop and livestock species. The genomes of a large number of individuals can now be analyzed for their specific marker profile at high density, which allows estimating the proportion of genotype-sharing between them as well as efficient tagging of QTL in segregation analyses. In breeding, selection of the best genotypes can be conducted on high-density marker profiles once sufficiently accurate genome-based prediction models have been established. To achieve this, genomic prediction models are developed based on large training populations for which genotypic and phenotypic data are available. Once the best model is established, it can be used to predict the unobservable genetic value of selection candidates based on their marker profile.
 
 
 Research on genomic prediction (GP) will be advanced through the availability of comprehensive, user-friendly software that covers a wide range of analysis steps. In a recent review, \citet{Heffner2009} state the urgent demand for such software to bring GP from theory to practice. To provide a framework for the analysis of GP data, we developed a novel add-on package named \pkg{synbreed} devised for the open-source software \proglang{R} \citep{R}. Only an open source software package is flexible enough to keep pace with advanced computational and methodological challenges. Our objectives in the design of the package were (i) to provide user-friendly algorithms for non-trivial methods required in the analysis of GP data, (ii) create an analysis framework using a single, unified data object resembling a generic data structure which is suitable for a wide range of statistical methods employing genotypic and phenotypic data such as GP, genome-wide association studies (GWAS) or QTL mapping, (iii) provide the methods within one open-source software package to avoid data conversion and transfer between software packages, (iv) to keep the implementation flexible with respect to the data structure for plant and animal genetics, and (v) to provide a gateway to other software and \proglang{R} packages to broaden the type of possible applications.
 
 
-GP uses  statistical models combining whole-genome data with phenotypic data. SNP effects are estimated from a regression of the phenotype on the marker profile. However, with a dense marker map, the model is over-parametrized. Typically, the number of SNPs $p$ exceeds the number of observations $n$. A solution is the usage of mixed models \citep{Henderson1984}. Within this framework, SNPs are used as direct predictors by modeling SNP effects or, alternatively, they are used to estimate a marker-based relationship matrix between individuals \citep{Habier2007}. The latter is used to model the variance-covariance structure for the genetic values. Recently, different models using Bayesian regression models have become popular \citep{Meuwissen2001,Campos2009}. The predictive ability of a model for GP can be assessed using an out-of sample validation. If no independent test set is available, cross-validation (CV) is used to exploit the predictive ability of a model \citep{Legarra2008,Albrecht2011}. 
+GP uses  statistical models combining whole-genome data with phenotypic data. SNP effects are estimated from a regression of the phenotype on the marker profile. However, with a dense marker map, the model is over-parametrized. Typically, the number of SNPs $p$ exceeds the number of observations $n$. A solution is the usage of mixed models \citep{Henderson1984}. Within this framework, SNPs are used as direct predictors by modeling SNP effects or, alternatively, they are used to estimate a marker-based relationship matrix between individuals \citep{Habier2007}. The latter is used to model the variance-covariance structure for the genetic values. Recently, different models using Bayesian regression models have become popular \citep{Meuwissen2001,Campos2009}. The predictive ability of a model for GP can be assessed using an out-of sample validation. If no independent test set is available, cross-validation (CV) is used to exploit the predictive ability of a model \citep{Legarra2008,Albrecht2011}.
 
 Several software programs for genetics research, covering parts of the required methods, have been released within the last years.  The programs  \proglang{ASReml} \citep{Gilmour2000} and \proglang{WOMBAT} \citep{Meyer2006} provide restricted maximum likelihood (REML) estimation procedures for linear mixed models with arbitrary variance-covariance structure. The program \proglang{PLINK} implements algorithms for genome-wide association studies (GWAS) and identical-by-descent estimation. However, these programs are not stand-alone. Within \proglang{R}, different packages that tangent issues for GP are available: \pkg{qtl} for QTL analysis in experimental crosses \citep{Broman2003}, \pkg{GenABEL} for GWAS and effective SNP data storage and manipulation \citep{Aulchenko2007}, \pkg{genetics} with classes and methods for handling genetic data \citep{Warnes2003} or \pkg{BLR} \citep{Perez2010} for genome-based prediction models with Bayesian Ridge and Bayesian Lasso regression. However, there is no comprehensive program covering the specific needs of genetic researchers to analyze GP data.
 
@@ -116,30 +116,30 @@ In this article, we present how the \pkg{synbreed} package streamlines the analy
 
 \section[Statistical models]{Statistical models} \label{sec:statMod}
 
-In this section, we present the statistical models used for the prediction of genetic values of individuals from a training set of individuals with phenotypes and pedigree or genotypes. We assume, that for each individual $i=1,...,n$ a single phenotypic record is available. Moreover, we consider a quantitative trait which can be modeled as being normal, i.e., $y_i = \mbox{N}(\mu + g_i,\sigma^2)$. By $\mu$, we denote the population mean and by $\sigma^2$ the residual variance.  The unobservable genetic value $g_i$ is predicted by statistical models using different data sources such as marker genotypes or pedigree. 
+In this section, we present the statistical models used for the prediction of genetic values of individuals from a training set of individuals with phenotypes and pedigree or genotypes. We assume, that for each individual $i=1,...,n$ a single phenotypic record is available. Moreover, we consider a quantitative trait which can be modeled as being normal, i.e., $y_i = \mbox{N}(\mu + g_i,\sigma^2)$. By $\mu$, we denote the population mean and by $\sigma^2$ the residual variance.  The unobservable genetic value $g_i$ is predicted by statistical models using different data sources such as marker genotypes or pedigree.
 
-In the mixed model ``P-BLUP'', the genetic values are predicted using the pedigree information to construct a variance-covariance structure for the individuals. Following \citet{Henderson1984}, this model is defined by 
+In the mixed model ``P-BLUP'', the genetic values are predicted using the pedigree information to construct a variance-covariance structure for the individuals. Following \citet{Henderson1984}, this model is defined by
 \begin{equation}\label{eq:animalMod}
-\bf{y} = \bf{X}\bm{\beta} + \bf Z \bf a + \bf e 
+\bf{y} = \bf{X}\bm{\beta} + \bf Z \bf a + \bf e
 \end{equation}
 where $\bf y$ is the $n \times 1$ vector of phenotypic records, $\bm{\beta}$ is the vector of fixed effects and $\bf a$ is a  $n \times 1$ vector of random effects. Observations are allocated to the fixed and random effects by the  corresponding design matrices $\bf X$ and $\bf Z$. Fixed effects typically include the population mean and macro-environment  effects such as location or year. Genetic values are sampled from a multivariate normal distribution
 $$ \mathbf a \sim \mbox{N}( \mathbf 0, \mathbf A \sigma^2_a)$$
-where $\bf A$ is the additive numerator relationship matrix and $\sigma^2_a$ the additive genetic variance \citep{Falconer1996}. The off-diagonal values of $\bf A$ are given by $2f_{i_1i_2}$ for individuals $i_1$ and $i_2$ where -- for a given pedigree -- the \textit{coefficient of coancastry} $f_{i_1i_2}$ is computed by the expected probability that two alleles are identical by descent \citep{LynchWalsh1998}. The diagonal value for individual $i_1$ is $1+F_{i_1}$ with $F_{i_1}$ being the inbreeding coefficient.  The  $n \times 1$ vector  $\bf e$ denotes the residuals with $ \mathbf e \sim N( \mathbf 0, \mathbf{I}_n \sigma^2)$ and $\mathbf{ I}_n$ is the $n$-dimensional identity matrix. Best linear unbiased estimates (BLUE) for the fixed effects $\bm{\hat{\beta}}$ and predictions for the random effects (BLUP) $\bf{\hat{a}}$ are obtained by solving the mixed model equations (MME) \citep{Henderson1984} 
+where $\bf A$ is the additive numerator relationship matrix and $\sigma^2_a$ the additive genetic variance \citep{Falconer1996}. The off-diagonal values of $\bf A$ are given by $2f_{i_1i_2}$ for individuals $i_1$ and $i_2$ where -- for a given pedigree -- the \textit{coefficient of coancastry} $f_{i_1i_2}$ is computed by the expected probability that two alleles are identical by descent \citep{LynchWalsh1998}. The diagonal value for individual $i_1$ is $1+F_{i_1}$ with $F_{i_1}$ being the inbreeding coefficient.  The  $n \times 1$ vector  $\bf e$ denotes the residuals with $ \mathbf e \sim N( \mathbf 0, \mathbf{I}_n \sigma^2)$ and $\mathbf{ I}_n$ is the $n$-dimensional identity matrix. Best linear unbiased estimates (BLUE) for the fixed effects $\bm{\hat{\beta}}$ and predictions for the random effects (BLUP) $\bf{\hat{a}}$ are obtained by solving the mixed model equations (MME) \citep{Henderson1984}
 $$
 \left[ \begin{array}{cc}
       \mathbf{X^\top X}&\mathbf{X^\top Z}\\
-      \mathbf{Z ^\top X}&\mathbf{Z ^\top Z+A^{-1}\frac{\sigma^2}{\sigma^2_a}}\end{array}\right] 
+      \mathbf{Z ^\top X}&\mathbf{Z ^\top Z+A^{-1}\frac{\sigma^2}{\sigma^2_a}}\end{array}\right]
       \left[\begin{array}{c}
       \bm{\hat\beta}\\
       \mathbf{\hat a}\end{array}\right]  =
 \left[\begin{array}{c}
       \mathbf{X^\top y}\\
       \mathbf{Z^\top y}\end{array}\right]
-$$ 
+$$
 
-Estimates of the variance components $\hat \sigma^2_a$ and $\hat \sigma^2$ are obtained by REML estimation. A prediction for the genetic value of individual $i$ in the training set is given by $\hat a_i$. 
+Estimates of the variance components $\hat \sigma^2_a$ and $\hat \sigma^2$ are obtained by REML estimation. A prediction for the genetic value of individual $i$ in the training set is given by $\hat a_i$.
 		
-Genotypic data is incorporated in the mixed model ``G-BLUP''. Here, the relationship matrix based on pedigree is replaced by the genomic relationship matrix based on marker data. With the genomic relationship matrix, random deviations  from the expected relationship caused by Mendelian sampling effects \citep{Goddard2009a} can be quantified. The following equation for the genomic relationship matrix in a random mating population was proposed by \citet{Habier2007} 
+Genotypic data is incorporated in the mixed model ``G-BLUP''. Here, the relationship matrix based on pedigree is replaced by the genomic relationship matrix based on marker data. With the genomic relationship matrix, random deviations  from the expected relationship caused by Mendelian sampling effects \citep{Goddard2009a} can be quantified. The following equation for the genomic relationship matrix in a random mating population was proposed by \citet{Habier2007}
 \begin{equation}\label{eq:vanRaden}
 \mathbf{U} = \frac{(\mathbf{W}-\mathbf{P})(\mathbf{W}-\mathbf{P})^\top}{2\sum_{j=1}^p p_j(1-p_j)}
 \end{equation}
@@ -147,20 +147,20 @@ where $\bf{W}$ is the marker matrix assigning $p$ marker genotypes coded 0, 1 or
 \begin{equation}\label{eq:gBlup}
 \bf{y} = \bf{X}\bm{\beta} + \bf Z \bf u + \bf e
 \end{equation}
-with 
+with
 $$ \mathbf u \sim \mbox{N}( \mathbf 0, \mathbf U \sigma^2_u)$$
-where $\sigma^2_u$ is the genetic variance pertaining to model ``G-BLUP''.  The remaining parameters are defined as in model ``P-BLUP''. A prediction for the genetic value for individuals in the training set is given by $\hat u_i$. 
+where $\sigma^2_u$ is the genetic variance pertaining to model ``G-BLUP''.  The remaining parameters are defined as in model ``P-BLUP''. A prediction for the genetic value for individuals in the training set is given by $\hat u_i$.
 
 In the random regression model ``RR-BLUP'', the phenotype is modeled as a function of the individual SNP effects
 \begin{equation}\label{eq:snpMod}
 \bf{y} = \bf{X}\bm{\beta} + \bf W \bf m + \bf e
 \end{equation}
-where $\bf{W}$ is the $n \times p$ marker matrix and $\bf m$ the $p$-dimensional vector of SNP effects. We assume that $\bf m \sim \mbox{N}( \mathbf 0, \mathbf I \sigma^2_m) $ where $\sigma^2_m$ denotes the proportion of the genetic variance contributed by each individual SNP. A prediction for the genetic value for individuals in the training set is given by $\bf{w}_i^\top\bf{\hat{m}}$, where $\bf{w}_i$ is the $p$-dimensional vector of marker genotypes of individual $i$ and $\bf{\hat{m}}$ the $p$-dimensional vector of estimated marker effects.  Predicted genetic values and variance components from model ``RR-BLUP'' are predictable from model ``G-BLUP'' \citep{Albrecht2011}. It is computationally advantageous to use model ``G-BLUP'' when $n<p$ because computation times are of order $O(n)$ and $O(p)$, respectively. 
+where $\bf{W}$ is the $n \times p$ marker matrix and $\bf m$ the $p$-dimensional vector of SNP effects. We assume that $\bf m \sim \mbox{N}( \mathbf 0, \mathbf I \sigma^2_m) $ where $\sigma^2_m$ denotes the proportion of the genetic variance contributed by each individual SNP. A prediction for the genetic value for individuals in the training set is given by $\bf{w}_i^\top\bf{\hat{m}}$, where $\bf{w}_i$ is the $p$-dimensional vector of marker genotypes of individual $i$ and $\bf{\hat{m}}$ the $p$-dimensional vector of estimated marker effects.  Predicted genetic values and variance components from model ``RR-BLUP'' are predictable from model ``G-BLUP'' \citep{Albrecht2011}. It is computationally advantageous to use model ``G-BLUP'' when $n<p$ because computation times are of order $O(n)$ and $O(p)$, respectively.
 
-The aforementioned models assume marker-homogeneous shrinkage of SNP effects. \citet{Meuwissen2001} suggested alternative models with marker-specific shrinkage. In this spirit, \citet{Campos2009} used Bayesian Lasso to predict SNP effects. Their model, denoted by  ``BL'', is given by 
+The aforementioned models assume marker-homogeneous shrinkage of SNP effects. \citet{Meuwissen2001} suggested alternative models with marker-specific shrinkage. In this spirit, \citet{Campos2009} used Bayesian Lasso to predict SNP effects. Their model, denoted by  ``BL'', is given by
 \begin{equation}\label{eq:BayesianLasso}
-\bf{y} = \bf{X}\bm{\beta} + \bf W \bf m + \bf e 
-\end{equation} 
+\bf{y} = \bf{X}\bm{\beta} + \bf W \bf m + \bf e
+\end{equation}
 All elements but $\bf m $ are defined as in ``RR-BLUP''. The SNP effects $\bf m $ are modeled by marker-specific prior distributions
 $$	\bf m \sim \mbox{N}(0,\bf T \sigma^2 ) $$
 with $\mathbf{T} = \mbox{diag}(\tau_1^2,...,\tau_j^2,...,\tau_p^2)$ and the following model hierarchy
@@ -173,46 +173,46 @@ with $\mathbf{T} = \mbox{diag}(\tau_1^2,...,\tau_j^2,...,\tau_p^2)$ and the foll
 For details of the hyperparameters see \citet{Campos2009}. Parameter inference is performed within a Bayesian framework. The joint posterior distribution cannot be evaluated analytically in general. Hence Markov chain Monte Carlo (MCMC) methods are used to generate samples from the full-conditional posterior distributions. Since all full-conditional distributions are well-known distributions, a Gibbs-Sampler can be utilized to generate a Markov chain \citep{Park2008}. Prediction for the genetic value of individuals are obtained like in model ``RR-BLUP'' as $\bf{w}_i^\top\bf{\hat{m}}$.
 
 The implementation of GP requires the prediction of the genetic performance $\mathbf{g}^* = (g_1,...,g_{n^*})^\top$ of $n^*$ unphenotyped individuals. For model ``RR-BLUP'' and ``BL'', the predicted genetic performance is given by $\hat{\mathbf{g}}^* = \mathbf{X^*}\hat{\bm{\beta}} + \mathbf{W^*}^\top\hat{\mathbf{m}}$ where $\mathbf{X^*}$ denotes the design matrix for the fixed effects and $\mathbf{W}^*$ denotes the marker matrix for the unphenotyped individuals and $\hat{\mathbf{m}}$ the prediction of the SNP effects obtained from the training set. For ``P-BLUP'', the joint relationship matrix must be defined for all individuals in the training set and the prediction set. Predictions are obtained by solving the mixed model equation for the genetic values $\bf a^*$ of the unphenotyped individuals using the estimates of the variance-components of the training set
-\begin{equation}\label{eq:pred} 
+\begin{equation}\label{eq:pred}
 \bf{y} =  \mathbf{X}{\bm{\beta}} + (\bf Z,\bf Q_0) \left(\begin{array}{l}{\bf a} \\ {\bf a^*} \end{array} \right)+ \bf e \quad \mbox{and} \quad \left(\begin{array}{l}{\bf a} \\ {\bf a^*} \end{array} \right) \sim \mbox{N}\left( \left[\begin{array}{l}0 \\ 0 \end{array}\right],\left[\begin{array}{ll} \mathbf{A} & \mathbf{A}^*   \\ {\mathbf{A}^*}^\top & \mathbf{A}^{**} \end{array}\right] \sigma^2_a \right)
-\end{equation} 
+\end{equation}
 with  $\bf Q_0$ being a $n \times n^*$ matrix with zeros and $\mathbf{A}$ the $n \times n$ additive numerator relationship matrix for the individuals in the training set, $\mathbf{A}^{**}$ the $n^* \times n^*$ additive numerator relationship matrix for the unphenotyped individuals and $\mathbf{A}^*$ the $n \times n^*$  additive numerator relationship matrix of the individuals in the training set with the unphenotyped individuals. Predictions for the genetic performance are obtained by $\hat{\mathbf{g}}^* = \mathbf{X}\hat{\bm{\beta}} + \bf a^*$. The same prediction scheme is employed for ``G-BLUP''. Here, the genomic relationship matrix substitutes the additive numerator relationship matrix in Equation~\ref{eq:pred} and $\sigma^2_a$ is replaced by $\sigma^2_u$.
 
-The out-of sample performance of a GP model determines the predictive ability. Cross-validation is an assumption-free method to investigate the predictive ability of different models \citep{Legarra2008}. The data set is divided into $k$ mutually exclusive subsets, $k-1$ of them form the estimation set (ES) for model training. The $k$th subset is used as independent test set (TS) for prediction. The predictive ability of a model is the correlation $r(\mathbf{\hat{g}}_{TS},\mathbf{y}_{TS})$ of  the vector of predicted genetic values $\mathbf{\hat{g}}_{TS}$  and the vector of observed phenotypes $\mathbf{y}_{TS}$ of the individuals in the TS. Typically individuals are assigned randomly to TS and ES. However, different sampling strategies can be employed to account for population stratification. \citet{Albrecht2011} used within and across family-sampling for biparental families. The prediction bias can be assessed from a regression of the observed phenotype on the predicted genetic value \citep{Luan2009}. A regression coefficient of 1 indicates an unbiased prediction, a coefficient smaller than 1 implies inflation, a coefficient greater than 1 deflation of predicted genetic values compared to the observed phenotypes.    
+The out-of sample performance of a GP model determines the predictive ability. Cross-validation is an assumption-free method to investigate the predictive ability of different models \citep{Legarra2008}. The data set is divided into $k$ mutually exclusive subsets, $k-1$ of them form the estimation set (ES) for model training. The $k$th subset is used as independent test set (TS) for prediction. The predictive ability of a model is the correlation $r(\mathbf{\hat{g}}_{TS},\mathbf{y}_{TS})$ of  the vector of predicted genetic values $\mathbf{\hat{g}}_{TS}$  and the vector of observed phenotypes $\mathbf{y}_{TS}$ of the individuals in the TS. Typically individuals are assigned randomly to TS and ES. However, different sampling strategies can be employed to account for population stratification. \citet{Albrecht2011} used within and across family-sampling for biparental families. The prediction bias can be assessed from a regression of the observed phenotype on the predicted genetic value \citep{Luan2009}. A regression coefficient of 1 indicates an unbiased prediction, a coefficient smaller than 1 implies inflation, a coefficient greater than 1 deflation of predicted genetic values compared to the observed phenotypes.
 
 
-	 
+	
 \section[The class gpData]{The class \code{gpData}}\label{sec:gpData}
 
-                                      
-Data for GP consists of multiple data sources. To simplify the flow and use of data, we devised a data object named \code{gpData} (``\textbf{g}enomic \textbf{p}rediction \textbf{Data}''). Any object of class \code{gpData} includes all data required for the analysis. The first step in an analysis using the \pkg{synbreed} package is to create an object of class \code{gpData}. All additional functions utilize the predefined structure. Thus, it is sufficient to create once an object with the appropriate structure and use this for further analysis. The elements are  phenotypes, genotypes and pedigree for a set of individuals. In addition, further elements for meta information on markers and individuals can be defined. The different elements are concatenated by common names for individuals and markers. They are used for data queries like in a data base. It is no prerequisite that all elements comprise the same subset of individuals or markers. Hence it is possible, e.g., to include individuals with genotypes but no phenotypes in an object of class \code{gpData}. This general structure is suitable for a wide range of data and models as employed by GP, GWAS or QTL studies. 
 
-The advantage of a single, unified data object are manifold. When data is shared, a single data file is easier to transfer than multiple files.  By using basic summary methods, a first overview over all elements is forthcoming. Within the facilities of  \proglang{R}, an object of class \code{gpData} is stored  within the sparse binary format.  For example, the claimed storage space for the mice data, described later in this article, was reduced from 95Mb in \code{ASCII} format to 8Mb in binary format. An object of class \code{gpData} can also be used as storage for multi-year experiments. New phenotypic data can be added over years or locations. In the following sections, the different elements of an object of class \code{gpData} and their required structure are  described in more detail. 
-                                                      
+Data for GP consists of multiple data sources. To simplify the flow and use of data, we devised a data object named \code{gpData} (``\textbf{g}enomic \textbf{p}rediction \textbf{Data}''). Any object of class \code{gpData} includes all data required for the analysis. The first step in an analysis using the \pkg{synbreed} package is to create an object of class \code{gpData}. All additional functions utilize the predefined structure. Thus, it is sufficient to create once an object with the appropriate structure and use this for further analysis. The elements are  phenotypes, genotypes and pedigree for a set of individuals. In addition, further elements for meta information on markers and individuals can be defined. The different elements are concatenated by common names for individuals and markers. They are used for data queries like in a data base. It is no prerequisite that all elements comprise the same subset of individuals or markers. Hence it is possible, e.g., to include individuals with genotypes but no phenotypes in an object of class \code{gpData}. This general structure is suitable for a wide range of data and models as employed by GP, GWAS or QTL studies.
+
+The advantage of a single, unified data object are manifold. When data is shared, a single data file is easier to transfer than multiple files.  By using basic summary methods, a first overview over all elements is forthcoming. Within the facilities of  \proglang{R}, an object of class \code{gpData} is stored  within the sparse binary format.  For example, the claimed storage space for the mice data, described later in this article, was reduced from 95Mb in \code{ASCII} format to 8Mb in binary format. An object of class \code{gpData} can also be used as storage for multi-year experiments. New phenotypic data can be added over years or locations. In the following sections, the different elements of an object of class \code{gpData} and their required structure are  described in more detail.
+
 \subsection{Phenotypic data}
 
 Phenotypic data is the outcome of performance tests for a set of individuals evaluating one or more traits. In plant breeding this can be the yield of a line evaluated in a field trial or in dairy cattle breeding the milk fat content measured in progeny testing. The phenotypic data are stored within the element \code{pheno}. This is an \code{array} with individuals organized in the first dimension and the traits organized in the second dimension. In case of repeated measurements for individuals, a third dimension can be used. For input, either a \code{data.frame} or an \code{array} can be used. In all cases, the phenotypic data will be converted to an \code{array}.
-                                                   
+
 \subsection{Genotypic data}
 
-The genotypic data is stored in the element \code{geno}. This is the marker matrix with individuals organized in rows and markers in columns. In the era of SNPs, functions for data processing are limited to biallelic markers. Each entry of the marker matrix depicts the observed genotype of an individual for a marker. Marker genotypes can either be distinguished by their names (e.g., \code{"AA"}, \code{"BB"} and \code{"AB"}) or by the observed alleles (e.g., \code{"A/C","A/T",...}). 
-                                                                                                                                         
+The genotypic data is stored in the element \code{geno}. This is the marker matrix with individuals organized in rows and markers in columns. In the era of SNPs, functions for data processing are limited to biallelic markers. Each entry of the marker matrix depicts the observed genotype of an individual for a marker. Marker genotypes can either be distinguished by their names (e.g., \code{"AA"}, \code{"BB"} and \code{"AB"}) or by the observed alleles (e.g., \code{"A/C","A/T",...}).
+
 \subsection{Pedigree}\label{sec:pedigree}
 
-Pedigree information for individuals is stored in the element \code{pedigree}. The pedigree is a table of individuals of the current generation and their ancestors. The pedigree is sorted by generation, beginning with the individuals with unknown parents (coded as \code{"0"}). The content is an object of class \code{pedigree} created by the function \code{create.pedigree}.   An object of class \code{pedigree} is a \code{data.frame} with at least three/four variables, \code{ID} (required), \code{Par1} (required), \code{Par2} (required), and \code{gener}  for names of  individuals, Parent 1, i.e., sire, and Parent 2, i.e., dam, and generation, respectively. For animals, an optional variable \code{sex} can be added.                                                                                                                               
+Pedigree information for individuals is stored in the element \code{pedigree}. The pedigree is a table of individuals of the current generation and their ancestors. The pedigree is sorted by generation, beginning with the individuals with unknown parents (coded as \code{"0"}). The content is an object of class \code{pedigree} created by the function \code{create.pedigree}.   An object of class \code{pedigree} is a \code{data.frame} with at least three/four variables, \code{ID} (required), \code{Par1} (required), \code{Par2} (required), and \code{gener}  for names of  individuals, Parent 1, i.e., sire, and Parent 2, i.e., dam, and generation, respectively. For animals, an optional variable \code{sex} can be added.
 
 \subsection{Covariate information}
 
-Additional information on individuals is stored in the element \code{covar}. This is a \code{data.frame} with a column \code{id} with the names of individuals that appear in \code{geno}, \code{pheno} or \code{pedigree}. Two automatically generated columns are added named \code{phenotyped} and \code{genotyped}. Both are logical and identify the individuals that are phenotyped (observations in \code{pheno}) or genotyped (observations in \code{geno}), respectively. 
-                                                                                                                               
-\subsection{Marker map}
-                                                                 
+Additional information on individuals is stored in the element \code{covar}. This is a \code{data.frame} with a column \code{id} with the names of individuals that appear in \code{geno}, \code{pheno} or \code{pedigree}. Two automatically generated columns are added named \code{phenotyped} and \code{genotyped}. Both are logical and identify the individuals that are phenotyped (observations in \code{pheno}) or genotyped (observations in \code{geno}), respectively.
 
-The marker map is stored in element \code{map} of an object of class \code{gpData}. The map contains meta information about the genetic or physical positions of the marker on the genome.  More precisely, the \code{map} is a \code{data.frame} with two columns named \code{"chr"} and \code{"pos"}. The first column identifies the chromosome (\code{character} or \code{numeric}) and the second is \code{numeric} indicating the position of the marker on the genome. This can be the genetic position within the chromosomes measured in centimorgan (cM) or the physical position relative to the reference genome in base pairs. 
+\subsection{Marker map}
+
+
+The marker map is stored in element \code{map} of an object of class \code{gpData}. The map contains meta information about the genetic or physical positions of the marker on the genome.  More precisely, the \code{map} is a \code{data.frame} with two columns named \code{"chr"} and \code{"pos"}. The first column identifies the chromosome (\code{character} or \code{numeric}) and the second is \code{numeric} indicating the position of the marker on the genome. This can be the genetic position within the chromosomes measured in centimorgan (cM) or the physical position relative to the reference genome in base pairs.
 
 \subsection{Info}
 
-Element \code{info} is used internally for additional information such as the map unit. 
+Element \code{info} is used internally for additional information such as the map unit.
 
 
 Beside class \code{gpData}, several further object classes are defined within the \pkg{synbreed} package. An overview over all available classes together with their elements as well as methods and functions are given in Figure~\ref{fig:paackageDescription}. More detailed information on the functions is given in the next section.
@@ -222,9 +222,9 @@ Beside class \code{gpData}, several further object classes are defined within th
 \includegraphics[trim=0cm 12cm 0cm 0cm]{figs/synbreedPackageDescription.pdf}
 \caption{Overview of object classes, methods and functions within the \pkg{synbreed} package. Each box indicates a class together with the class name, the elements and the available functions and methods. The arrows indicate the data flow. The origin indicates the input argument and the head is the return value of the function.}
 \label{fig:paackageDescription}
-\end{figure} 
+\end{figure}
 
- 
+
 
 \section{Summary of functions}\label{sec:functions}
 
@@ -236,7 +236,7 @@ Their application is demonstrated by examples in Section~\ref{sec:Examples}. The
 
 In all analyses using the \pkg{synbreed} package, the first step is to create an object of class \code{gpData}. The function \code{create.gpData} merges the different raw data sources. The return value is a list with elements \code{covar}, \code{pheno}, \code{geno}, \code{map}, \code{pedigree} and \code{info}. The function \code{create.gpData} performs consistency checks on the data and returns an object of class \code{gpData} with the data taken from the arguments. The basic call to create an object of class \code{gpData} is
 <<Call to create an object of class gpData,eval=FALSE>>=
-gp <- create.gpData(covar,pheno,geno,map,pedigree) 
+gp <- create.gpData(covar,pheno,geno,map,pedigree)
 @
 
 
@@ -245,13 +245,13 @@ An object of class \code{gpData} can be used as a data base with queries on indi
 
 The package \pkg{synbreed} provides several algorithms for the preprocessing of genotypic data. The algorithms are condensed in the function \code{codeGeno}. The function evaluates the following steps for the element \code{geno} within an object of class \code{gpData}.
 \begin{enumerate}
-    \item Discard markers that exceed a given threshold for the fraction of missing values. 
+    \item Discard markers that exceed a given threshold for the fraction of missing values.
     \item Recode marker genotypes from arbitrary coding into the number of copies of the minor allele, i.e., $0$, $1$ and $2$ (see below).
     \item Impute missing values according to different algorithms (see below).
     \item Change the coding of minor and major allele whenever allele frequencies changed after step 3.
     \item Discard markers with a minor allele frequency (MAF) below a given threshold.
     \item Discard duplicated markers, retain the first copy.
-\end{enumerate}                                                              
+\end{enumerate}
 
 Depending on choice of arguments, not all steps are performed. A report can be printed on the screen using argument \code{verbose=TRUE}. Below, we give more details on steps 2 and 3.
 
@@ -266,56 +266,56 @@ where $w_{ij}$ is the marker genotype for individual $i$ and marker $j$.  The he
 Imputing of missing marker genotypes is often a necessary data preprocessing step. Indeed, many methods used in the analysis of GP data require a marker  matrix without missing values.  In function \code{codeGeno} missing values in the marker matrix can be replaced by one of the following algorithms (controlled by the argument \code{impute.type}):
 
 \begin{enumerate}
-          
 
-                 
+
+
   \item Missing values are replaced using family information for fully homozygous individuals \citep{Albrecht2011}. This requires a biparental family structure with a uniform $S_0$ generation and a family size of at least $6$ individuals. In the algorithm, a missing observation $i$ for a marker $j$ in family $l$ is replaced according to the following rules: If marker $j$ is monomorphic in family $l$, the imputed value will be the observed allele. The assumption in this case is, that both parents are homozygous for the same allele. If marker $j$ is polymorphic in family $l$, the missing value is replaced from the following distribution $\Prob(x^{NA}_j=0)=\Prob(x^{NA}_j=2)=0.5$.
-  
+
   \item The software \proglang{Beagle} \citep{Browning2009} can be used to infer missing genotypes. \proglang{Beagle} uses a Hidden Markov Model to reconstruct missing genotypes based on flanking markers. Function \code{codeGeno} creates  a directory \code{beagle} for Beagle input and output files, prepares input files and runs Beagle with default settings. The information on marker position is taken from element \code{map}. By default, three genotypes 0, 1, 2 are imputed using the allele with the highest posterior probability. This information is obtained from the \proglang{Beagle} output.   In the special case of only homozygous genotypes, values are 0 and 2 according to their ``dosage''. The dosage is the estimated number of copies of the minor allele by the \proglang{Beagle} software \citep{Browning2009}.
-  
+
   \item A combination of the algorithms above can be used. In the first step, missing genotypes are imputed according to the family information. Here, the algorithm 1 is used for monomorphic markers and those with unknown position on the genome. In the second step, the remaining genotypes are imputed using \proglang{Beagle} as in algorithm 2.
-  
+
     \item Missing values are sampled from the marginal allele distribution for each marker. This algorithm does not take into account data stratification. Missing values are sampled from $\{0,1,2\}$ assuming a population in Hardy-Weinberg equilibrium \citep{Falconer1996}. Thus $\Prob(x^{NA}_j=0)=(1-p_j)^2$,  $\Prob(x^{NA}_j=1)=2p_j(1-p_j)$ and $\Prob(x^{NA}_j=2)=p_j^2$. In the special case of only homozygous genotypes, a  missing value $x^{NA}_j$ for marker $j$ is replaced by a random draw from $\{0,2\}$ using the probabilities  $\Prob(x^{NA}_j=0)=1-p_j$ and  $\Prob(x^{NA}_j=2)=p_j$.
-  
-    \item Replacing missing values by a given value. 
+
+    \item Replacing missing values by a given value.
 \end{enumerate}
 
 %The different imputing algorithms were compared in a simulation study. The results of the study are given in the supplementary material.
-We recommend the use of \proglang{Beagle} whenever a dense marker map is available and neighboring markers can be exploited for imputation. This software package is state-of-the-art in plant and animal breeding.  However, if  information from sufficiently sized families is available, the accuracy of imputing can be increased by the usage of algorithm 3. This algorithm is also suitable for genotypic data where the marker map is sparse. 
+We recommend the use of \proglang{Beagle} whenever a dense marker map is available and neighboring markers can be exploited for imputation. This software package is state-of-the-art in plant and animal breeding.  However, if  information from sufficiently sized families is available, the accuracy of imputing can be increased by the usage of algorithm 3. This algorithm is also suitable for genotypic data where the marker map is sparse.
 
 
 \subsection{Data analysis}
 
 \subsubsection{Linkage disequilibrium}
 
-Linkage disequilibrium (LD) is defined as the non-random association of alleles at different loci. The extent of LD is determined by recombination, mutation, random drift and selection in  population history. With genotypic data, LD can be calculated as the difference between the observed and expected (assuming random distributions) allele frequencies. There are many possibilities to compute LD from genotypic data, see \citet{Foulkes2009} using the \pkg{genetics} package. In the \pkg{synbreed} package, we use the measure $r^2$ \citep{Hill1968} 
+Linkage disequilibrium (LD) is defined as the non-random association of alleles at different loci. The extent of LD is determined by recombination, mutation, random drift and selection in  population history. With genotypic data, LD can be calculated as the difference between the observed and expected (assuming random distributions) allele frequencies. There are many possibilities to compute LD from genotypic data, see \citet{Foulkes2009} using the \pkg{genetics} package. In the \pkg{synbreed} package, we use the measure $r^2$ \citep{Hill1968}
 $$  r^2 = \frac{D_{vw}^2}{p_v(1-p_v)p_w(1-p_w)},$$
-where $D_{vw}=p_{vw}-p_vp_w$ and $p_{vw}$, $p_v$ and $p_w$ are the frequencies of haplotype $vw$ and allele $v$ at one locus and allele $w$ at the other locus. Pairwise LD between markers on the same chromosome can be computed using function \code{pairwiseLD}.  For the general case, a gateway to the software \proglang{PLINK} is established to estimate the LD (argument \code{use.plink=TRUE}). This requires that \proglang{PLINK} is available (e.g. in the working directory). When using \proglang{PLINK}, arguments \code{ld.threshold} and \code{ld.window} can be used the prune the output  A fast within-\proglang{R} solution is available for marker data with only 2 marker genotypes. The function has two different return value types: \code{matrix} and \code{data.frame}. The first is a pairwise LD matrix and the latter a list with one row for each marker pair. In both cases, results are returned chromosome-wise. Moreover, the Euclidean distance of the markers based on the \code{map} is computed. 
+where $D_{vw}=p_{vw}-p_vp_w$ and $p_{vw}$, $p_v$ and $p_w$ are the frequencies of haplotype $vw$ and allele $v$ at one locus and allele $w$ at the other locus. Pairwise LD between markers on the same chromosome can be computed using function \code{pairwiseLD}.  For the general case, a gateway to the software \proglang{PLINK} is established to estimate the LD (argument \code{use.plink=TRUE}). This requires that \proglang{PLINK} is available (e.g. in the working directory). When using \proglang{PLINK}, arguments \code{ld.threshold} and \code{ld.window} can be used the prune the output  A fast within-\proglang{R} solution is available for marker data with only 2 marker genotypes. The function has two different return value types: \code{matrix} and \code{data.frame}. The first is a pairwise LD matrix and the latter a list with one row for each marker pair. In both cases, results are returned chromosome-wise. Moreover, the Euclidean distance of the markers based on the \code{map} is computed.
 
 \subsubsection{Estimation of relatedness}
 
 The \pkg{synbreed} package provides a unified function \code{kin} to compute pedigree-based (expected) and marker-based (realized) coefficients of relatedness. As shown in Figure~\ref{fig:paackageDescription}, coefficients are estimated for a set of individuals within an object of class \code{gpData}.  The return value is an object of class \code{relationshipMatrix}. This is a symmetric matrix with pairwise coefficients of relatedness for a set of individuals.
- 
-%Moreover, different types of genetic relationships such as additive and dominance can be easily extracted from the gametic relationship matrix. 
+
+%Moreover, different types of genetic relationships such as additive and dominance can be easily extracted from the gametic relationship matrix.
 The computation of the pedigree-based relationship matrix in \pkg{synbreed} starts with the gametic relationship matrix. This approach requires only few assumptions and is very flexible with respect to special cases, i.e., homozygous inbred lines. Moreover, this computation can be extended to include two populations and dominance effects. The gametic relationship matrix is of dimension $2n \times 2n$ with $n$ being the number of individuals in the pedigree. The matrix contains the probability that two gametes are identical by descent (IBD), denoted by the equivalent symbol $\equiv$. The gametes of an individual $i_1$ are denoted by $X_1$ and $X_2$, the gametes of an individual $i_2$ are denoted by $Y_1$ and $Y_2$.  All diagonal values equal 1. The secondary diagonals contain the inbreeding coefficients $F_{i_1}=\Prob(X_2 \equiv X_1)$. Both additive and dominance relationships may be obtained from the gametic relationship matrix according to the rules in \citet{Schaeffer1989}.
 
 Pedigree-based coefficients of relatedness include additive (argument \code{ret="add"}), dominance (argument \code{ret="dom"})  and kinship (argument \code{ret="kin"}). The additive relationship coefficient between two individuals is obtained by the sum of the four corresponding entries of the allele combinations in the gametic relationship matrix divided by $2$. The additive relatedness between individuals $i_1$ and $i_2$ is given by \citep{Bernardo2002}
 $$2f_{i_1i_2} = \frac{1}{2}\left[ \Prob(X_1 \equiv Y_1) + \Prob(X_1 \equiv Y_2) + \Prob(X_2 \equiv Y_1) + \Prob(X_2 \equiv Y_2)\right].$$
-The numerator relationship matrix described in Section~\ref{sec:statMod} is constructed using all pairwise coefficients $2f_{i_1i_2}$ on the off-diagonal and $1+F_{i_1}$ on the diagonal. The kinship between $i_1$ and $i_2$ is defined as $f_{i_1i_2}$. 
+The numerator relationship matrix described in Section~\ref{sec:statMod} is constructed using all pairwise coefficients $2f_{i_1i_2}$ on the off-diagonal and $1+F_{i_1}$ on the diagonal. The kinship between $i_1$ and $i_2$ is defined as $f_{i_1i_2}$.
 
-For non-inbred individuals, the dominance coefficients are  
-$$t_{i_1i_2} = \Prob(X_1 \equiv Y_1) \cdot \Prob(X_2 \equiv Y_2) + \Prob(X_1 \equiv Y_2) \cdot \Prob(X_2 \equiv Y_1) 
+For non-inbred individuals, the dominance coefficients are
+$$t_{i_1i_2} = \Prob(X_1 \equiv Y_1) \cdot \Prob(X_2 \equiv Y_2) + \Prob(X_1 \equiv Y_2) \cdot \Prob(X_2 \equiv Y_1)
 .$$
 
 If genotypic data is available, a genomic relationship can be constructed based on marker data. The matrix of genomic relationship coefficients is computed using function \code{kin} with argument \code{ret="realized"}. This requires an object of class \code{gpData} where the data in \code{geno} is coded by the number of copies of the minor allele, i.e., by using function \code{codeGeno}. The genomic relationship matrix is computed according to Equation~\ref{eq:vanRaden}. Negative values indicate pairs of individuals sharing fewer alleles than expected based on the allele frequencies and positive values indicate pairs of individuals sharing more alleles than expected from the marginal allele distributions. The denominator in Equation~\ref{eq:vanRaden} is the correction term for a random mating population \citep{Habier2007}. Corrections for other populations may be obtained by multiplying the resulting matrix by a constant. See \citet{Albrecht2011} for an example with  homozygous inbred lines.
 
-The genomic relationship can also be computed by the simple matching coefficient \citep{Albrecht2011}. This is implemented with the argument \code{ret="sm"}, but only for homozygous inbred lines.  To account for IBS but not IBD,  \citet{Hayes2008} proposed the correction $(\mathbf{s}-s_{min})/(1-s_{min})$ where $\bf s $ is the matrix of all pairwise simple matching coefficients multiplied by $2$ and $s_{min}$ the minimum of all $\frac{n}{2}(n-1)$ values in $\bf s$  (argument \code{ret="sm-smin"} within function \code{kin}). 
+The genomic relationship can also be computed by the simple matching coefficient \citep{Albrecht2011}. This is implemented with the argument \code{ret="sm"}, but only for homozygous inbred lines.  To account for IBS but not IBD,  \citet{Hayes2008} proposed the correction $(\mathbf{s}-s_{min})/(1-s_{min})$ where $\bf s $ is the matrix of all pairwise simple matching coefficients multiplied by $2$ and $s_{min}$ the minimum of all $\frac{n}{2}(n-1)$ values in $\bf s$  (argument \code{ret="sm-smin"} within function \code{kin}).
 
-Any object of class \code{relationshipMatrix} could easily be passed for further analysis to other software packages. The function \code{write.relationshipMatrix} creates a table which could be stored in an external file. Every row in the table depicts one element of the lower triangle. The table is ordered by column names within row names which is the required format for \proglang{ASReml} or by row names within column names  which is the required format for \proglang{WOMBAT}. 
+Any object of class \code{relationshipMatrix} could easily be passed for further analysis to other software packages. The function \code{write.relationshipMatrix} creates a table which could be stored in an external file. Every row in the table depicts one element of the lower triangle. The table is ordered by column names within row names which is the required format for \proglang{ASReml} or by row names within column names  which is the required format for \proglang{WOMBAT}.
 
 \subsubsection{Statistical models}
 
-The function \code{gpMod} provides a general interface to fit all models presented in Section~\ref{sec:statMod}. The input argument is an object of class \code{gpData}. The training set for the model are all individuals with phenotypes and genotypes (or pedigree for model ``P-BLUP'').  The mixed models ``P-BLUP'' and ``G-BLUP''  are fitted using the REML algorithm in function \code{regress} implemented in the package \pkg{regress} \citep{Clifford2009}. Model ``RR-BLUP'' is derived from model ``G-BLUP'' using the functional relationship between the models. In this case, in the first step ``G-BLUP'' is fitted and then the mixed model equations are solved for the SNP effects. The Bayesian regression models are fitted using the Gibbs-Sampler implemented in the \pkg{BLR} package \citep{Perez2010}. The variance-covariance structure in the BLUP models ``P-BLUP'' and ``G-BLUP'' is defined within the argument \code{kin} by an object of class \code{relationshipMatrix}, see Figure~\ref{fig:paackageDescription}. An overview over the possible arguments and the resulting models is given in Table~\ref{tab:modelargs}. The data for model training consists of all individuals with phenotypes and genotypes. All data are restricted to individuals from the training set. We include the \code{"..."} argument to allow a subtle adjustment of the model control. This includes the choice of hyper-parameters and MCMC options for ``BL''. 
+The function \code{gpMod} provides a general interface to fit all models presented in Section~\ref{sec:statMod}. The input argument is an object of class \code{gpData}. The training set for the model are all individuals with phenotypes and genotypes (or pedigree for model ``P-BLUP'').  The mixed models ``P-BLUP'' and ``G-BLUP''  are fitted using the REML algorithm in function \code{regress} implemented in the package \pkg{regress} \citep{Clifford2009}. Model ``RR-BLUP'' is derived from model ``G-BLUP'' using the functional relationship between the models. In this case, in the first step ``G-BLUP'' is fitted and then the mixed model equations are solved for the SNP effects. The Bayesian regression models are fitted using the Gibbs-Sampler implemented in the \pkg{BLR} package \citep{Perez2010}. The variance-covariance structure in the BLUP models ``P-BLUP'' and ``G-BLUP'' is defined within the argument \code{kin} by an object of class \code{relationshipMatrix}, see Figure~\ref{fig:paackageDescription}. An overview over the possible arguments and the resulting models is given in Table~\ref{tab:modelargs}. The data for model training consists of all individuals with phenotypes and genotypes. All data are restricted to individuals from the training set. We include the \code{"..."} argument to allow a subtle adjustment of the model control. This includes the choice of hyper-parameters and MCMC options for ``BL''.
 
 \begin{table}
 \begin{tabular}{l|lll|cc}
@@ -346,22 +346,22 @@ CV for different GP models is implemented in function \code{crossVal}. Possible 
 The function \code{crossVal} returns an object of class \code{cvData}. This is a \code{list} of predicted genetic performance  and observed phenotypic values  for all $k\cdot r$ test sets. Moreover, the list includes individuals, size, predictive abilities and bias for each corresponding TS.
 
 \subsection{Data summary and visualization}
-                                  
-In this section we present the different possibilities to visualize objects in the \pkg{synbreed} package and provide graphical or textual summaries. Thus key features of the high-dimensional objects can be assessed. For objects of class \code{gpData}, the \code{summary} method reveals general information about all elements. This includes the number of genotyped and phenotyped individuals, summary statistics (0, 25, 50, 75 and 100\% quantiles and mean) for the traits, number of markers, marker genotype frequencies and the summary for the pedigree. The \code{summary} method for an object of class \code{pedigree} includes number of individuals, parents and generations. The \code{summary} method for objects of class \code{relationshipMatrix} indicates the dimension, rank, range and number of unique values. The \code{summary} method for objects of class \code{cvData} provides information on the employed sampling scheme. Results are summarized by the minimum, mean and maximum of the predictive ability and bias across all test sets together with an estimated standard error for the mean pooled over the $k$ subsets.  
- 
 
-                         
-The LD is visualized chromosome-wise.  A LD heatmap is available using function \code{LDMap}. This function is a wrapper to apply the function \code{LDheatmap} of the package \pkg{LDheatmap} \citep{Shin2006} for an object of class \code{gpData}. The LD must be organized in the \code{matrix}-format of function \code{pairwiseLD}. The function \code{LDDist} visualizes LD decay as scatterplot or stacked histogram. This requires the LD organized in the \code{data.frame} format. In the stacked histogram, the LD is visualized with bars representing fractions of SNP pairs. Breaks for the distance and LD level are controlled by the user. Moreover, a nonlinear regression curve according to \citet{Hill1988} can be added to the scatterplot. 
+In this section we present the different possibilities to visualize objects in the \pkg{synbreed} package and provide graphical or textual summaries. Thus key features of the high-dimensional objects can be assessed. For objects of class \code{gpData}, the \code{summary} method reveals general information about all elements. This includes the number of genotyped and phenotyped individuals, summary statistics (0, 25, 50, 75 and 100\% quantiles and mean) for the traits, number of markers, marker genotype frequencies and the summary for the pedigree. The \code{summary} method for an object of class \code{pedigree} includes number of individuals, parents and generations. The \code{summary} method for objects of class \code{relationshipMatrix} indicates the dimension, rank, range and number of unique values. The \code{summary} method for objects of class \code{cvData} provides information on the employed sampling scheme. Results are summarized by the minimum, mean and maximum of the predictive ability and bias across all test sets together with an estimated standard error for the mean pooled over the $k$ subsets.
+
+
+
+The LD is visualized chromosome-wise.  A LD heatmap is available using function \code{LDMap}. This function is a wrapper to apply the function \code{LDheatmap} of the package \pkg{LDheatmap} \citep{Shin2006} for an object of class \code{gpData}. The LD must be organized in the \code{matrix}-format of function \code{pairwiseLD}. The function \code{LDDist} visualizes LD decay as scatterplot or stacked histogram. This requires the LD organized in the \code{data.frame} format. In the stacked histogram, the LD is visualized with bars representing fractions of SNP pairs. Breaks for the distance and LD level are controlled by the user. Moreover, a nonlinear regression curve according to \citet{Hill1988} can be added to the scatterplot.
 
 
 A \code{plot} method is available for objects of class \code{pedigree} and \code{relationshipMatrix}. The pedigree structure is visualized by a directed graph. One line is representing a generation with a vertex for each individual. Objects of class \code{relationshipMatrix} are visualized using a heatmap representation. Estimated SNP effects of an object of class \code{gpMod} can be visualized using a ``Manhattan'' plot. This is implemented in function \code{manhattanPlot}.
 
-Genome-wide dense marker maps  require new types of visualization. The function \code{plotGenMap} provides layouts for small ($<$ 200 markers/chromosome) and high numbers of markers. In both cases, each chromosome is represented as a vertical bar. The length of the bar is given by the distance between the first and the last marker on the chromosome. For a sparse map, each marker is plotted as a horizontal bar. With a dense map, only the marker density is evaluated within equally-spaced intervals. The bandwidth for the intervals is controlled by the user. Within each interval, the number of markers is counted and visualized by a color image. In addition, function \code{summaryGenMap} returns a summary of the marker distances. This includes the number of markers, minimum, mean and maximum distances between markers by chromosome and over all chromosomes. 
+Genome-wide dense marker maps  require new types of visualization. The function \code{plotGenMap} provides layouts for small ($<$ 200 markers/chromosome) and high numbers of markers. In both cases, each chromosome is represented as a vertical bar. The length of the bar is given by the distance between the first and the last marker on the chromosome. For a sparse map, each marker is plotted as a horizontal bar. With a dense map, only the marker density is evaluated within equally-spaced intervals. The bandwidth for the intervals is controlled by the user. Within each interval, the number of markers is counted and visualized by a color image. In addition, function \code{summaryGenMap} returns a summary of the marker distances. This includes the number of markers, minimum, mean and maximum distances between markers by chromosome and over all chromosomes.
 
 
 
-       
-                                   
+
+
 \section{Examples}\label{sec:Examples}
 
 
@@ -371,7 +371,7 @@ Genome-wide dense marker maps  require new types of visualization. The function 
 In this section, the application of the \pkg{synbreed} package is demonstrated using the data from the \pkg{synbreedData} package. The \pkg{synbreedData} is included as a dependency in the \texttt{synbreed} package.
 \subsubsection{Simulated maize data}
 
-This simulated data resembles the output from a typical maize breeding program based on doubled haploid (DH) lines. A DH is produced by sampling gametes from heterozygous $S_0$ plants. Thus, a DH line received both gametes from a single parent and is fully homozygous. 
+This simulated data resembles the output from a typical maize breeding program based on doubled haploid (DH) lines. A DH is produced by sampling gametes from heterozygous $S_0$ plants. Thus, a DH line received both gametes from a single parent and is fully homozygous.
 
   Ten chromosomes of length 160 cM are simulated. True genetic values are sampled from $K=500$ segregating, biallelic QTL with equal additive effects assuming absence of dominance and epistasis
 $$ g_i= \sum_{k=1}^K QTL_{ik}, \; i =1,...,n$$
@@ -380,6 +380,7 @@ $$y_i=g_i+e_i, \; i =1,...,n$$
 where $e_i = N(0,\sigma^2)$. Genotypic and phenotypic data was simulated for 1250 DH lines. Moreover, pedigree for additional 360 ancestor individuals is available. These ancestors can be heterozygous. The 1250 DH lines belong to 25 biparental families with 50 lines in each family. The \code{maize} data can be loaded within the \pkg{synbreed} package using
 <<Load the maize data set,results=hide>>=
 library(synbreed)
+library(synbreedData)
 data(maize)
 @
 A basic overview over the contents of the \code{gpData} is available through
@@ -418,7 +419,7 @@ The mice data set was recently used to illustrate prospects of GP \citep{Legarra
 <<Load the mice data set>>=
 data("mice")
 @
-Genotypic data in element \code{geno} consists of 12545 SNP markers. Marker data is available for a subset of 1940 individuals. The marker map in element \code{map} is the sex-averaged genetic map with distances given in cM. See Figure~\ref{fig:miceMap} for a visualization of the marker map using \code{plotGenMap(mice,TRUE,FALSE,ylab="pos [cM]")}. Element \code{pheno} comprises two quantitative traits for 2527 mice: the body weight at 6 weeks age [g] and growth slope between 6 and 10 weeks age [g/day]. The distribution of both traits is shown in Figure~\ref{fig:micepheno}.  Pedigree information is not yet available from the website. The element \code{covar}  includes the variables sex (females=0, males=1), month of birth (1-12), birth year, coat color, cage density and litter.   
+Genotypic data in element \code{geno} consists of 12545 SNP markers. Marker data is available for a subset of 1940 individuals. The marker map in element \code{map} is the sex-averaged genetic map with distances given in cM. See Figure~\ref{fig:miceMap} for a visualization of the marker map using \code{plotGenMap(mice,TRUE,FALSE,ylab="pos [cM]")}. Element \code{pheno} comprises two quantitative traits for 2527 mice: the body weight at 6 weeks age [g] and growth slope between 6 and 10 weeks age [g/day]. The distribution of both traits is shown in Figure~\ref{fig:micepheno}.  Pedigree information is not yet available from the website. The element \code{covar}  includes the variables sex (females=0, males=1), month of birth (1-12), birth year, coat color, cage density and litter.
 
 
 
@@ -476,7 +477,7 @@ This data set contains genotypic, phenotypic, map and pedigree data of 500 bulls
 <<Load the cattle data set>>=
 data("cattle")
 @
-Two quantitative traits are available with simulated heritabilities of 0.41 and 0.66, respectively. The distribution of both traits is shown in Figure~\ref{fig:cattlepheno}.  
+Two quantitative traits are available with simulated heritabilities of 0.41 and 0.66, respectively. The distribution of both traits is shown in Figure~\ref{fig:cattlepheno}.
 Genotypic data consists of 7250 biallelic SNP markers for every phenotyped individual with missing data included. SNPs are mapped across all 29 autosomes. Distances in the SNP map are given in mega bases (Mb). See Figure~\ref{fig:cattleMap} for a visualization of the marker map using function \code{plotGenMap}. The pedigree information is available at least on parents and grandparents of the phenotyped individuals.
 
 <<mice data: Plot of the genetic map,results=hide,echo=FALSE>>=
@@ -505,50 +506,43 @@ dev.off()
 \label{fig:cattleData}
 \end{figure}
 
-                                                
+
 
 \subsection{Data processing and visualization}
 
 All data sets are already given as objects of class \code{gpData}. Hence the next step is the processing of the genotypic data in element \code{geno}.  The \code{maize} data includes no missing values. Thus data processing only involves the recoding of the alleles into the number of copies of the minor allele. There are only homozygous genotypes. Hence no heterozygous genotype must be declared and genotypic data is recoded by
 <<Recode maize data,eval=TRUE>>=
 maizeC <- codeGeno(maize)
-@  
-Resulting object \code{maizeC} is again of class \code{gpData} but with recoded genotypic data. This information is stored for further analysis as \code{codeGeno} sets \code{maizeC$info$codeGeno=TRUE}. When there are heterozygous genotypes, the argument \code{label.heter} is required. This is shown for the \code{mice} data, where genotypes are coded by the observed alleles separated by a slash symbol. A heterozygous genotype is identified whenever the first allele differs from the second allele. This can be generalized by the function
-<<Function to identify heterozygous genotypes,keep.source=FALSE>>=   
-# function to check if first character of a string equals third character
-is.heter <- function(x){
-  substr(x,1,1)!=substr(x,3,3)           
-} 
 @
-The function \code{is.heter} checks for unequal alleles at a locus to identify heterozygous genotypes. It is passed to the function \code{codeGeno} by the argument \code{label.heter}. 
+Resulting object \code{maizeC} is again of class \code{gpData} but with recoded genotypic data. This information is stored for further analysis as \code{codeGeno} sets \code{maizeC$info$codeGeno=TRUE}. When there are heterozygous genotypes, the argument \code{label.heter} is required. This is shown for the \code{mice} data, where genotypes are coded by the observed alleles separated by a slash symbol. A heterozygous genotype is identified whenever the first allele differs from the second allele. This is implemented in the option \code{"alleleCoding"} for the argument \code{label.heter} of the function \code{codeGeno}. This compares the first and the last letter of the allele code. So that codings like \code{"AA"}, \code{"A/A"} or \code{"A | A"} are possible.
 <<Recode mice data,eval=FALSE,keep.source=FALSE>>=
 # simple recoding of alleles
-miceC <- codeGeno(mice,label.heter=is.heter)                        
+miceC <- codeGeno(mice,label.heter="alleleCoding")
 @
 The function \code{codeGeno} enables a preselection of markers and the imputing of missing values. For the following analysis, we choose a threshold for the MAF of $0.05$ and of $0.01$ for the fraction of missing values. All SNPs failing these criteria  are discarded from the object of class \code{gpData}. Missing values are sampled from the marginal marker allele distribution. The corresponding call and verbose output is
 <<Recode and impute mice data,eval=FALSE,keep.source=FALSE>>=
 # recoding of mice data and imputing of missing values by family structure
 # discarding markers with maf < 0.05 and nmiss > 0.01
-miceC <- codeGeno(mice,label.heter=is.heter,impute=TRUE,impute.type="random",maf=0.05,nmiss=0.01,verbose=TRUE)   
-@  
+miceC <- codeGeno(mice,label.heter=is.heter,impute=TRUE,impute.type="random",maf=0.05,nmiss=0.01,verbose=TRUE)
+@
 \begin{Schunk}
 \begin{Soutput}
-step 1  : 400 marker(s) removed with > 1 % missing values 
-step 2  : Recoding alleles 
-step 2.1: No duplicated markers discarded 
-step 3d : Random imputing of missing values 
-         approximate run time  17.82  seconds 
-step 4  : No recoding of alleles necessary after imputation 
-step 5  : 2148 marker(s) removed with maf < 0.05 
-step 6  : No duplicated markers discarded 
+step 1  : 400 marker(s) removed with > 1 % missing values
+step 2  : Recoding alleles
+step 2.1: No duplicated markers discarded
+step 3d : Random imputing of missing values
+         approximate run time  17.82  seconds
+step 4  : No recoding of alleles necessary after imputation
+step 5  : 2148 marker(s) removed with maf < 0.05
+step 6  : No duplicated markers discarded
 End      : 9997 marker(s) remain after the check
 
-Summary of imputation 
-  total number of missing values                : 23527 
-  number of random imputations                  : 23527 
+Summary of imputation
+  total number of missing values                : 23527
+  number of random imputations                  : 23527
 \end{Soutput}
 \end{Schunk}
-Recoding of the \code{cattle} data can be performed according to the \code{mice} data using argument \code{label.heter="AB"}.                       
+Recoding of the \code{cattle} data can be performed according to the \code{mice} data using argument \code{label.heter="AB"}.
 
 In the next step, the pairwise LD for markers on chromosome 1 of \code{maize} is computed using the within-\proglang{R} solution for homozygous genotypes. We choose \code{type="data.frame"} and visualize the LD with the function \code{LDDist}.
 <<Pairwise LD for the maize data,eval=FALSE>>=
@@ -556,13 +550,13 @@ maizeLD <- pairwiseLD(maizeC,chr=1,type="data.frame")
 @
 The LD decay for the LD data in the object \code{maizeLD} is shown in Figure~\ref{fig:LDDist}. This plot can be  generated using
 <<LD decay scatterplot,eval=FALSE,keep.source=TRUE>>=
-LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0)) 
-@      
-for the scatterplot and                                        
+LDDist(maizeLD,type="p",xlab="dist [cM]",pch=19,col=hsv(alpha=0.075,v=0))
+@
+for the scatterplot and
 <<LD decay stacked histogram,eval=FALSE,keep.source=TRUE>>=
 LDDist(maizeLD,type="bars",breaks=list(dist=c(0,25,50,75,200),
-r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")  
-@                                                                                                                               
+r2=c(1,0.5,0.3,0.2,0.1,0.05,0)),xlab="dist [cM]")
+@
 for the stacked histograms with user-specified breaks. The graphical layout is controlled by specifying additional graphical parameters. The LD for the recoded mice data may be obtained using the \proglang{PLINK} software invoked by the argument \code{use.plink=TRUE}.
 
 \begin{figure}[!ht]
@@ -570,9 +564,9 @@ for the stacked histograms with user-specified breaks. The graphical layout is c
 \includegraphics{figs/LDmaize.png}
 \caption{LD  decay as a scatter plot (left side) and stacked histogram (right side) for \Sexpr{nrow(maizeC$map[maizeC$map$chr==1,])} markers on the first chromosome for the \code{maize} data.}
 \label{fig:LDDist}
-\end{figure}   
-                              
-\subsection{Data analysis}                                                               
+\end{figure}
+
+\subsection{Data analysis}
 
 In the following, different coefficients of relatedness are calculated for the individuals. Pedigree-based coefficients are only inferred for the \code{maize} data. All genotyped individuals are DH lines having an inbreeding coefficient of 1. When using function \code{kin}, the special argument \code{DH} identifies DH lines in the data.  For a DH line $i_1$, $F_{i_1} = \Prob(X_1 \equiv X_2)$ is set to $1$ by the algorithm. In the \code{maize} data a variable \code{DH} in element \code{covar} indicates DH lines. The additive relationship matrix for all individuals in the pedigree is computed by
 <<Additive numerator relationship matrix for the maize data,eval=FALSE>>=
@@ -585,16 +579,16 @@ summary(A)
 @
 \begin{Schunk}
 \begin{Soutput}
- dimension                    1610 x 1610 
- rank                         1460 
- range of off-diagonal values 0 -- 1.757812 
- mean off-diagonal values     0.6907328 
- range of diagonal values     1 -- 2 
- mean diagonal values         1.891466 
- number of unique values      1435 
+ dimension                    1610 x 1610
+ rank                         1460
+ range of off-diagonal values 0 -- 1.757812
+ mean off-diagonal values     0.6907328
+ range of diagonal values     1 -- 2
+ mean diagonal values         1.891466
+ number of unique values      1435
 \end{Soutput}
 \end{Schunk}
-Genomic relationship coefficients can be computed using the recoded marker matrix. 
+Genomic relationship coefficients can be computed using the recoded marker matrix.
 
 <<Realized relationship matrix for the maize data,eval=FALSE>>=
 U <- kin(maizeC,ret="realized")
@@ -602,13 +596,13 @@ summary(U)
 @
 \begin{Schunk}
 \begin{Soutput}
- dimension                    1250 x 1250 
- rank                         1108 
- range of off-diagonal values -0.8803719 -- 2.10971 
- mean off-diagonal values     -0.001601281 
- range of diagonal values     1.467 -- 2.964 
- mean diagonal values         2 
- number of unique values      685017 
+ dimension                    1250 x 1250
+ rank                         1108
+ range of off-diagonal values -0.8803719 -- 2.10971
+ mean off-diagonal values     -0.001601281
+ range of diagonal values     1.467 -- 2.964
+ mean diagonal values         2
+ number of unique values      685017
 \end{Soutput}
 \end{Schunk}
 Resulting matrix \code{U} is the genome-based analogon for \code{A}. The difference in expected and realized relationship matrices can be visualized using the heatmap visualization, see Figure~\ref{fig:heatmap}. Note that only the 1250 genotyped individuals in \code{A} instead of all 1610 individuals are presented. Hence expected and realized relationship can be compared directly. The individuals were selected using the column \code{genotyped} in element \code{covar} to query only rows and columns in \code{A} for genotyped individuals.
@@ -616,7 +610,7 @@ Resulting matrix \code{U} is the genome-based analogon for \code{A}. The differe
 plot(A[maize$covar$genotyped,maize$covar$genotyped])
 plot(U)
 @
-The DH lines in the \code{maize} data are sorted by their family number. Thus the heatmap in Figure~\ref{fig:subfigHM1} is structured as $25 \times 25$ squares. Pedigree-based coefficients indicate no difference within families but differ across families. In contrast, the marker-based relationship reveals random Mendelian sampling effects within families. Thus, the heatmap provides a higher resolution for the coefficients. 
+The DH lines in the \code{maize} data are sorted by their family number. Thus the heatmap in Figure~\ref{fig:subfigHM1} is structured as $25 \times 25$ squares. Pedigree-based coefficients indicate no difference within families but differ across families. In contrast, the marker-based relationship reveals random Mendelian sampling effects within families. Thus, the heatmap provides a higher resolution for the coefficients.
 
 \begin{figure}[!h]
 \centering
@@ -650,17 +644,17 @@ summary(miceGBLUP)
 @
 \begin{Schunk}
 \begin{Soutput}
-Object of class 'gpMod' 
-Model used: BLUP 
-Nr. observations 1928 
-Genetic performances: 
-  Min.    1st Qu. Median  Mean    3rd Qu. Max    
--4.72400 -1.01600 -0.09459 -0.01184 0.96120 5.17200 
+Object of class 'gpMod'
+Model used: BLUP
+Nr. observations 1928
+Genetic performances:
+  Min.    1st Qu. Median  Mean    3rd Qu. Max
+-4.72400 -1.01600 -0.09459 -0.01184 0.96120 5.17200
 --
-Model fit 
+Model fit
 Likelihood kernel: K = (Intercept)
 
-Maximized log likelihood with kernel K is  -3178.055 
+Maximized log likelihood with kernel K is  -3178.055
 
 Linear Coefficients:
              Estimate Std. Error
@@ -673,7 +667,7 @@ Variance Coefficients:
 \end{Soutput}
 \end{Schunk}
 
-Estimates for the SNP effect may be obtained using ``RR-BLUP'' through 
+Estimates for the SNP effect may be obtained using ``RR-BLUP'' through
 <<Genomic BLUP for the mice data using trait weight,eval=FALSE>>=
 miceRRBLUP <- gpMod(miceC,model="BLUP",kin=UM,trait="weight",markerEffects=TRUE)
 @
@@ -697,19 +691,19 @@ summary(miceModBL)
 @
 \begin{Schunk}
 \begin{Soutput}
-Object of class 'gpMod' 
-Model used: BL 
-Nr. observations 2511 
-Genetic performances: 
-  Min.    1st Qu. Median  Mean    3rd Qu. Max    
-  15.61   19.33   20.25   20.33   21.31   25.54 
+Object of class 'gpMod'
+Model used: BL
+Nr. observations 2511
+Genetic performances:
+  Min.    1st Qu. Median  Mean    3rd Qu. Max
+  15.61   19.33   20.25   20.33   21.31   25.54
 --
-Model fit 
+Model fit
 MCMC options: nIter = 12000, burnIn = 2000, thin = 10
-             Posterior mean 
-(Intercept)  18.91775 
-VarE         8.116326 
-lambda       128.6805 
+             Posterior mean
+(Intercept)  18.91775
+VarE         8.116326
+lambda       128.6805
 \end{Soutput}
 \end{Schunk}
 
@@ -725,9 +719,9 @@ dev.off()
 \includegraphics{figs/manhattanPlot.pdf}
 \caption{Predicted SNP effects $|\hat{\bf{m}}|$ for the trait weight in \code{mice} data using ``BL''.}
 \label{fig:manhattanPlot}
-\end{figure}  
+\end{figure}
 
-The estimated SNP effects of ``BL'' are used to predict the genetic performance of the \Sexpr{sum(is.na(mice$pheno[mice$covar$genotyped,1,]))} individuals with a missing value for weight. First, a new object of class \code{gpData} is created including the marker genotypes of the individuals of the prediction set. 
+The estimated SNP effects of ``BL'' are used to predict the genetic performance of the \Sexpr{sum(is.na(mice$pheno[mice$covar$genotyped,1,]))} individuals with a missing value for weight. First, a new object of class \code{gpData} is created including the marker genotypes of the individuals of the prediction set.
 <<Set up a gpData for the prediction set,eval=FALSE>>=
 unphenotyped <- dimnames(mice$pheno)[[1]][is.na(mice$pheno[,1,])]
 phenotyped <- mice$covar$id[!mice$covar$id %in% unphenotyped]
@@ -742,7 +736,7 @@ predict(miceModBL,predSet)
 The predictive performance of the mixed model is judged by CV. Here, we use 2-fold CV as in \citet{Legarra2008}. The splitting into TS and ES is repeated  10 times. Individuals are assigned randomly to TS and ES. For computational ease, the variance-components are estimated once for the complete data set and committed to model training in CV. This CV scheme may be employed using
 <<Cross-validation of the GBLUP model with the mice data,eval=FALSE>>=
 cv.mice <- crossVal(miceC,cov.matrix=list(UM),k=2,Rep=10,Seed=123,
-             sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")  
+             sampling="random",varComp=miceGBLUP$fit$sigma,VC.est="commit")
 @
 
 <<Load previous results to save time,echo=FALSE,results=hide>>=
@@ -753,7 +747,7 @@ A summary of the CV is obtained by
 <<Summary for the cross-validation,echo=FALSE>>=
 summary(cv.mice)
 @
-The mean of the predictive ability is $0.37$ using random sampling. \citet{Legarra2008} reported values of $0.25$ for across family sampling and $0.67$ for within family sampling but of a different subset of the \code{mice} data. Moreover, they included a cage effect in the model. 
+The mean of the predictive ability is $0.37$ using random sampling. \citet{Legarra2008} reported values of $0.25$ for across family sampling and $0.67$ for within family sampling but of a different subset of the \code{mice} data. Moreover, they included a cage effect in the model.
 
 For the \code{maize} data, we compare the predictive ability of the pedigree-based model ``P-BLUP''  with the  genome-based models ``GBLUP'' and ``BL''.  Because phenotypic performance is evaluated as testcrosses of DH lines, the relationship matrix must be replaced by the kinship matrix \citep{Albrecht2011}. Thus, relationship matrices are divided by 2. The models are fitted by
 <<Models for the maize data,results=hide,eval=FALSE,keep.source=FALSE>>=
@@ -766,7 +760,7 @@ prior <- list(varE=list(df=3,S=35),lambda = list(shape=0.52,rate=1e-4,value=20,t
 modBL <- gpMod(maizeC,model="BL",prior=prior,nIter=6000,burnIn=1000,thin=5)
 @
 
-Convergence of the Markov chain for \code{modBL} was examined visually. No convergence problems were observed. The model performance is measured by the predictive ability $r(\mathbf{\hat{g}}_{TS},\mathbf{y}_{TS})$ from CV. The accuracy is defined as the correlation of the predicted genetic value with true breeding values $r(\mathbf{g},\hat \mathbf{g})$ for the whole data set. We use 5-fold CV with 10 replications. The results are summarized in Table~\ref{tab:resMaizeMod}. The models using marker data outperform the pedigree-based model ``P-BLUP''. However, the average predictive ability of ``BL'' using  marker-specific shrinkage is similar compared to ``G-BLUP'' using marker-homogeneous shrinkage. 
+Convergence of the Markov chain for \code{modBL} was examined visually. No convergence problems were observed. The model performance is measured by the predictive ability $r(\mathbf{\hat{g}}_{TS},\mathbf{y}_{TS})$ from CV. The accuracy is defined as the correlation of the predicted genetic value with true breeding values $r(\mathbf{g},\hat \mathbf{g})$ for the whole data set. We use 5-fold CV with 10 replications. The results are summarized in Table~\ref{tab:resMaizeMod}. The models using marker data outperform the pedigree-based model ``P-BLUP''. However, the average predictive ability of ``BL'' using  marker-specific shrinkage is similar compared to ``G-BLUP'' using marker-homogeneous shrinkage.
 
 <<Extract true breeding values from the maize data object,echo=FALSE,results=hide>>=
 tbv <- maize$covar$tbv[maize$covar$genotyped]
@@ -808,12 +802,12 @@ Summary & \code{summary.gpData} & 3.0  & 6.2  \\
 Plot marker map & \code{plotGenMap} & 0.4  & 0.2  \\
 Recoding genotypes & \code{codeGeno} & 5.8 & 68.3  \\
 Imputing genotypes (\code{"random"}) & \code{codeGeno} & 5.9$^a$  & 71.9  \\
-Imputing genotypes (\code{"Beagle"}) & \code{codeGeno} & 67.0$^a$  & 2695.8  \\ 
-Imputing genotypes (\code{"family"}) & \code{codeGeno} & 9.0$^a$  & NA  \\ 
-Imputing genotypes (\code{"beagleAfterFamily"}) & \code{codeGeno} & 67.26$^a$ &  NA \\ 
-Pairwise LD (only Chr. 1) & \code{pairwiseLD(,chr=1)} & 2.4  & 679.7  \\ 
-Pedigree-based relationship & \code{kin(,ret="add")} & 137.8 & NA \\ 
-Marker-based relationship & \code{kin(,ret="realized")} & 1.2  & 47.2 \\ 
+Imputing genotypes (\code{"Beagle"}) & \code{codeGeno} & 67.0$^a$  & 2695.8  \\
+Imputing genotypes (\code{"family"}) & \code{codeGeno} & 9.0$^a$  & NA  \\
+Imputing genotypes (\code{"beagleAfterFamily"}) & \code{codeGeno} & 67.26$^a$ &  NA \\
+Pairwise LD (only Chr. 1) & \code{pairwiseLD(,chr=1)} & 2.4  & 679.7  \\
+Pedigree-based relationship & \code{kin(,ret="add")} & 137.8 & NA \\
+Marker-based relationship & \code{kin(,ret="realized")} & 1.2  & 47.2 \\
 \bottomrule
 \end{tabular}
 \caption{Elapsed system times (seconds) for the analysis steps using the \pkg{synbreed} package. $^a$ after randomly masking $0.444$\% values, NA=computation not possible because no pedigree is available.}
@@ -827,7 +821,7 @@ We observed, that the computation times for many algorithms scale linearly with 
 
 
 % data base
-The package \pkg{synbreed} provides a valuable tool within the plant and animal genetics researchers software toolbox. It offers a comprehensive collection of methods required in the analysis of GP data. The data flow is guided by a single, unified data object. Once an object of class \code{gpData} is created, all analysis steps rely on its structure.  Moreover,  it is very convenient to share objects of class \code{gpData}. A key issue is the generality of the class \code{gpData}. We minimized the requirements concerning the data structure. This includes replicated and unreplicated trials for phenotypic data as well as arbitrary coding of marker data either by alleles or marker genotypes. Consequently, the package can also be applied in GWAS or QTL studies. For the latter, we included a gateway to the package \pkg{qtl}. The \pkg{synbreed} package is implemented as generic as possible. Hence, the package is suitable for both plant and animal genetics researchers and not limited to any species. We have successfully tested this framework for the analysis of several scenarios with simulated and experimental data from different  species (maize, rye, dairy cattle, rice and Arabidopsis). 
+The package \pkg{synbreed} provides a valuable tool within the plant and animal genetics researchers software toolbox. It offers a comprehensive collection of methods required in the analysis of GP data. The data flow is guided by a single, unified data object. Once an object of class \code{gpData} is created, all analysis steps rely on its structure.  Moreover,  it is very convenient to share objects of class \code{gpData}. A key issue is the generality of the class \code{gpData}. We minimized the requirements concerning the data structure. This includes replicated and unreplicated trials for phenotypic data as well as arbitrary coding of marker data either by alleles or marker genotypes. Consequently, the package can also be applied in GWAS or QTL studies. For the latter, we included a gateway to the package \pkg{qtl}. The \pkg{synbreed} package is implemented as generic as possible. Hence, the package is suitable for both plant and animal genetics researchers and not limited to any species. We have successfully tested this framework for the analysis of several scenarios with simulated and experimental data from different  species (maize, rye, dairy cattle, rice and Arabidopsis).
 
 Next generation genetics research involves computer-intensive methods to analyze massive amounts of high-throughput genotyping and large scale phenotyping data. Especially in the plant breeding community, there is a strong demand for robust standard software. We designed this package to provide access to standard methods required in GP. The \pkg{synbreed} package provides an interface to fit robust standard parametric GP models being publicly available. This allows researchers to conduct standard analyses, e.g., using mixed models. Moreover, the framework of \proglang{R} enhances the analysis and visualization of results in one software. All code is given in the \proglang{R} language. This permits the users to customize the methods to specific needs. When necessary, we provide gateways to standard software such as \proglang{Beagle} or \proglang{Plink}. Beside research and routine analysis, the package is also useful in the education of young scientists and breeders. It provides fast access to a wide range of different analysis methods and a hand-on tutorial with example data sets. Most functions have default values and short argument lists. Thus graduate students can gain expeditious insight into the statistical models and apply GP methods without having profound programing skills.
 
@@ -835,13 +829,13 @@ Next generation genetics research involves computer-intensive methods to analyze
 One objective of the \pkg{synbreed} package was to create a gateway to related software programs. Thereby we utilize the strength of \proglang{R} to integrate functions by the package structure. We provide an interface to fit GP models using the mixed and Bayesian regression models. The model performance can be investigated using cross-validation.  The function \code{gpData2data.frame} allows the conversion to a \code{data.frame}. This comprehensive format can be used by many other \proglang{R} functions. Other software packages such as \proglang{ASReml}  or \proglang{WOMBAT} are frequently used in genetics and breeding research. An object of class \code{relationship} matrix can be stored as a file using function \code{write.relationshipMatrix} which meets the required formats for \proglang{ASReml} or \proglang{WOMBAT}. Thus data in \pkg{synbreed} package can be used straightforward by other software. Moreover, we included functions to prepare the input files for the programs \proglang{Beagle} and \code{Plink}. We provide an interface to use the methods therein for objects of class \code{gpData}. Combining the functionality of \proglang{R} with \code{Sweave} \citep{Leisch2002} and \LaTeX \, enables to create automatic reports  presenting results for e.g., predicted genetic performance and SNP effects within tables and graphics.
 This is a step towards automatized analysis pipelines in the analysis of next generation genotype and phenotype data.
 
-There is no universal constraint in the \pkg{synbreed} package with respect to the number of data points. Rather computational facilities impose limitations.  Table~\ref{tab:compTimes} gives an overview of computation times for both data sets. Various analysis steps are performed in seconds. In general, the elapsed time increases linearly with respect to the number of data points. However, as data output from next generation sequence technology is emerging faster than computational capacities, additional effort is required to improve the algorithms. The open-source structure of \proglang{R} allows the user to customize the algorithms. Solutions can be the use of parallel computing utilizing the power of multi-core systems \citep{Schmidberger2009}. Hence, computation times are likely to be reduced by an order of magnitude, especially on a multi-core cluster. The claimed workspace can be reduced by using sparse matrix methods (e.g., \proglang{R} package \pkg{ff}, \citet{Adler2010}). The current version of the package enables genotype-based analyses. However, using haplotypes is desirable, too. For the future, we are aiming to include an additional data object for haplotypes and provide tools to analyze them. As available amount of data points are expected to increase, future work will also include the embedding of foreign languages, i.e., \proglang{C}. 
+There is no universal constraint in the \pkg{synbreed} package with respect to the number of data points. Rather computational facilities impose limitations.  Table~\ref{tab:compTimes} gives an overview of computation times for both data sets. Various analysis steps are performed in seconds. In general, the elapsed time increases linearly with respect to the number of data points. However, as data output from next generation sequence technology is emerging faster than computational capacities, additional effort is required to improve the algorithms. The open-source structure of \proglang{R} allows the user to customize the algorithms. Solutions can be the use of parallel computing utilizing the power of multi-core systems \citep{Schmidberger2009}. Hence, computation times are likely to be reduced by an order of magnitude, especially on a multi-core cluster. The claimed workspace can be reduced by using sparse matrix methods (e.g., \proglang{R} package \pkg{ff}, \citet{Adler2010}). The current version of the package enables genotype-based analyses. However, using haplotypes is desirable, too. For the future, we are aiming to include an additional data object for haplotypes and provide tools to analyze them. As available amount of data points are expected to increase, future work will also include the embedding of foreign languages, i.e., \proglang{C}.
 
 \section*{Acknowledgments}
 
-This research was funded by the German Federal Ministry of Education and                                                     
+This research was funded by the German Federal Ministry of Education and
 Research (BMBF) within the AgroClustEr \textit{Synbreed} $-$  \textit{Synergistic plant and
-animal breeding (FKZ 0315528A)}. We gratefully acknowledge Larry Schaeffer for providing us \proglang{R} code which is used by functions \code{kin} and \code{MME}, Michael Höhle for valuable discussions with respect to the manuscript and package design and Richard Mott for his help with the \code{mice} data. Henner Simianer, Malena Erbe and Christian Reimer are acknowledged for providing and preparing the \code{cattle} data. All users of the beta-version of the \pkg{synbreed} package are acknowledged for their suggestions and contributions. 
+animal breeding (FKZ 0315528A)}. We gratefully acknowledge Larry Schaeffer for providing us \proglang{R} code which is used by functions \code{kin} and \code{MME}, Michael Höhle for valuable discussions with respect to the manuscript and package design and Richard Mott for his help with the \code{mice} data. Henner Simianer, Malena Erbe and Christian Reimer are acknowledged for providing and preparing the \code{cattle} data. All users of the beta-version of the \pkg{synbreed} package are acknowledged for their suggestions and contributions.
 
 
 

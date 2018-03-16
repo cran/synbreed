@@ -1,6 +1,6 @@
 # heatmap for relationshipMatrix objects
 
-plot.relationshipMatrix <- function(x,y=NULL,levelbreaks=NULL,axes=TRUE,cols=NULL,...){
+plot.relationshipMatrix <- function(x,y=NULL,levelbreaks=NULL,axes=TRUE,cols=NULL,groupLines=NULL,...){
   oldPar <- par(no.readonly = TRUE)
   plotRelMatS <- function(x,levelbreaks=levelbreaks,axes=axes,cols=cols,...){
     relMat <- x[, nrow(x):1]
@@ -51,6 +51,7 @@ plot.relationshipMatrix <- function(x,y=NULL,levelbreaks=NULL,axes=TRUE,cols=NUL
     axis(side = 4, las = 1)
     par(mar=c(5,4,4,1)+.1)
     image(relMat,col=col, xaxt="n", yaxt="n")
+    abline(h=1-groupLines); abline(v=groupLines)
     box()
     if(axes){
       (size <- nrow(relMat))
@@ -69,7 +70,15 @@ plot.relationshipMatrix <- function(x,y=NULL,levelbreaks=NULL,axes=TRUE,cols=NUL
     par(oldPar)
   }
   plotRelMatD <- function(x,y,levelbreaks,axes,cols,...){
-    if(nrow(x)>nrow(y)) relMat1 <- relMat2 <- x[, ncol(x):1]*NA else  relMat1 <- relMat2 <- y[, ncol(y):1]*NA
+    if(nrow(x)>nrow(y)) {
+      relMat1 <- relMat2 <- x[, ncol(x):1]*NA
+      sortNam <- rownames(x)[rownames(x) %in% rownames(y)]
+      y <- y[sortNam, sortNam]
+    } else {
+      relMat1 <- relMat2 <- y[, ncol(y):1]*NA
+      sortNam <- rownames(y)[rownames(y) %in% rownames(x)]
+      x <- x[sortNam, sortNam]
+    }
     x[upper.tri(x, diag=TRUE)] <- NA
     y[lower.tri(y, diag=TRUE)] <- NA
     relMat1[rownames(y), colnames(y)] <- y
@@ -164,6 +173,7 @@ plot.relationshipMatrix <- function(x,y=NULL,levelbreaks=NULL,axes=TRUE,cols=NUL
     par(mar=c(5,4,4,2)+.1)
     image(relMat1,col=col1, xaxt="n", yaxt="n")
     image(relMat2,col=col2, add=TRUE, xaxt="n", yaxt="n")
+    abline(h=1-groupLines); abline(v=groupLines)
     box()
     if(axes){
       (size <- nrow(relMat1))

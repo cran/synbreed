@@ -10,7 +10,7 @@ This function combines all raw data sources in a single, unified data object of 
 \usage{
 create.gpData(pheno = NULL, geno = NULL, map = NULL, pedigree = NULL,
               family = NULL, covar = NULL, reorderMap = TRUE, map.unit = "cM",
-              repeated  = NULL, modCovar = NULL, cores=1)
+              repeated  = NULL, modCovar = NULL, na.string="NA", cores=1)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -37,13 +37,16 @@ Object of class \code{pedigree}.
 \code{logical}. Should markers in \code{geno} and \code{map} be reordered by chromosome number and position within chromosome according to \code{map} (default = \code{TRUE})?
 }
   \item{map.unit}{
-Character. Unit of position in \code{map}, i.e. 'cM' for genetic distance or 'bp' for physical distance (default = 'cM').
+\code{character}. Unit of position in \code{map}, i.e. 'cM' for genetic distance or 'bp' for physical distance (default = 'cM').
 }
   \item{repeated}{
   This column is used to identify the replications of the phenotypic values. The unique values become the names of the third dimension of the pheno object in the \code{gpData}. This argument is only required for repeated measurements.
 }
   \item{modCovar}{
   \code{vector} with \code{colnames} which identify columns with covariables in \code{pheno}. This argument is only required for repeated measurements.
+}
+  \item{na.string}{
+\code{character} or vector of \code{characters}. You can specify values with which \code{NA} is coded in your geno object. In case you read missing values from a file not as missing, but as character strings. It can be specified more than one value for missings in a vector. Default is \code{"NA"}.
 }
   \item{cores}{
  \code{numeric}. Here you can specify the number of cores you like to use.

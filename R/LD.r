@@ -86,13 +86,13 @@ pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=F
       if(type=="matrix") {
         ld.r2 <- as.matrix(read.table(paste(pre,".ld",sep="")))
         colnames(distance) <- rownames(distance) <- colnames(ld.r2 ) <- rownames(ld.r2 ) <- names(pos)[linkageGroup == lg[i]]
+        ld.r <- sqrt(ld.r2)
       }
       if(type=="data.frame"){
         ld.r2.df.plink <- read.table(paste(pre,".ld",sep=""),header=TRUE,stringsAsFactors=FALSE)
         #distance <- abs(pos[ld.r2.df.plink$SNP_A]-pos[ld.r2.df.plink$SNP_B])
         ld.r2.df <- with(ld.r2.df.plink,data.frame(marker1=SNP_A,marker2=SNP_B,r2=R2,dist=abs(BP_A-BP_B),stringsAsFactors=FALSE))
       }
-      ld.r <- sqrt(ld.r2)
     } # end if(use.plink)
       else{  # i.e. if there are 2 genotypes (e.g. DH lines)
       # read information from data
@@ -135,8 +135,9 @@ pairwiseLD <- function(gpData,chr=NULL,type=c("data.frame","matrix"),use.plink=F
     # create dataset with information from above in a data.frame
     if(type=="data.frame") retList[[i]] <- ld.r2.df
       # and as a matrix
-    if(type=="matrix") retMat$LD[[i]] <- ld.r**2           # omit lower/upper triangle?
+    if(type=="matrix") retMat$LD[[i]] <- ld.r2           # omit lower/upper triangle?
     if(type=="matrix") retMat$distance[[i]] <- distance
+    if(type=="matrix") retMat$LDcor[[i]] <- ld.r           # omit lower/upper triangle?
   }
   if(type=="data.frame") names(retList) <- paste("chr", lg, sep="_")
   if(type=="matrix") names(retMat$LD) <- names(retMat$distance) <- paste("chr", lg, sep="_")
